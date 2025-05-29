@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { login, logout } from '@/api/auth'
+import { setToken, removeToken } from '@/utils/auth'
 
 // 导入各个模块的状态管理
 import finance from './modules/finance'
@@ -11,10 +12,14 @@ import tasks from './modules/tasks'
 export default createStore({
   state: {
     user: JSON.parse(localStorage.getItem('user')) || null,
+    token: localStorage.getItem('Admin-Token') || '',
     theme: 'light',
     sidebar: {
       opened: true
     }
+  },
+  getters: {
+    token: state => state.token
   },
   mutations: {
     SET_USER(state, user) {
@@ -24,6 +29,10 @@ export default createStore({
       } else {
         localStorage.removeItem('user')
       }
+    },
+    SET_TOKEN(state, token) {
+      state.token = token
+      setToken(token)
     },
     SET_THEME(state, theme) {
       state.theme = theme
@@ -36,6 +45,7 @@ export default createStore({
     async login({ commit }, userInfo) {
       try {
         const { data } = await login(userInfo)
+        commit('SET_TOKEN', data.token)
         commit('SET_USER', data.user)
         return data
       } catch (error) {
@@ -45,13 +55,12 @@ export default createStore({
     async logout({ commit }) {
       try {
         await logout()
+        commit('SET_TOKEN', '')
         commit('SET_USER', null)
+        removeToken()
       } catch (error) {
         console.error('登出失败:', error)
       }
-    },
-    toggleTheme({ commit }, theme) {
-      commit('SET_THEME', theme)
     }
   },
   modules: {

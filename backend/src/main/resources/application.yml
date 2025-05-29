@@ -45,7 +45,7 @@ jwt:
 ib:
   api:
     gateway:
-      url: http://localhost:5000
+      url: https://localhost:5000
     sync:
       enabled: true
       cron: "0 */5 * * * *"  # 每5分钟同步一次

@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class IBClientPortalApiClient {
 
-    @Value("${ib.api.gateway.url:http://localhost:5000}")
+    @Value("${ib.api.gateway.url:https://localhost:5000}")
     private String gatewayUrl;
 
     private final RestTemplate restTemplate;
