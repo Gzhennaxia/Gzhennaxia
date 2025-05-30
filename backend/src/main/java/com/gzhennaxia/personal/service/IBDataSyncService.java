@@ -1,5 +1,6 @@
 package com.gzhennaxia.personal.service;
 
+import com.ib.controller.ApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,6 +12,11 @@ import org.springframework.stereotype.Service;
 import com.gzhennaxia.personal.integration.ib.IBClientPortalApiClient;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -34,7 +40,7 @@ public class IBDataSyncService {
     private static final String POSITIONS_CACHE = CACHE_KEY_PREFIX + "positions";
     private static final String TRADE_HISTORY_CACHE = CACHE_KEY_PREFIX + "trades";
 
-    @Scheduled(cron = "${ib.api.sync.cron}")
+    // @Scheduled(cron = "${ib.api.sync.cron}")
     @CacheEvict(value = {
             ACCOUNT_INFO_CACHE,
             PORTFOLIO_CACHE,
@@ -49,21 +55,21 @@ public class IBDataSyncService {
 
         log.info("开始同步IB数据...");
         try {
-            // 同步账户信息
-            Object accountInfo = ibClient.getAccountInfo();
-            redisTemplate.opsForValue().set(ACCOUNT_INFO_CACHE, accountInfo);
-
-            // 同步投资组合
-            Object portfolio = ibClient.getPortfolio();
-            redisTemplate.opsForValue().set(PORTFOLIO_CACHE, portfolio);
+//            // 同步账户信息
+//            Object accountInfo = ibClient.getAccountInfo();
+//            redisTemplate.opsForValue().set(ACCOUNT_INFO_CACHE, accountInfo);
+//
+//            // 同步投资组合
+//            Object portfolio = ibClient.getPortfolio();
+//            redisTemplate.opsForValue().set(PORTFOLIO_CACHE, portfolio);
 
             // 同步持仓信息
             Object positions = ibClient.getPositions();
             redisTemplate.opsForValue().set(POSITIONS_CACHE, positions);
 
-            // 同步交易历史
-            Object tradeHistory = ibClient.getTradeHistory();
-            redisTemplate.opsForValue().set(TRADE_HISTORY_CACHE, tradeHistory);
+//            // 同步交易历史
+//            Object tradeHistory = ibClient.getTradeHistory();
+//            redisTemplate.opsForValue().set(TRADE_HISTORY_CACHE, tradeHistory);
 
             log.info("IB数据同步完成");
         } catch (Exception e) {

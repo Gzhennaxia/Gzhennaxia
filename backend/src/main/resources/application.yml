@@ -43,6 +43,7 @@ jwt:
 
 # Interactive Brokers API配置
 ib:
+  accountId: U16166218
   api:
     gateway:
       url: https://localhost:5000
