@@ -40,21 +40,16 @@ public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper,
             return;
         }
 
-        // 删除旧数据
-        this.remove(null);
-
         // 保存新数据
-        List<IBPositionInfo> IBPositionInfoList = new ArrayList<>();
+        List<IBPositionInfo> ibPositionInfoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (IBKRPositionInfoResponse response : positionInfoArray) {
-            IBPositionInfo IBPositionInfo = new IBPositionInfo();
-            BeanUtils.copyProperties(response, IBPositionInfo);
-            IBPositionInfo.setCreateTime(now);
-            IBPositionInfo.setUpdateTime(now);
-            IBPositionInfoList.add(IBPositionInfo);
+            IBPositionInfo ibPositionInfo = new IBPositionInfo();
+            BeanUtils.copyProperties(response, ibPositionInfo);
+            ibPositionInfoList.add(ibPositionInfo);
         }
-        this.saveBatch(IBPositionInfoList);
-        log.info("Synced {} position info records", IBPositionInfoList.size());
+        this.saveBatch(ibPositionInfoList);
+        log.info("Synced {} position info records", ibPositionInfoList.size());
     }
 
     @Override

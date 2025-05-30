@@ -2,6 +2,7 @@ package com.gzhennaxia.personal.controller;
 
 import com.gzhennaxia.personal.common.Result;
 import com.gzhennaxia.personal.service.IBDataSyncService;
+import com.gzhennaxia.personal.service.IBPositionInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,9 @@ public class IBController {
 
     @Autowired
     private IBDataSyncService ibDataSyncService;
+
+    @Autowired
+    private IBPositionInfoService positionInfoService;
 
     @GetMapping("/account")
     public Result<?> getAccountInfo() {
