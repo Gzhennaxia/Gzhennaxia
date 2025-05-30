@@ -2,10 +2,12 @@ package com.gzhennaxia.personal.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhennaxia.personal.constant.CacheConstants;
+import com.gzhennaxia.personal.entity.ib.IBContract;
 import com.gzhennaxia.personal.entity.ib.IBPositionInfo;
 import com.gzhennaxia.personal.integration.ib.IBClientPortalApiClient;
 import com.gzhennaxia.personal.integration.ib.response.IBKRPositionInfoResponse;
 import com.gzhennaxia.personal.mapper.IBPositionInfoMapper;
+import com.gzhennaxia.personal.service.IBContractService;
 import com.gzhennaxia.personal.service.IBPositionInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +17,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 持仓信息服务实现
@@ -28,6 +31,8 @@ import java.util.List;
 public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper, IBPositionInfo> implements IBPositionInfoService {
 
     private final IBClientPortalApiClient ibClientPortalApiClient;
+
+    private final IBContractService contractService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -40,15 +45,23 @@ public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper,
             return;
         }
 
+        Map<Long, IBContract> contractMap = new HashMap<>();
+
         // 保存新数据
         List<IBPositionInfo> ibPositionInfoList = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
         for (IBKRPositionInfoResponse response : positionInfoArray) {
             IBPositionInfo ibPositionInfo = new IBPositionInfo();
             BeanUtils.copyProperties(response, ibPositionInfo);
             ibPositionInfoList.add(ibPositionInfo);
+            contractMap.putIfAbsent(Long.valueOf(ibPositionInfo.getConid()), IBContract.builder().conid(ibPositionInfo.getConid()).name(ibPositionInfo.getContractDesc()).build());
         }
+
+        // 先保存合约信息
+        contractService.saveBatch(contractMap.values());
+
+        // 再保存持仓信息
         this.saveBatch(ibPositionInfoList);
+
         log.info("Synced {} position info records", ibPositionInfoList.size());
     }
 
