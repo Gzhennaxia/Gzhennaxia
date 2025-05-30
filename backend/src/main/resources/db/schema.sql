@@ -185,12 +185,10 @@ CREATE TABLE `task` (
 -- IB合约表
 CREATE TABLE `ib_contract` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `desc` varchar(255) DEFAULT NULL COMMENT '合约描述',
+    `name` varchar(255) DEFAULT NULL COMMENT '合约描述',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_account_id` (`account_id`),
-    KEY `idx_conid` (`conid`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IB合约表';
 
 -- IB持仓信息表
@@ -209,8 +207,6 @@ CREATE TABLE `ib_position_info` (
     `unrealized_pnl` decimal(20,8) DEFAULT NULL COMMENT '未实现盈亏',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_account_id` (`account_id`),
-    KEY `idx_conid` (`conid`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IB持仓信息表';
 

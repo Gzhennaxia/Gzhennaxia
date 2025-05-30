@@ -19,14 +19,6 @@ public class IBContractServiceImpl extends ServiceImpl<IBContractMapper, IBContr
     private final IBContractMapper contractMapper;
 
     @Override
-    public boolean saveContract(IBContract contract) {
-        if (contract.getConid() == null || contract.getConid().isEmpty()) {
-            throw new IllegalArgumentException("合约ID不能为空");
-        }
-        return contractMapper.insert(contract) > 0;
-    }
-
-    @Override
     public IBContract getByConid(String conid) {
         return contractMapper.selectByConid(conid);
     }

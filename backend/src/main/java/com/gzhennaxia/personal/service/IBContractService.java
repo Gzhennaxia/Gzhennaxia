@@ -12,13 +12,6 @@ import java.util.List;
 public interface IBContractService extends IService<IBContract> {
 
     /**
-     * 保存合约信息
-     * @param contract 合约信息
-     * @return 是否成功
-     */
-    boolean saveContract(IBContract contract);
-
-    /**
      * 根据合约ID查询合约信息
      * @param conid 合约ID
      * @return 合约信息

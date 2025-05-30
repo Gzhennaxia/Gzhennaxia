@@ -13,6 +13,11 @@ import java.math.BigDecimal;
 public class IBKRPositionInfoResponse extends BaseResponse {
 
     /**
+     * 账户 ID
+     */
+    private String acctId;
+
+    /**
      * 合约ID，唯一标识一个交易合约
      */
     private String conid;

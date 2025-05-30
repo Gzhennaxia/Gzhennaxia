@@ -20,29 +20,24 @@ public class IBContract {
     private Long id;
 
     /**
-     * 合约ID
-     */
-    private String conid;
-
-    /**
      * 合约名称
      */
     private String name;
-
-    /**
-     * 合约类型
-     */
-    private String type;
-
-    /**
-     * 交易所
-     */
-    private String exchange;
-
-    /**
-     * 货币类型
-     */
-    private String currency;
+//
+//    /**
+//     * 合约类型
+//     */
+//    private String type;
+//
+//    /**
+//     * 交易所
+//     */
+//    private String exchange;
+//
+//    /**
+//     * 货币类型
+//     */
+//    private String currency;
 
     /**
      * 创建时间

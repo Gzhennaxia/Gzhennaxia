@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/ib")
+@RequestMapping("/ib")
 public class IBController {
 
     @Autowired
     private IBDataSyncService ibDataSyncService;
+
+    @Autowired
+    private IBPositionInfoService ibPositionInfoService;
 
     @Autowired
     private IBPositionInfoService positionInfoService;
@@ -48,6 +51,18 @@ public class IBController {
             log.error("获取持仓信息失败", e);
             return Result.error("获取持仓信息失败");
         }
+    }
+
+    @GetMapping("/positions/refresh")
+    public Result<?> getRefreshedPositions() {
+//        try {
+            ibPositionInfoService.syncPositionInfo();
+            return Result.success(ibPositionInfoService.list());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            log.error("刷新持仓信息失败", e);
+//            return Result.error("刷新持仓信息失败");
+//        }
     }
 
     @GetMapping("/trades")

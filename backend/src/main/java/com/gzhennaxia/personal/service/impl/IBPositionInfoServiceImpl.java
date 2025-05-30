@@ -12,7 +12,6 @@ import com.gzhennaxia.personal.service.IBPositionInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +35,7 @@ public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = CacheConstants.POSITION_INFO, allEntries = true)
+    // @CacheEvict(value = CacheConstants.POSITION_INFO, allEntries = true)
     public void syncPositionInfo() {
         // 获取最新持仓信息
         IBKRPositionInfoResponse[] positionInfoArray = ibClientPortalApiClient.getPositions();
@@ -52,15 +51,16 @@ public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper,
         for (IBKRPositionInfoResponse response : positionInfoArray) {
             IBPositionInfo ibPositionInfo = new IBPositionInfo();
             BeanUtils.copyProperties(response, ibPositionInfo);
+            ibPositionInfo.setAccountId(response.getAcctId());
             ibPositionInfoList.add(ibPositionInfo);
-            contractMap.putIfAbsent(Long.valueOf(ibPositionInfo.getConid()), IBContract.builder().conid(ibPositionInfo.getConid()).name(ibPositionInfo.getContractDesc()).build());
+            contractMap.putIfAbsent(Long.valueOf(ibPositionInfo.getConid()), IBContract.builder().id(Long.valueOf(ibPositionInfo.getConid())).name(ibPositionInfo.getContractDesc()).build());
         }
 
         // 先保存合约信息
-        contractService.saveBatch(contractMap.values());
+        contractService.saveOrUpdateBatch(contractMap.values());
 
         // 再保存持仓信息
-        this.saveBatch(ibPositionInfoList);
+        this.saveOrUpdateBatch(ibPositionInfoList);
 
         log.info("Synced {} position info records", ibPositionInfoList.size());
     }
