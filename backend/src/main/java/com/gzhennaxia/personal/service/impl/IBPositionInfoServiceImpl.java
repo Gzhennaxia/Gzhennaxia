@@ -1,14 +1,17 @@
 package com.gzhennaxia.personal.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gzhennaxia.personal.entity.PositionInfo;
+import com.gzhennaxia.personal.constant.CacheConstants;
+import com.gzhennaxia.personal.entity.ib.IBPositionInfo;
 import com.gzhennaxia.personal.integration.ib.IBClientPortalApiClient;
 import com.gzhennaxia.personal.integration.ib.response.IBKRPositionInfoResponse;
-import com.gzhennaxia.personal.mapper.PositionInfoMapper;
-import com.gzhennaxia.personal.service.PositionInfoService;
+import com.gzhennaxia.personal.mapper.IBPositionInfoMapper;
+import com.gzhennaxia.personal.service.IBPositionInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +25,13 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PositionInfoServiceImpl extends ServiceImpl<PositionInfoMapper, PositionInfo> implements PositionInfoService {
+public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper, IBPositionInfo> implements IBPositionInfoService {
 
     private final IBClientPortalApiClient ibClientPortalApiClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = CacheConstants.POSITION_INFO, allEntries = true)
     public void syncPositionInfo() {
         // 获取最新持仓信息
         IBKRPositionInfoResponse[] positionInfoArray = ibClientPortalApiClient.getPositions();
@@ -40,16 +44,22 @@ public class PositionInfoServiceImpl extends ServiceImpl<PositionInfoMapper, Pos
         this.remove(null);
 
         // 保存新数据
-        List<PositionInfo> positionInfoList = new ArrayList<>();
+        List<IBPositionInfo> IBPositionInfoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (IBKRPositionInfoResponse response : positionInfoArray) {
-            PositionInfo positionInfo = new PositionInfo();
-            BeanUtils.copyProperties(response, positionInfo);
-            positionInfo.setCreateTime(now);
-            positionInfo.setUpdateTime(now);
-            positionInfoList.add(positionInfo);
+            IBPositionInfo IBPositionInfo = new IBPositionInfo();
+            BeanUtils.copyProperties(response, IBPositionInfo);
+            IBPositionInfo.setCreateTime(now);
+            IBPositionInfo.setUpdateTime(now);
+            IBPositionInfoList.add(IBPositionInfo);
         }
-        this.saveBatch(positionInfoList);
-        log.info("Synced {} position info records", positionInfoList.size());
+        this.saveBatch(IBPositionInfoList);
+        log.info("Synced {} position info records", IBPositionInfoList.size());
+    }
+
+    @Override
+    @Cacheable(value = CacheConstants.POSITION_INFO, key = "'all'")
+    public List<IBPositionInfo> listPositionInfo() {
+        return this.list();
     }
 }

@@ -181,3 +181,25 @@ CREATE TABLE `task` (
     KEY `idx_status` (`status`),
     KEY `idx_parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
+
+-- IB持仓信息表
+CREATE TABLE `ib_position_info` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `account_id` varchar(64) NOT NULL COMMENT '账户ID',
+    `conid` varchar(64) NOT NULL COMMENT '合约ID',
+    `contract_desc` varchar(255) DEFAULT NULL COMMENT '合约描述',
+    `position` decimal(20,8) DEFAULT NULL COMMENT '持仓数量',
+    `mkt_price` decimal(20,8) DEFAULT NULL COMMENT '市场价格',
+    `mkt_value` decimal(20,8) DEFAULT NULL COMMENT '市场价值',
+    `currency` varchar(10) DEFAULT NULL COMMENT '货币类型',
+    `avg_cost` decimal(20,8) DEFAULT NULL COMMENT '平均成本',
+    `avg_price` decimal(20,8) DEFAULT NULL COMMENT '平均价格',
+    `realized_pnl` decimal(20,8) DEFAULT NULL COMMENT '已实现盈亏',
+    `unrealized_pnl` decimal(20,8) DEFAULT NULL COMMENT '未实现盈亏',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_account_id` (`account_id`),
+    KEY `idx_conid` (`conid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IB持仓信息表';
+

@@ -1,4 +1,4 @@
-package com.gzhennaxia.personal.entity;
+package com.gzhennaxia.personal.entity.ib;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
  * 持仓信息
  */
 @Data
-@TableName("position_info")
-public class PositionInfo {
+@TableName("ib_position_info")
+public class IBPositionInfo {
 
     @TableId(type = IdType.AUTO)
     private Long id;
