@@ -21,6 +21,12 @@ export function getPositions() {
     method: 'get'
   })
 }
+export function refershPositions() {
+  return request({
+    url: '/api/ib/positions/refresh',
+    method: 'get'
+  })
+}
 
 export function getTradeHistory() {
   return request({

@@ -152,7 +152,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { InfoFilled } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
-import { getAccountInfo, getPortfolio, getPositions, getAssetAllocation, getPerformanceAnalysis, getRiskMetrics } from '@/api/ib'
+import { getAccountInfo, getPortfolio, getPositions, refershPositions, getAssetAllocation, getPerformanceAnalysis, getRiskMetrics } from '@/api/ib'
 import { ElMessage } from 'element-plus'
 
 // 数据状态
@@ -213,9 +213,16 @@ const loadData = async () => {
   }
 }
 
+const reloadPositions = async () => {
+    // 获取持仓信息
+    const positionsRes = await refershPositions()
+    positions.value = positionsRes.data
+}
+
 // 手动刷新数据
 const refreshData = () => {
-  loadData()
+  // loadData()
+  reloadPositions()
 }
 
 // 更新资产配置图表
