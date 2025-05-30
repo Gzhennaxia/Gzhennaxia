@@ -59,8 +59,8 @@ public class IBController {
     @GetMapping("/analysis/allocation")
     public Result<?> getAssetAllocation() {
         try {
-            // TODO: 实现资产配置分析
-            return Result.success(null);
+            // 实现资产配置分析
+            return Result.success(ibDataSyncService.calculateAssetAllocation());
         } catch (Exception e) {
             log.error("获取资产配置分析失败", e);
             return Result.error("获取资产配置分析失败");
