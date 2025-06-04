@@ -56,11 +56,13 @@ public class IBPositionInfo {
 
     /**
      * 平均成本
+     * 包含交易成本
      */
     private BigDecimal avgCost;
 
     /**
      * 平均价格
+     * 不包含交易成本
      */
     private BigDecimal avgPrice;
 

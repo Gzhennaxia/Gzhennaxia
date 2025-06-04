@@ -5,13 +5,13 @@
 
     <select id="selectList" resultType="com.gzhennaxia.personal.entity.ib.IBPositionInfo">
         SELECT id, account_id, conid, contract_desc, position, mkt_price, mkt_value,
-               currency, avg_cost, avg_price, realized_pnl, unrealized_pnl, create_time, update_time, unrealized_pnl/mkt_value as return_rate
+               currency, avg_cost, avg_price, realized_pnl, unrealized_pnl, create_time, update_time, unrealized_pnl/(avg_cost*position)*100 as return_rate
         FROM (
                  SELECT *,
                         ROW_NUMBER() OVER (PARTITION BY conid ORDER BY create_time DESC) AS rn
                  FROM ib_position_info
                  <where>
-                    ew.customSqlSegment
+                    ${ew.customSqlSegment}
                  </where>
              ) t
         WHERE rn = 1

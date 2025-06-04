@@ -111,43 +111,48 @@
         </div>
       </template>
       <el-table :data="positions" style="width: 100%" v-loading="loading">
-        <el-table-column prop="conid" label="合约ID" width="100" />
-        <el-table-column prop="symbol" label="代码" width="120" />
-        <el-table-column prop="contractDesc" label="名称" width="200" />
-        <el-table-column prop="position" label="数量" width="100" align="right" />
-        <el-table-column prop="avgCost" label="成本价" width="120" align="right">
+        <el-table-column prop="conid" label="合约ID" width="100" sortable />
+        <el-table-column prop="symbol" label="代码" width="120" sortable />
+        <el-table-column prop="contractDesc" label="名称" width="200" sortable />
+        <el-table-column prop="position" label="数量" width="100" align="right" sortable />
+        <el-table-column prop="avgPrice" label="均价" width="120" align="right" sortable>
           <template #default="scope">
-            ${{ formatNumber(scope.row.avgCost) }}
+            ${{ formatNumber(scope.row.avgPrice) }}
           </template>
         </el-table-column>
-        <el-table-column prop="mktPrice" label="市价" width="120" align="right">
+        <el-table-column prop="mktPrice" label="市价" width="120" align="right" sortable>
           <template #default="scope">
             ${{ formatNumber(scope.row.mktPrice) }}
           </template>
         </el-table-column>
-        <el-table-column prop="mktValue" label="市值" width="120" align="right">
+        <el-table-column prop="avgCost" label="成本价" width="120" align="right" sortable>
+          <template #default="scope">
+            ${{ formatNumber(scope.row.avgCost) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="mktValue" label="市值" width="120" align="right" sortable>
           <template #default="scope">
             ${{ formatNumber(scope.row.mktValue) }}
           </template>
         </el-table-column>
-        <el-table-column prop="realizedPnl" label="已实现盈亏" width="120" align="right">
+        <el-table-column prop="realizedPnl" label="已实现盈亏" width="120" align="right" sortable>
           <template #default="scope">
             <span :class="{ 'positive': scope.row.realizedPnl >= 0, 'negative': scope.row.realizedPnl < 0 }">
               ${{ formatNumber(scope.row.realizedPnl) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="unrealizedPnl" label="未实现盈亏" width="120" align="right">
+        <el-table-column prop="unrealizedPnl" label="未实现盈亏" width="120" align="right" sortable>
           <template #default="scope">
             <span :class="{ 'positive': scope.row.unrealizedPnl >= 0, 'negative': scope.row.unrealizedPnl < 0 }">
               ${{ formatNumber(scope.row.unrealizedPnl) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="收益率" align="right">
+        <el-table-column prop="returnRate" label="收益率" align="right" sortable>
           <template #default="scope">
-            <span :class="{ 'positive': scope.row.return_rate >= 0, 'negative': scope.row.return_rate < 0 }">
-              {{ scope.row.return_rate >= 0 ? '+' : '' }}{{ formatNumber(scope.row.return_rate) }}%
+            <span :class="{ 'positive': scope.row.returnRate >= 0, 'negative': scope.row.returnRate < 0 }">
+              {{ scope.row.returnRate >= 0 ? '+' : '' }}{{ formatNumber(scope.row.returnRate) }}%
             </span>
           </template>
         </el-table-column>
