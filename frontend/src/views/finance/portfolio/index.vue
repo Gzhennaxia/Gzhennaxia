@@ -1,163 +1,174 @@
 <template>
-  <div class="portfolio-dashboard">
-    <!-- 账户概览 -->
-    <el-row :gutter="20" class="mb-4">
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>总资产</span>
+  <div class="portfolio-container">
+    <router-view v-slot="{ Component }">
+      <component :is="Component" />
+    </router-view>
+    <div class="portfolio-dashboard" v-if="$route.name === 'Portfolio'">
+      <!-- 账户概览 -->
+      <el-row :gutter="20" class="mb-4">
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>总资产</span>
+              </div>
+            </template>
+            <div class="card-value">${{ formatNumber(accountInfo.totalAssets) }}</div>
+            <div class="card-change" :class="{ 'positive': accountInfo.dayChange >= 0, 'negative': accountInfo.dayChange < 0 }">
+              {{ accountInfo.dayChange >= 0 ? '+' : '' }}{{ accountInfo.dayChange }}%
             </div>
-          </template>
-          <div class="card-value">${{ formatNumber(accountInfo.totalAssets) }}</div>
-          <div class="card-change" :class="{ 'positive': accountInfo.dayChange >= 0, 'negative': accountInfo.dayChange < 0 }">
-            {{ accountInfo.dayChange >= 0 ? '+' : '' }}{{ accountInfo.dayChange }}%
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>现金余额</span>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>现金余额</span>
+              </div>
+            </template>
+            <div class="card-value">${{ formatNumber(accountInfo.cashBalance) }}</div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>持仓市值</span>
+              </div>
+            </template>
+            <div class="card-value">${{ formatNumber(accountInfo.positionValue) }}</div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>未实现盈亏</span>
+              </div>
+            </template>
+            <div class="card-value" :class="{ 'positive': accountInfo.unrealizedPnL >= 0, 'negative': accountInfo.unrealizedPnL < 0 }">
+              ${{ formatNumber(accountInfo.unrealizedPnL) }}
             </div>
-          </template>
-          <div class="card-value">${{ formatNumber(accountInfo.cashBalance) }}</div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>持仓市值</span>
-            </div>
-          </template>
-          <div class="card-value">${{ formatNumber(accountInfo.positionValue) }}</div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>未实现盈亏</span>
-            </div>
-          </template>
-          <div class="card-value" :class="{ 'positive': accountInfo.unrealizedPnL >= 0, 'negative': accountInfo.unrealizedPnL < 0 }">
-            ${{ formatNumber(accountInfo.unrealizedPnL) }}
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
 
-    <!-- 资产配置和收益分析 -->
-    <el-row :gutter="20" class="mb-4">
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>资产配置</span>
-              <el-tooltip content="资产类别分布" placement="top">
-                <el-icon><InfoFilled /></el-icon>
-              </el-tooltip>
+      <!-- 资产配置和收益分析 -->
+      <el-row :gutter="20" class="mb-4">
+        <el-col :span="12">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>资产配置</span>
+                <el-tooltip content="资产类别分布" placement="top">
+                  <el-icon><InfoFilled /></el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+            <div class="chart-container">
+              <div ref="assetAllocationChart" style="height: 300px"></div>
             </div>
-          </template>
-          <div class="chart-container">
-            <div ref="assetAllocationChart" style="height: 300px"></div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>收益走势</span>
-              <el-tooltip content="历史收益率变化" placement="top">
-                <el-icon><InfoFilled /></el-icon>
-              </el-tooltip>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>收益走势</span>
+                <el-tooltip content="历史收益率变化" placement="top">
+                  <el-icon><InfoFilled /></el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+            <div class="chart-container">
+              <div ref="performanceChart" style="height: 300px"></div>
             </div>
-          </template>
-          <div class="chart-container">
-            <div ref="performanceChart" style="height: 300px"></div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
 
-    <!-- 风险指标 -->
-    <el-row :gutter="20" class="mb-4">
-      <el-col :span="8" v-for="metric in riskMetrics" :key="metric.name">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span>{{ metric.name }}</span>
-              <el-tooltip :content="metric.description" placement="top">
-                <el-icon><InfoFilled /></el-icon>
-              </el-tooltip>
+      <!-- 风险指标 -->
+      <el-row :gutter="20" class="mb-4">
+        <el-col :span="8" v-for="metric in riskMetrics" :key="metric.name">
+          <el-card shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span>{{ metric.name }}</span>
+                <el-tooltip :content="metric.description" placement="top">
+                  <el-icon><InfoFilled /></el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+            <div class="metric-value" :class="metric.status">
+              {{ metric.value }}
             </div>
-          </template>
-          <div class="metric-value" :class="metric.status">
-            {{ metric.value }}
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
 
-    <!-- 持仓列表 -->
-    <el-card shadow="hover" class="mb-4">
-      <template #header>
-        <div class="card-header">
-          <span>持仓明细</span>
-          <el-button type="primary" size="small" @click="refreshData">刷新</el-button>
-        </div>
-      </template>
-      <el-table :data="positions" style="width: 100%" v-loading="loading">
-        <el-table-column prop="conid" label="合约ID" width="100" sortable />
-        <el-table-column prop="symbol" label="代码" width="120" sortable />
-        <el-table-column prop="contractDesc" label="名称" width="200" sortable />
-        <el-table-column prop="position" label="数量" width="100" align="right" sortable />
-        <el-table-column prop="avgPrice" label="均价" width="120" align="right" sortable>
-          <template #default="scope">
-            ${{ formatNumber(scope.row.avgPrice) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="mktPrice" label="市价" width="120" align="right" sortable>
-          <template #default="scope">
-            ${{ formatNumber(scope.row.mktPrice) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="avgCost" label="成本价" width="120" align="right" sortable>
-          <template #default="scope">
-            ${{ formatNumber(scope.row.avgCost) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="mktValue" label="市值" width="120" align="right" sortable>
-          <template #default="scope">
-            ${{ formatNumber(scope.row.mktValue) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="realizedPnl" label="已实现盈亏" width="120" align="right" sortable>
-          <template #default="scope">
-            <span :class="{ 'positive': scope.row.realizedPnl >= 0, 'negative': scope.row.realizedPnl < 0 }">
-              ${{ formatNumber(scope.row.realizedPnl) }}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="unrealizedPnl" label="未实现盈亏" width="120" align="right" sortable>
-          <template #default="scope">
-            <span :class="{ 'positive': scope.row.unrealizedPnl >= 0, 'negative': scope.row.unrealizedPnl < 0 }">
-              ${{ formatNumber(scope.row.unrealizedPnl) }}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="returnRate" label="收益率" align="right" sortable>
-          <template #default="scope">
-            <span :class="{ 'positive': scope.row.returnRate >= 0, 'negative': scope.row.returnRate < 0 }">
-              {{ scope.row.returnRate >= 0 ? '+' : '' }}{{ formatNumber(scope.row.returnRate) }}%
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+      <!-- 持仓列表 -->
+      <el-card shadow="hover" class="mb-4">
+        <template #header>
+          <div class="card-header">
+            <span>持仓明细</span>
+            <el-button type="primary" size="small" @click="refreshData">刷新</el-button>
+          </div>
+        </template>
+        <el-table :data="positions" style="width: 100%" v-loading="loading">
+          <el-table-column prop="conid" label="合约ID" width="100" sortable />
+          <el-table-column prop="symbol" label="代码" width="120" sortable />
+          <el-table-column prop="contractDesc" label="名称" width="200" sortable>
+            <template #default="scope">
+              <el-link type="primary" @click="$router.push(`/finance/portfolio/stock/${scope.row.conid}`)">
+                {{ scope.row.contractDesc }}
+              </el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="position" label="数量" width="100" align="right" sortable />
+          <el-table-column prop="avgPrice" label="均价" width="120" align="right" sortable>
+            <template #default="scope">
+              ${{ formatNumber(scope.row.avgPrice) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="mktPrice" label="市价" width="120" align="right" sortable>
+            <template #default="scope">
+              ${{ formatNumber(scope.row.mktPrice) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="avgCost" label="成本价" width="120" align="right" sortable>
+            <template #default="scope">
+              ${{ formatNumber(scope.row.avgCost) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="mktValue" label="市值" width="120" align="right" sortable>
+            <template #default="scope">
+              ${{ formatNumber(scope.row.mktValue) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="realizedPnl" label="已实现盈亏" width="120" align="right" sortable>
+            <template #default="scope">
+              <span :class="{ 'positive': scope.row.realizedPnl >= 0, 'negative': scope.row.realizedPnl < 0 }">
+                ${{ formatNumber(scope.row.realizedPnl) }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="unrealizedPnl" label="未实现盈亏" width="120" align="right" sortable>
+            <template #default="scope">
+              <span :class="{ 'positive': scope.row.unrealizedPnl >= 0, 'negative': scope.row.unrealizedPnl < 0 }">
+                ${{ formatNumber(scope.row.unrealizedPnl) }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="returnRate" label="收益率" align="right" sortable>
+            <template #default="scope">
+              <span :class="{ 'positive': scope.row.returnRate >= 0, 'negative': scope.row.returnRate < 0 }">
+                {{ scope.row.returnRate >= 0 ? '+' : '' }}{{ formatNumber(scope.row.returnRate) }}%
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -348,7 +359,7 @@ onMounted(() => {
   loadAllData()
 
   // 设置自动刷新（每5分钟）
-  refreshTimer = setInterval(loadAllData, 5 * 60 * 1000)
+  // refreshTimer = setInterval(loadAllData, 5 * 60 * 1000)
 
   // 监听窗口大小变化
   window.addEventListener('resize', () => {
@@ -368,6 +379,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.portfolio-container {
+  width: 100%;
+  height: 100%;
+}
+
 .portfolio-dashboard {
   padding: 20px;
 }

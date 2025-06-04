@@ -318,3 +318,284 @@ curl --location 'https://localhost:5000/v1/api/portfolio/U12345678/positions/0' 
 - **空头含义**：short 字段的值为负，表示做空该资产或行业的价值（示例中无空头持仓）。
 
 通过这些接口和字段，用户可以全面了解账户的投资组合分布，辅助进行资产配置优化和风险控制。
+
+
+
+### 4. 获取历史市场数据接口
+
+#### 接口概述
+
+获取指定合约 ID 的历史市场数据，数据长度由 `period`（周期）和 `bar`（时间粒度）参数控制。
+
+时间单位说明：min = 分钟，h = 小时，d = 天，w = 周，m = 月，y = 年
+
+#### 接口请求
+
+**端点**
+
+```plaintext
+GET /iserver/marketdata/history
+```
+
+**查询参数**
+
+| 参数名     | 类型   | 是否必选 | 说明                                                         |
+| ---------- | ------ | -------- | ------------------------------------------------------------ |
+| conid      | String | 是       | 目标股票的合约 ID（IBKR 内部唯一标识）                       |
+| exchange   | String | 否       | 返回数据的交易所（默认`SMART`，IBKR 智能路由）               |
+| period     | String | 否       | 数据返回的总时间周期<br />默认值：1w<br />可选值：{1-30} min, {1-8} h, {1-1000} d, {1-792} w, {1-182} m, {1-15} y |
+| bar        | String | 是       | 数据的时间粒度<br />可选值：1min, 2min, 3min, 5min, 10min, 15min, 30min, 1h, 2h, 3h, 4h, 8h, 1d, 1w, 1m |
+| startTime  | String | 否       | 请求数据的开始日期（格式：YYYYMMDD-HH:mm:ss）                |
+| outsideRth | bool   | 否       | 是否包含盘前盘后数据（默认`true`）                           |
+
+#### 时间粒度与周期匹配规则
+
+不同周期对应的允许时间粒度（避免请求错误）：
+
+| 周期（period） | 允许的时间粒度（bar） | 默认时间粒度 |
+| -------------- | --------------------- | ------------ |
+| 1min           | 1min                  | 1min         |
+| 1h             | 1min 至 8h            | 1min         |
+| 1d             | 1min 至 8h            | 1min         |
+| 1w             | 10min 至 1w           | 15min        |
+| 1m             | 1h 至 1m              | 30min        |
+| 3m             | 2h 至 1m              | 1d           |
+| 6m             | 4h 至 1m              | 1d           |
+| 1y             | 8h 至 1m              | 1d           |
+| 2y             | 1d 至 1m              | 1d           |
+| 3y             | 1d 至 1m              | 1w           |
+| 15y            | 1w 至 1m              | 1w           |
+
+#### 请求示例
+
+1. **Python 示例**
+
+   ```python
+   baseUrl = "https://localhost:5000/v1/api"
+   request_url = f"{baseUrl}/iserver/marketdata/history?conid=265598&exchange=SMART&period=1d&bar=1d&startTime=20230821-13:30:00&outsideRth=true"
+   response = requests.get(url=request_url)
+   ```
+
+2. **curl 示例**
+
+   ```bash
+   curl \
+   --url {{baseUrl}}/iserver/marketdata/history?conid=265598&exchange=SMART&period=1d&bar=1h&startTime=20230821-13:30:00&outsideRth=true \
+   --request GET
+   ```
+
+#### 响应对象
+
+**通用字段**
+
+| 字段名         | 类型   | 说明                                                         |
+| -------------- | ------ | ------------------------------------------------------------ |
+| serverId       | String | 内部请求标识符                                               |
+| symbol         | String | 合约对应的股票代码                                           |
+| text           | String | 股票全称（如 "APPLE INC"）                                   |
+| priceFactor    | String | 价格缩放因子（用于计算实际价格）                             |
+| startTime      | String | 请求数据的起始时间（UTC 格式：YYYYMMDD-HH:mm:ss）            |
+| high           | String | 周期内最高价（格式：% h/% v/% t，% h = 缩放后价格，% v = 成交量，% t = 距起始时间的分钟数） |
+| low            | String | 周期内最低价（格式同 high）                                  |
+| timePeriod     | String | 请求的数据周期（如 "1d"）                                    |
+| barLength      | int    | 每个 K 线的时间长度（秒）                                    |
+| mdAvailability | String | 市场数据可用性标识（详见市场数据说明）                       |
+| mktDataDelay   | int    | 数据处理延迟（毫秒）                                         |
+| outsideRth     | bool   | 是否包含盘前盘后数据                                         |
+| volumeFactor   | int    | 成交量缩放因子（实际成交量 = 返回值 /volumeFactor）          |
+| data           | Array  | 历史 K 线数据数组，每个元素包含：o（开盘价）、c（收盘价）、h（最高价）、l（最低价）、v（成交量）、t（时间戳） |
+| points         | int    | 数据点总数                                                   |
+| travelTime     | int    | 请求响应耗时（毫秒）                                         |
+
+**数据示例**
+
+```json
+{
+  "serverId": "20477",
+  "symbol": "AAPL",
+  "text": "APPLE INC",
+  "priceFactor": 100,
+  "startTime": "20230818-08:00:00",
+  "high": "17510/472117.45/0",
+  "low": "17170/472117.45/0",
+  "timePeriod": "1d",
+  "barLength": 86400,
+  "mdAvailability": "S",
+  "mktDataDelay": 0,
+  "outsideRth": true,
+  "data": [
+    {
+      "o": 173.4,
+      "c": 174.7,
+      "h": 175.1,
+      "l": 171.7,
+      "v": 472117.45,
+      "t": 16923456000
+    }
+  ],
+  "points": 0,
+  "travelTime": 48
+}
+```
+
+#### 错误响应
+
+1. **500 服务器错误**
+
+   ```json
+   {
+     "error": "错误描述"
+   }
+   ```
+
+2. **429 请求过多**
+
+   ```json
+   {
+     "error": "请求频率超过限制（最多5个并发请求）"
+   }
+   ```
+
+#### 注意事项
+
+1. **请求限制**：最多 5 个并发请求，超出将返回 429 错误。
+2. **数据点数**：单次请求最多返回 1000 个数据点。
+3. **合约 ID 获取**：需通过合约搜索接口提前获取目标股票的`conid`。
+4. **价格计算**：实际价格 = 接口返回值 / `priceFactor`，如`high`为 "17510/472117.45/0"，则实际最高价为 17510 / 100 = 175.1。
+5. **成交量处理**：实际成交量 = 接口返回的`v`值 / `volumeFactor`（通常为 100）。
+
+
+### Historical Market Data
+
+Get historical market Data for given conid, length of data is controlled by ‘period’ and ‘bar’.
+
+Formatted as: min=minute, h=hour, d=day, w=week, m=month, y=year
+
+**Note**:
+
++   There’s a limit of 5 concurrent requests. Excessive requests will return a ‘Too many requests’ status 429 response.
++   This [/iserver/marketdata/history](https://www.interactivebrokers.com/campus/ibkr-api-page/cpapi-v1/#hist-md) only provides up to 1000 data points.
+
+```
+GET /iserver/marketdata/history
+```
+
+#### Request Object
+
+##### Query Params
+
+| Field          | Type   | Necessary | Explanations                                                 |
+| -------------- | ------ | --------- | ------------------------------------------------------------ |
+| **conid**      | String | Required  | Contract identifier for the ticker symbol of interest.       |
+| **exchange**   | String |           | Returns the exchange you want to receive data from.          |
+| **period**     | String |           | Overall duration for which data should be returned.<br/>Default to 1w<br/>Available time period– {1-30}min, {1-8}h, {1-1000}d, {1-792}w, {1-182}m, {1-15}y |
+| **bar**        | String | Required  | Individual bars of data to be returned.<br/>Possible value– 1min, 2min, 3min, 5min, 10min, 15min, 30min, 1h, 2h, 3h, 4h, 8h, 1d, 1w, 1m<br/>See *Step Size* below to ensure your Bar Size is supported for your chosen Period value. |
+| **startTime**  | String |           | Starting date of the request duration.                       |
+| **outsideRth** | bool   |           | Determine if you want data after regular trading hours.      |
+
+
+```python
+request_url = f"{baseUrl}/iserver/marketdata/history?conid=265598&exchange=SMART&period=1d&bar=1d&startTime=20230821-13:30:00&outsideRth=true"
+requests.get(url=request_url)
+```
+
+```bash
+curl \
+--url {{baseUrl}}/iserver/marketdata/history?conid=265598&exchange=SMART&period=1d&bar=1h&startTime=20230821-13:30:00&outsideRth=true \ 
+--request GET
+```
+
+##### Step Size
+
+A step size is the permitted minimum and maximum bar size for any given period.
+
+<table><tbody><tr><th>period</th><td>1min</td><td>1h</td><td>1d</td><td>1w</td><td>1m</td><td>3m</td><td>6m</td><td>1y</td><td>2y</td><td>3y</td><td>15y</td></tr><tr><th>bar</th><td>1min</td><td>1min – 8h</td><td>1min – 8h</td><td>10min – 1w</td><td>1h – 1m</td><td>2h – 1m</td><td>4h – 1m</td><td>8h – 1m</td><td>1d – 1m</td><td>1d – 1m</td><td>1w – 1m</td></tr><tr><th>default bar</th><td>1min</td><td>1min</td><td>1min</td><td>15min</td><td>30min</td><td>1d</td><td>1d</td><td>1d</td><td>1d</td><td>1w</td><td>1w</td></tr></tbody></table>
+
+#### Response Object
+
+
+| Field               | Type    | Explanations                                                                 |
+|---------------------|---------|-----------------------------------------------------------------------------|
+| **serverId**        | String  | Internal request identifier.                                                |
+| **symbol**          | String  | Returns the ticker symbol of the contract.                                  |
+| **text**            | String  | Returns the long name of the ticker symbol.                                 |
+| **priceFactor**     | String  | Returns the price increment obtained from the display rules.                |
+| **startTime**       | String  | Returns the initial time of the historical data request in UTC format (YYYYMMDD-HH:mm:ss). |
+| **high**            | String  | Returns the high values during this time series in the format %h/%v/%t, where %h is the high price (scaled by priceFactor), %v is the volume (with a volume factor of 100, so reported volume = actual volume/100), and %t is the minutes from the start time of the chart. |
+| **low**             | String  | Returns the low values during this time series in the format %l/%v/%t, where %l is the low price (scaled by priceFactor), %v is the volume (with a volume factor of 100, so reported volume = actual volume/100), and %t is the minutes from the start time of the chart. |
+| **timePeriod**      | String  | Returns the duration for the historical data request.                       |
+| **barLength**       | int     | Returns the number of seconds in a bar.                                     |
+| **mdAvailability**  | String  | Returns the Market Data Availability. See the Market Data Availability section for more details. |
+| **mktDataDelay**    | int     | Returns the amount of delay, in milliseconds, to process the historical data request. |
+| **outsideRth**      | bool    | Defines if the market data returned was inside regular trading hours or not. |
+| **volumeFactor**    | int     | Returns the factor the volume is multiplied by.                             |
+| **priceDisplayRule**| int     | Presents the price display rule used. For internal use only.                |
+| **priceDisplayValue**| String  | Presents the price display rule used. For internal use only.                |
+| **negativeCapable** | bool    | Returns whether or not the data can return negative values.                 |
+| **messageVersion**  | int     | For internal use only.                                                      |
+| **data**            | Array   | Returns all historical bars for the requested period, with each object containing: o (Open value), c (Close value), h (High value), l (Low value), v (Volume), and t (Operator Timezone Epoch Unix Timestamp of the bar). |
+| **+ o** | float | Returns the Open value of the bar. |
+| **+ c** | float | Returns the Close value of the bar. |
+| **+ h** | float | Returns the High value of the bar. |
+| **+ l** | float | Returns the Low value of the bar. |
+| **+ v** | float | Returns the Volume of the bar. |
+| **+ t** | int | Returns the Operator Timezone Epoch Unix Timestamp of the bar. |
+| **points**          | int     | Returns the total number of data points in the bar.                         |
+| **travelTime**      | int     | Returns the amount of time to return the details, in milliseconds.         |
+
+```json
+{
+  "serverId": "20477",
+  "symbol": "AAPL",
+  "text": "APPLE INC",
+  "priceFactor": 100,
+  "startTime": "20230818-08:00:00",
+  "high": "17510/472117.45/0",
+  "low": "17170/472117.45/0",
+  "timePeriod": "1d",
+  "barLength": 86400,
+  "mdAvailability": "S",
+  "mktDataDelay": 0,
+  "outsideRth": true,
+  "tradingDayDuration": 1440,
+  "volumeFactor": 1,
+  "priceDisplayRule": 1,
+  "priceDisplayValue": "2",
+  "chartPanStartTime": "20230821-13:30:00",
+  "direction": -1,
+  "negativeCapable": false,
+  "messageVersion": 2,
+  "data": [
+    {
+      "o": 173.4,
+      "c": 174.7,
+      "h": 175.1,
+      "l": 171.7,
+      "v": 472117.45,
+      "t": 16923456000
+    }
+  ],
+  "points": 0,
+  "travelTime": 48
+}
+```
+
+#### 500 System Error
+
+**error:** String.
+
+```json
+{
+  'error': 'description'
+}
+```
+
+#### 429 Too many requests
+
+**error:** String.
+
+```json
+{
+  'error': 'description'
+}
+```

@@ -6,6 +6,7 @@ import com.gzhennaxia.personal.service.IBPositionInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,7 +54,7 @@ public class IBController {
         }
     }
 
-    @GetMapping("/position/info/refresh")
+    @PostMapping("/position/info/refresh")
     public Result<?> refreshPositionInfo() {
         try {
             ibPositionInfoService.syncPositionInfo();

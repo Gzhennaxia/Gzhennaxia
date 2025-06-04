@@ -48,8 +48,15 @@ const routes = [
       },
       {
         path: 'portfolio',
-        name: 'Portfolio',
-        component: () => import('@/views/finance/portfolio/index.vue')
+        name: 'Portfolio', 
+        component: () => import('@/views/finance/portfolio/index.vue'),
+        children: [
+          {
+            path: 'stock/:id',
+            name: 'StockDetail',
+            component: () => import('@/views/finance/portfolio/stock-detail.vue')
+          }
+        ]
       }
     ]
   },

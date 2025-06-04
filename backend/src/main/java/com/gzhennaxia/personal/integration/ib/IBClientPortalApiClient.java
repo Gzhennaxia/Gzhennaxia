@@ -1,5 +1,6 @@
 package com.gzhennaxia.personal.integration.ib;
 
+import com.gzhennaxia.personal.integration.ib.response.HistoricalMarketDataResponse;
 import com.gzhennaxia.personal.integration.ib.response.IBKRPositionInfoResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,4 +59,13 @@ public class IBClientPortalApiClient {
         String url = gatewayUrl + "/v1/api/iserver/account/trades";
         return restTemplate.getForObject(url, Object.class);
     }
+
+    /**
+     *获取历史市场数据
+     */
+    public HistoricalMarketDataResponse getHistoricalMarketData() {
+        String url = gatewayUrl + "/v1/api/iserver/historicaldata";
+        return restTemplate.getForObject(url, HistoricalMarketDataResponse.class);
+    }
+
 }

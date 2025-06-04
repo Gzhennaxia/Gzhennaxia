@@ -1,9 +1,8 @@
 import request from '@/utils/request'
 
-// IB数据接口
 export function getAccountInfo() {
   return request({
-    url: '/api/ib/account',
+    url: '/api/ib/account/info',
     method: 'get'
   })
 }
@@ -21,6 +20,7 @@ export function getPositions() {
     method: 'get'
   })
 }
+
 export function refreshPositions() {
   return request({
     url: '/api/ib/position/info/refresh',
@@ -28,17 +28,24 @@ export function refreshPositions() {
   })
 }
 
-export function getTradeHistory() {
+export function getStockInfo(conid) {
   return request({
-    url: '/api/ib/trades',
+    url: `/api/ib/position/info/${conid}`,
     method: 'get'
   })
 }
 
-// 分析接口
+export function getHistoricalData(conid, timeRange) {
+  return request({
+    url: `/api/ib/position/history/${conid}`,
+    method: 'get',
+    params: { timeRange }
+  })
+}
+
 export function getAssetAllocation() {
   return request({
-    url: '/api/ib/analysis/allocation',
+    url: '/api/ib/analysis/asset-allocation',
     method: 'get'
   })
 }
