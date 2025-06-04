@@ -11,8 +11,8 @@ import tasks from './modules/tasks'
 
 export default createStore({
   state: {
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    token: localStorage.getItem('Admin-Token') || '',
+    user: null,
+    token: '',
     theme: 'light',
     sidebar: {
       opened: true

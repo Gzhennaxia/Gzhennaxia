@@ -29,6 +29,7 @@ const routes = [
   {
     path: '/finance',
     name: 'Finance',
+    redirect: '/finance/portfolio',
     children: [
       {
         path: 'transactions',

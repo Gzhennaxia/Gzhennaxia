@@ -43,26 +43,25 @@ public class IBController {
         }
     }
 
-    @GetMapping("/positions")
-    public Result<?> getPositions() {
+    @GetMapping("/position/info")
+    public Result<?> getPositionInfo() {
         try {
-            return Result.success(ibDataSyncService.getPositions());
+            return Result.success(ibPositionInfoService.list());
         } catch (Exception e) {
             log.error("获取持仓信息失败", e);
             return Result.error("获取持仓信息失败");
         }
     }
 
-    @GetMapping("/positions/refresh")
-    public Result<?> getRefreshedPositions() {
-//        try {
+    @GetMapping("/position/info/refresh")
+    public Result<?> refreshPositionInfo() {
+        try {
             ibPositionInfoService.syncPositionInfo();
             return Result.success(ibPositionInfoService.list());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.error("刷新持仓信息失败", e);
-//            return Result.error("刷新持仓信息失败");
-//        }
+        } catch (Exception e) {
+            log.error("刷新持仓信息失败", e);
+            return Result.error("刷新持仓信息失败");
+        }
     }
 
     @GetMapping("/trades")

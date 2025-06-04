@@ -10,7 +10,7 @@ const api = axios.create({
 // 请求拦截器
 api.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('Admin-Token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }

@@ -17,14 +17,14 @@ export function getPortfolio() {
 
 export function getPositions() {
   return request({
-    url: '/api/ib/positions',
+    url: '/api/ib/position/info',
     method: 'get'
   })
 }
-export function refershPositions() {
+export function refreshPositions() {
   return request({
-    url: '/api/ib/positions/refresh',
-    method: 'get'
+    url: '/api/ib/position/info/refresh',
+    method: 'post'
   })
 }
 

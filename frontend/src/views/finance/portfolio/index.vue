@@ -111,35 +111,43 @@
         </div>
       </template>
       <el-table :data="positions" style="width: 100%" v-loading="loading">
+        <el-table-column prop="conid" label="合约ID" width="100" />
         <el-table-column prop="symbol" label="代码" width="120" />
-        <el-table-column prop="name" label="名称" width="200" />
-        <el-table-column prop="quantity" label="数量" width="100" align="right" />
-        <el-table-column prop="avgPrice" label="成本价" width="120" align="right">
+        <el-table-column prop="contractDesc" label="名称" width="200" />
+        <el-table-column prop="position" label="数量" width="100" align="right" />
+        <el-table-column prop="avgCost" label="成本价" width="120" align="right">
           <template #default="scope">
-            ${{ formatNumber(scope.row.avgPrice) }}
+            ${{ formatNumber(scope.row.avgCost) }}
           </template>
         </el-table-column>
-        <el-table-column prop="marketPrice" label="市价" width="120" align="right">
+        <el-table-column prop="mktPrice" label="市价" width="120" align="right">
           <template #default="scope">
-            ${{ formatNumber(scope.row.marketPrice) }}
+            ${{ formatNumber(scope.row.mktPrice) }}
           </template>
         </el-table-column>
-        <el-table-column prop="marketValue" label="市值" width="120" align="right">
+        <el-table-column prop="mktValue" label="市值" width="120" align="right">
           <template #default="scope">
-            ${{ formatNumber(scope.row.marketValue) }}
+            ${{ formatNumber(scope.row.mktValue) }}
           </template>
         </el-table-column>
-        <el-table-column prop="unrealizedPnL" label="未实现盈亏" width="120" align="right">
+        <el-table-column prop="realizedPnl" label="已实现盈亏" width="120" align="right">
           <template #default="scope">
-            <span :class="{ 'positive': scope.row.unrealizedPnL >= 0, 'negative': scope.row.unrealizedPnL < 0 }">
-              ${{ formatNumber(scope.row.unrealizedPnL) }}
+            <span :class="{ 'positive': scope.row.realizedPnl >= 0, 'negative': scope.row.realizedPnl < 0 }">
+              ${{ formatNumber(scope.row.realizedPnl) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="returnRate" label="收益率" align="right">
+        <el-table-column prop="unrealizedPnl" label="未实现盈亏" width="120" align="right">
           <template #default="scope">
-            <span :class="{ 'positive': scope.row.returnRate >= 0, 'negative': scope.row.returnRate < 0 }">
-              {{ scope.row.returnRate >= 0 ? '+' : '' }}{{ scope.row.returnRate }}%
+            <span :class="{ 'positive': scope.row.unrealizedPnl >= 0, 'negative': scope.row.unrealizedPnl < 0 }">
+              ${{ formatNumber(scope.row.unrealizedPnl) }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="收益率" align="right">
+          <template #default="scope">
+            <span :class="{ 'positive': scope.row.return_rate >= 0, 'negative': scope.row.return_rate < 0 }">
+              {{ scope.row.return_rate >= 0 ? '+' : '' }}{{ formatNumber(scope.row.return_rate) }}%
             </span>
           </template>
         </el-table-column>
@@ -152,7 +160,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { InfoFilled } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
-import { getAccountInfo, getPortfolio, getPositions, refershPositions, getAssetAllocation, getPerformanceAnalysis, getRiskMetrics } from '@/api/ib'
+import { getAccountInfo, getPortfolio, getPositions, refreshPositions, getAssetAllocation, getPerformanceAnalysis, getRiskMetrics } from '@/api/ib'
 import { ElMessage } from 'element-plus'
 
 // 数据状态
@@ -182,46 +190,92 @@ const formatNumber = (num) => {
   }).format(num)
 }
 
-// 加载数据
-const loadData = async () => {
-  loading.value = true
+// 加载账户信息
+const loadAccountInfo = async () => {
   try {
-    // 获取账户信息
     const accountRes = await getAccountInfo()
     accountInfo.value = accountRes.data
+  } catch (error) {
+    console.error('获取账户信息失败:', error)
+    ElMessage.error('获取账户信息失败')
+  }
+}
 
-    // 获取持仓信息
+// 加载持仓信息
+const loadPositions = async () => {
+  try {
+    loading.value = true
     const positionsRes = await getPositions()
     positions.value = positionsRes.data
-
-    // 获取资产配置数据
-    const allocationRes = await getAssetAllocation()
-    updateAssetAllocationChart(allocationRes.data)
-
-    // 获取收益分析数据
-    const performanceRes = await getPerformanceAnalysis()
-    updatePerformanceChart(performanceRes.data)
-
-    // 获取风险指标
-    const riskRes = await getRiskMetrics()
-    riskMetrics.value = riskRes.data
-
   } catch (error) {
-    ElMessage.error('数据加载失败')
+    console.error('获取持仓信息失败:', error)
+    ElMessage.error('获取持仓信息失败')
   } finally {
     loading.value = false
   }
 }
 
+// 加载资产配置数据
+const loadAssetAllocation = async () => {
+  try {
+    const allocationRes = await getAssetAllocation()
+    updateAssetAllocationChart(allocationRes.data)
+  } catch (error) {
+    console.error('获取资产配置数据失败:', error)
+    ElMessage.error('获取资产配置数据失败')
+  }
+}
+
+// 加载收益分析数据
+const loadPerformanceAnalysis = async () => {
+  try {
+    const performanceRes = await getPerformanceAnalysis()
+    updatePerformanceChart(performanceRes.data)
+  } catch (error) {
+    console.error('获取收益分析数据失败:', error)
+    ElMessage.error('获取收益分析数据失败')
+  }
+}
+
+// 加载风险指标
+const loadRiskMetrics = async () => {
+  try {
+    const riskRes = await getRiskMetrics()
+    riskMetrics.value = riskRes.data
+  } catch (error) {
+    console.error('获取风险指标失败:', error)
+    ElMessage.error('获取风险指标失败')
+  }
+}
+
+// 加载所有数据
+const loadAllData = () => {
+  Promise.all([
+    loadAccountInfo(),
+    loadPositions(),
+    loadAssetAllocation(),
+    loadPerformanceAnalysis(),
+    loadRiskMetrics()
+  ])
+}
+
 const reloadPositions = async () => {
-    // 获取持仓信息
-    const positionsRes = await refershPositions()
-    positions.value = positionsRes.data
+    loading.value = true
+    try {
+      // 获取持仓信息
+      const positionsRes = await refreshPositions()
+      positions.value = positionsRes.data
+      ElMessage.success('数据已更新')
+    } catch (error) {
+      console.error('更新数据失败:', error)
+      ElMessage.error('更新数据失败')
+    } finally {
+      loading.value = false
+    }
 }
 
 // 手动刷新数据
 const refreshData = () => {
-  // loadData()
   reloadPositions()
 }
 
@@ -282,14 +336,14 @@ const updatePerformanceChart = (data) => {
 // 初始化
 onMounted(() => {
   // 初始化图表
-  assetAllocationChart = echarts.init(document.querySelector('#assetAllocationChart'))
-  performanceChart = echarts.init(document.querySelector('#performanceChart'))
+  // assetAllocationChart = echarts.init(document.querySelector('#assetAllocationChart'))
+  // performanceChart = echarts.init(document.querySelector('#performanceChart'))
 
   // 加载数据
-  loadData()
+  loadAllData()
 
   // 设置自动刷新（每5分钟）
-  refreshTimer = setInterval(loadData, 5 * 60 * 1000)
+  refreshTimer = setInterval(loadAllData, 5 * 60 * 1000)
 
   // 监听窗口大小变化
   window.addEventListener('resize', () => {
