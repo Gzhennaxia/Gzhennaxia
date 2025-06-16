@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -132,7 +133,7 @@ public class IBMarketHistoryService {
             }
 
             // 2. 转换为实体对象
-            List<IBMarketHistoryData> entities = convertToEntities(response, timeRange);
+            List<IBMarketHistoryData> entities = convertToEntities(response, timeRange, conid);
 
             // 3. 清除旧数据
             clearOldData(conid, timeRange);
@@ -154,13 +155,13 @@ public class IBMarketHistoryService {
     /**
      * 转换IB响应为实体对象
      */
-    private List<IBMarketHistoryData> convertToEntities(HistoricalMarketDataResponse response, String timeRange) {
+    private List<IBMarketHistoryData> convertToEntities(HistoricalMarketDataResponse response, String timeRange, String conid) {
         LocalDateTime now = LocalDateTime.now();
         String barSize = ibClient.convertTimeRangeToBar(timeRange);
 
         return response.getData().stream().map(data -> {
             IBMarketHistoryData entity = new IBMarketHistoryData();
-            entity.setConid(response.getSymbol() != null ? response.getSymbol() : ""); // 这里可能需要调整
+            entity.setConid(conid);
             entity.setSymbol(response.getSymbol());
             entity.setContractDesc(response.getText());
             entity.setTimeRange(timeRange);
@@ -171,12 +172,64 @@ public class IBMarketHistoryService {
             entity.setLowPrice(BigDecimal.valueOf(data.getL()));
             entity.setVolume(BigDecimal.valueOf(data.getV()));
             entity.setBarTimestamp(data.getT());
-            entity.setBarDateTime(LocalDateTime.ofEpochSecond(data.getT(), 0, ZoneOffset.UTC));
+            
+            // 修复时间戳转换问题
+            LocalDateTime barDateTime = convertTimestampToLocalDateTime(data.getT());
+            entity.setBarDateTime(barDateTime);
+            
             entity.setDataSource("API");
             entity.setCreateTime(now);
             entity.setUpdateTime(now);
             return entity;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 将时间戳转换为LocalDateTime，自动处理秒/毫秒级时间戳
+     */
+    private LocalDateTime convertTimestampToLocalDateTime(long timestamp) {
+        try {
+            // 判断时间戳是秒级还是毫秒级
+            // 一般来说，秒级时间戳大约是10位数，毫秒级是13位数
+            // 2000年的时间戳(秒级)大约是 946684800 (10位)
+            // 2000年的时间戳(毫秒级)大约是 946684800000 (13位)
+            
+            long currentTimeSeconds = System.currentTimeMillis() / 1000;
+            long currentTimeMillis = System.currentTimeMillis();
+            
+            LocalDateTime result;
+            
+            if (timestamp > currentTimeMillis) {
+                // 如果时间戳大于当前毫秒时间戳，可能是错误数据，使用当前时间
+                log.warn("时间戳值异常，可能是未来时间: {}, 使用当前时间替代", timestamp);
+                result = LocalDateTime.now();
+            } else if (timestamp > 1000000000000L) {
+                // 大于10^12，判断为毫秒级时间戳
+                Instant instant = Instant.ofEpochMilli(timestamp);
+                result = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+                log.debug("使用毫秒级时间戳转换: {} -> {}", timestamp, result);
+            } else if (timestamp > 1000000000L) {
+                // 大于10^9，判断为秒级时间戳
+                result = LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC);
+                log.debug("使用秒级时间戳转换: {} -> {}", timestamp, result);
+            } else {
+                // 时间戳太小，可能是错误数据
+                log.warn("时间戳值过小，可能是错误数据: {}, 使用当前时间替代", timestamp);
+                result = LocalDateTime.now();
+            }
+            
+            // 验证转换后的日期是否合理 (1990年到2050年之间)
+            if (result.getYear() < 1990 || result.getYear() > 2050) {
+                log.warn("转换后的日期不合理: {}, 使用当前时间替代", result);
+                return LocalDateTime.now();
+            }
+            
+            return result;
+            
+        } catch (Exception e) {
+            log.error("时间戳转换失败: {}, 使用当前时间替代", timestamp, e);
+            return LocalDateTime.now();
+        }
     }
 
     /**
@@ -196,16 +249,94 @@ public class IBMarketHistoryService {
      * 批量插入数据
      */
     private void batchInsertData(List<IBMarketHistoryData> entities) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return;
+        }
+
+        // 过滤和验证数据
+        List<IBMarketHistoryData> validEntities = entities.stream()
+                .filter(this::validateEntity)
+                .collect(Collectors.toList());
+
+        if (validEntities.isEmpty()) {
+            log.warn("所有数据都无效，跳过插入");
+            return;
+        }
+
+        if (validEntities.size() < entities.size()) {
+            log.warn("过滤掉{}条无效数据，剩余{}条有效数据", 
+                    entities.size() - validEntities.size(), validEntities.size());
+        }
+
         // 分批插入，避免单次插入数据过多
         int batchSize = 100;
-        for (int i = 0; i < entities.size(); i += batchSize) {
-            int endIndex = Math.min(i + batchSize, entities.size());
-            List<IBMarketHistoryData> batch = entities.subList(i, endIndex);
+        int successCount = 0;
+        int failedCount = 0;
+
+        for (int i = 0; i < validEntities.size(); i += batchSize) {
+            int endIndex = Math.min(i + batchSize, validEntities.size());
+            List<IBMarketHistoryData> batch = validEntities.subList(i, endIndex);
             
             for (IBMarketHistoryData entity : batch) {
-                marketHistoryDataMapper.insert(entity);
+                try {
+                    marketHistoryDataMapper.insert(entity);
+                    successCount++;
+                } catch (Exception e) {
+                    failedCount++;
+                    log.error("插入单条数据失败: conid={}, timeRange={}, timestamp={}, error={}", 
+                            entity.getConid(), entity.getTimeRange(), entity.getBarTimestamp(), e.getMessage());
+                    // 继续处理下一条，不中断整个批次
+                }
             }
         }
+
+        log.info("批量插入完成: 成功{}条, 失败{}条", successCount, failedCount);
+    }
+
+    /**
+     * 验证实体数据的有效性
+     */
+    private boolean validateEntity(IBMarketHistoryData entity) {
+        if (entity == null) {
+            log.debug("实体为null，跳过");
+            return false;
+        }
+
+        // 验证必需字段
+        if (entity.getConid() == null || entity.getConid().trim().isEmpty()) {
+            log.debug("conid为空，跳过数据");
+            return false;
+        }
+
+        if (entity.getTimeRange() == null || entity.getTimeRange().trim().isEmpty()) {
+            log.debug("timeRange为空，跳过数据: conid={}", entity.getConid());
+            return false;
+        }
+
+        if (entity.getBarTimestamp() == null) {
+            log.debug("barTimestamp为空，跳过数据: conid={}", entity.getConid());
+            return false;
+        }
+
+        if (entity.getBarDateTime() == null) {
+            log.debug("barDateTime为空，跳过数据: conid={}", entity.getConid());
+            return false;
+        }
+
+        // 验证日期范围（1990-2050年）
+        int year = entity.getBarDateTime().getYear();
+        if (year < 1990 || year > 2050) {
+            log.debug("日期超出有效范围: {}, conid={}", entity.getBarDateTime(), entity.getConid());
+            return false;
+        }
+
+        // 验证价格数据（应该大于0）
+        if (entity.getClosePrice() != null && entity.getClosePrice().compareTo(BigDecimal.ZERO) <= 0) {
+            log.debug("收盘价无效: {}, conid={}", entity.getClosePrice(), entity.getConid());
+            return false;
+        }
+
+        return true;
     }
 
     /**
