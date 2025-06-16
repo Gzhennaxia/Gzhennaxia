@@ -51,6 +51,32 @@ ib:
       enabled: true
       cron: "0 */5 * * * *"  # 每5分钟同步一次
       timeout: 30000  # 同步超时时间（毫秒）
+  # Gateway 自动启动配置
+  gateway:
+    enabled: true  # 是否在应用启动时自动启动Gateway
+    path: D:/SOFTERWARE/clientportal.beta.gw  # Gateway安装路径
+    auto:
+      open:
+        browser: true  # 是否自动打开浏览器
+    startup:
+      timeout: 30  # 启动超时时间（秒）
+
+# 前端服务配置
+frontend:
+  enabled: true  # 是否启用前端自动启动
+  path: frontend  # 前端项目路径（相对于后端项目根目录）
+  url: http://localhost:3000  # 前端访问地址
+  auto:
+    open:
+      browser: true  # 是否自动打开浏览器
+  startup:
+    timeout: 60  # 启动超时时间（秒）
+
+# 启动协调器配置
+startup:
+  coordinator:
+    enabled: true  # 是否启用启动协调器
+    parallel: true  # 是否并行启动（true：同时启动，false：顺序启动）
 
 # 日志配置
 logging:
