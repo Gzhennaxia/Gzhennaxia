@@ -70,4 +70,12 @@ public class IBPositionInfoServiceImpl extends ServiceImpl<IBPositionInfoMapper,
     public List<IBPositionInfo> listPositionInfo() {
         return this.list();
     }
+
+    @Override
+    @Cacheable(value = CacheConstants.POSITION_INFO, key = "'conid:' + #conid")
+    public IBPositionInfo getByConid(String conid) {
+        return this.lambdaQuery()
+                .eq(IBPositionInfo::getConid, conid)
+                .one();
+    }
 }

@@ -48,9 +48,19 @@ public class IBController {
     @GetMapping("/position/info")
     public Result<?> getPositionInfo() {
         try {
-            return Result.success(ibPositionInfoService.list());
+            return Result.success(ibPositionInfoService.listPositionInfo());
         } catch (Exception e) {
             log.error("获取持仓信息失败", e);
+            return Result.error("获取持仓信息失败");
+        }
+    }
+
+    @GetMapping("/position/info/{conid}")
+    public Result<?> getPositionInfoByConid(@PathVariable String conid) {
+        try {
+            return Result.success(ibPositionInfoService.getByConid(conid));
+        } catch (Exception e) {
+            log.error("获取单个持仓信息失败: conid={}", conid, e);
             return Result.error("获取持仓信息失败");
         }
     }

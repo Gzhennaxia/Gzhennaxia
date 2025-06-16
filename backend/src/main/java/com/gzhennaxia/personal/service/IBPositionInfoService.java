@@ -21,4 +21,12 @@ public interface IBPositionInfoService extends IService<IBPositionInfo> {
      * @return 持仓信息列表
      */
     List<IBPositionInfo> listPositionInfo();
+
+    /**
+     * 根据合约ID获取持仓信息
+     *
+     * @param conid 合约ID
+     * @return 持仓信息
+     */
+    IBPositionInfo getByConid(String conid);
 }

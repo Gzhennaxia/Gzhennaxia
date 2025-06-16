@@ -397,8 +397,8 @@ public class IBMarketHistoryService {
         // 根据时间范围返回不同的日期格式
         // 对于不同的时间跨度，使用不同的显示精度
         try {
-            // 默认使用 MM-dd HH:mm 格式，适合大多数情况
-            return dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
+            // 默认使用 yyyy-MM-dd HH:mm 格式，适合大多数情况
+            return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         } catch (Exception e) {
             log.warn("日期格式化失败: {}, 使用默认格式", dateTime, e);
             return dateTime.toString();

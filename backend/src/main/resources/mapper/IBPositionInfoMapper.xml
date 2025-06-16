@@ -10,9 +10,7 @@
                  SELECT *,
                         ROW_NUMBER() OVER (PARTITION BY conid ORDER BY create_time DESC) AS rn
                  FROM ib_position_info
-                 <where>
-                    ${ew.customSqlSegment}
-                 </where>
+                 ${ew.customSqlSegment}
              ) t
         WHERE rn = 1
     </select>
