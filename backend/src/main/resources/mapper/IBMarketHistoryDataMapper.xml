@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gzhennaxia.personal.mapper.IBMarketHistoryDataMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.gzhennaxia.personal.entity.ib.IBMarketHistoryData">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="conid" property="conid" jdbcType="VARCHAR"/>
+        <result column="symbol" property="symbol" jdbcType="VARCHAR"/>
+        <result column="contract_desc" property="contractDesc" jdbcType="VARCHAR"/>
+        <result column="time_range" property="timeRange" jdbcType="VARCHAR"/>
+        <result column="bar_size" property="barSize" jdbcType="VARCHAR"/>
+        <result column="open_price" property="openPrice" jdbcType="DECIMAL"/>
+        <result column="close_price" property="closePrice" jdbcType="DECIMAL"/>
+        <result column="high_price" property="highPrice" jdbcType="DECIMAL"/>
+        <result column="low_price" property="lowPrice" jdbcType="DECIMAL"/>
+        <result column="volume" property="volume" jdbcType="DECIMAL"/>
+        <result column="bar_timestamp" property="barTimestamp" jdbcType="BIGINT"/>
+        <result column="bar_date_time" property="barDateTime" jdbcType="TIMESTAMP"/>
+        <result column="data_source" property="dataSource" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础列 -->
+    <sql id="Base_Column_List">
+        id, conid, symbol, contract_desc, time_range, bar_size, 
+        open_price, close_price, high_price, low_price, volume, 
+        bar_timestamp, bar_date_time, data_source, create_time, update_time
+    </sql>
+
+    <!-- 根据合约ID和时间范围查询历史数据 -->
+    <select id="selectByConidAndTimeRange" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM ib_market_history_data
+        WHERE conid = #{conid}
+        AND time_range = #{timeRange}
+        ORDER BY bar_timestamp ASC
+    </select>
+
+    <!-- 根据合约ID、时间范围和时间段查询历史数据 -->
+    <select id="selectByConidAndTimeRangeAndPeriod" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM ib_market_history_data
+        WHERE conid = #{conid}
+        AND time_range = #{timeRange}
+        AND bar_date_time BETWEEN #{startTime} AND #{endTime}
+        ORDER BY bar_timestamp ASC
+    </select>
+
+    <!-- 删除过期数据 -->
+    <delete id="deleteExpiredData">
+        DELETE FROM ib_market_history_data
+        WHERE create_time &lt; #{beforeTime}
+    </delete>
+
+    <!-- 批量插入数据 -->
+    <insert id="batchInsert" parameterType="list">
+        INSERT INTO ib_market_history_data (
+            conid, symbol, contract_desc, time_range, bar_size,
+            open_price, close_price, high_price, low_price, volume,
+            bar_timestamp, bar_date_time, data_source, create_time, update_time
+        ) VALUES
+        <foreach collection="dataList" item="item" separator=",">
+            (
+                #{item.conid}, #{item.symbol}, #{item.contractDesc}, #{item.timeRange}, #{item.barSize},
+                #{item.openPrice}, #{item.closePrice}, #{item.highPrice}, #{item.lowPrice}, #{item.volume},
+                #{item.barTimestamp}, #{item.barDateTime}, #{item.dataSource}, #{item.createTime}, #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+</mapper> 

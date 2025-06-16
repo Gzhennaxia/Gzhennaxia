@@ -2,13 +2,11 @@ package com.gzhennaxia.personal.controller;
 
 import com.gzhennaxia.personal.common.Result;
 import com.gzhennaxia.personal.service.IBDataSyncService;
+import com.gzhennaxia.personal.service.IBMarketHistoryService;
 import com.gzhennaxia.personal.service.IBPositionInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -23,6 +21,9 @@ public class IBController {
 
     @Autowired
     private IBPositionInfoService positionInfoService;
+
+    @Autowired
+    private IBMarketHistoryService marketHistoryService;
 
     @GetMapping("/account")
     public Result<?> getAccountInfo() {
@@ -62,6 +63,25 @@ public class IBController {
         } catch (Exception e) {
             log.error("刷新持仓信息失败", e);
             return Result.error("刷新持仓信息失败");
+        }
+    }
+
+    /**
+     * 获取指定股票的历史数据
+     *
+     * @param conid     合约ID
+     * @param timeRange 时间范围 (1d, 1w, 1m, 3m, 6m, 1y, ytd, max)
+     * @return 历史数据
+     */
+    @GetMapping("/market/history/{conid}")
+    public Result<?> getHistoricalData(@PathVariable String conid, 
+                                     @RequestParam(defaultValue = "1m") String timeRange) {
+        try {
+            log.info("获取历史数据请求: conid={}, timeRange={}", conid, timeRange);
+            return Result.success(marketHistoryService.getHistoricalData(conid, timeRange));
+        } catch (Exception e) {
+            log.error("获取历史数据失败: conid={}, timeRange={}", conid, timeRange, e);
+            return Result.error("获取历史数据失败: " + e.getMessage());
         }
     }
 

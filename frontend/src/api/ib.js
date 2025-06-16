@@ -37,7 +37,7 @@ export function getStockInfo(conid) {
 
 export function getHistoricalData(conid, timeRange) {
   return request({
-    url: `/api/ib/position/history/${conid}`,
+    url: `/api/ib/market/history/${conid}`,
     method: 'get',
     params: { timeRange }
   })
