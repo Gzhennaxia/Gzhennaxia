@@ -1,0 +1,89 @@
+.App {
+  text-align: center;
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+.ant-layout-content {
+  padding: 24px;
+  background: #fff;
+}
+
+.task-card {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.priority-high {
+  border-left: 4px solid #ff4d4f;
+}
+
+.priority-medium {
+  border-left: 4px solid #faad14;
+}
+
+.priority-low {
+  border-left: 4px solid #52c41a;
+}
+
+.status-completed {
+  opacity: 0.7;
+}
+
+.status-completed .ant-card-meta-title {
+  text-decoration: line-through;
+}
+
+.calendar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.view-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.task-form-modal .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.task-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  flex: 1;
+  text-align: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
