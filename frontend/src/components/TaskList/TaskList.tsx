@@ -6,6 +6,8 @@ import { Task } from '../../types/Task';
 import { taskService } from '../../services/taskService';
 import TaskFormModal from '../TaskForm/TaskFormModal';
 import TaskStats from './TaskStats';
+import LoadingSpinner from '../Common/LoadingSpinner';
+import ModernTaskCard from './ModernTaskCard';
 
 const { Meta } = Card;
 const { Search } = Input;
@@ -126,90 +128,77 @@ const TaskList: React.FC = () => {
     <div>
       <TaskStats tasks={tasks} />
       
-      <div style={{ marginBottom: 16, display: 'flex', gap: 16, alignItems: 'center' }}>
+      <div style={{ 
+        marginBottom: 16, 
+        display: 'flex', 
+        flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+        gap: 12, 
+        alignItems: window.innerWidth <= 768 ? 'stretch' : 'center' 
+      }}>
         <Search
           placeholder="搜索任务..."
           allowClear
           onSearch={handleSearch}
-          style={{ width: 300 }}
+          style={{ 
+            width: window.innerWidth <= 768 ? '100%' : 300,
+            marginBottom: window.innerWidth <= 768 ? 8 : 0
+          }}
           prefix={<SearchOutlined />}
         />
         
-        <Select
-          placeholder="筛选状态"
-          allowClear
-          style={{ width: 120 }}
-          onChange={setStatusFilter}
-        >
-          <Select.Option value="PENDING">待处理</Select.Option>
-          <Select.Option value="IN_PROGRESS">进行中</Select.Option>
-          <Select.Option value="COMPLETED">已完成</Select.Option>
-          <Select.Option value="CANCELLED">已取消</Select.Option>
-        </Select>
-        
-        <Select
-          placeholder="筛选优先级"
-          allowClear
-          style={{ width: 120 }}
-          onChange={setPriorityFilter}
-        >
-          <Select.Option value="HIGH">高</Select.Option>
-          <Select.Option value="MEDIUM">中</Select.Option>
-          <Select.Option value="LOW">低</Select.Option>
-        </Select>
+        <div style={{
+          display: 'flex',
+          gap: 12,
+          width: window.innerWidth <= 768 ? '100%' : 'auto'
+        }}>
+          <Select
+            placeholder="筛选状态"
+            allowClear
+            style={{ 
+              width: window.innerWidth <= 768 ? '50%' : 120,
+              minWidth: 100
+            }}
+            onChange={setStatusFilter}
+          >
+            <Select.Option value="PENDING">待处理</Select.Option>
+            <Select.Option value="IN_PROGRESS">进行中</Select.Option>
+            <Select.Option value="COMPLETED">已完成</Select.Option>
+            <Select.Option value="CANCELLED">已取消</Select.Option>
+          </Select>
+          
+          <Select
+            placeholder="筛选优先级"
+            allowClear
+            style={{ 
+              width: window.innerWidth <= 768 ? '50%' : 120,
+              minWidth: 100
+            }}
+            onChange={setPriorityFilter}
+          >
+            <Select.Option value="HIGH">高</Select.Option>
+            <Select.Option value="MEDIUM">中</Select.Option>
+            <Select.Option value="LOW">低</Select.Option>
+          </Select>
+        </div>
       </div>
 
-      <List
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
-        dataSource={filteredTasks}
-        loading={loading}
-        renderItem={(task) => (
-          <List.Item>
-            <Card
-              className={`task-card priority-${task.priority.toLowerCase()} ${
-                task.status === 'COMPLETED' ? 'status-completed' : ''
-              }`}
-              actions={[
-                <Button
-                  type="text"
-                  icon={<EditOutlined />}
-                  onClick={() => handleEdit(task)}
-                />,
-                <Popconfirm
-                  title="确定要删除这个任务吗？"
-                  onConfirm={() => handleDelete(task.id!)}
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <Button type="text" icon={<DeleteOutlined />} danger />
-                </Popconfirm>,
-              ]}
-            >
-              <Meta
-                title={task.title}
-                description={
-                  <div>
-                    <p style={{ marginBottom: 8 }}>{task.description}</p>
-                    <Space wrap>
-                      <Tag color={getStatusColor(task.status)}>
-                        {getStatusText(task.status)}
-                      </Tag>
-                      <Tag color={getPriorityColor(task.priority)}>
-                        {getPriorityText(task.priority)}
-                      </Tag>
-                      {task.category && <Tag>{task.category}</Tag>}
-                    </Space>
-                    <div style={{ marginTop: 8, fontSize: 12, color: '#666' }}>
-                      <div>开始: {dayjs(task.startTime).format('MM-DD HH:mm')}</div>
-                      <div>结束: {dayjs(task.endTime).format('MM-DD HH:mm')}</div>
-                    </div>
-                  </div>
-                }
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <List
+          grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
+          dataSource={filteredTasks}
+          renderItem={(task) => (
+            <List.Item>
+              <ModernTaskCard
+                task={task}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
-            </Card>
-          </List.Item>
-        )}
-      />
+            </List.Item>
+          )}
+        />
+      )}
 
       <TaskFormModal
         visible={modalVisible}

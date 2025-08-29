@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.gzhennaxia</groupId>
+    <groupId>com.personal</groupId>
     <artifactId>management</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -20,8 +20,7 @@
     </parent>
 
     <properties>
-        <java.version>1.8</java.version>
-        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
@@ -30,7 +29,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -39,8 +38,8 @@
         <!-- MyBatis Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.13</version>
         </dependency>
 
         <!-- SQLite -->

@@ -74,7 +74,9 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
       onOk={() => form.submit()}
       okText="确定"
       cancelText="取消"
-      width={600}
+      width={window.innerWidth <= 768 ? '95%' : 600}
+      style={window.innerWidth <= 768 ? { top: 20 } : {}}
+      bodyStyle={window.innerWidth <= 768 ? { padding: '16px' } : {}}
       className="task-form-modal"
     >
       <Form

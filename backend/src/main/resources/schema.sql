@@ -4,12 +4,16 @@ CREATE TABLE IF NOT EXISTS tasks (
     description TEXT,
     start_time DATETIME,
     end_time DATETIME,
-    priority VARCHAR(20) DEFAULT 'MEDIUM',
-    status VARCHAR(20) DEFAULT 'PENDING',
+    priority INTEGER DEFAULT 2,
+    status INTEGER DEFAULT 0,
     category VARCHAR(100),
     tags TEXT,
-    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    reminder_time DATETIME,
+    is_all_day INTEGER DEFAULT 0,
+    repeat_type VARCHAR(20) DEFAULT 'none',
+    repeat_end_date DATETIME,
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     deleted INTEGER DEFAULT 0
 );
 

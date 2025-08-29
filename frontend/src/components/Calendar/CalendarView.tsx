@@ -162,20 +162,45 @@ const CalendarView: React.FC = () => {
 
   return (
     <div>
-      <Card className="calendar-toolbar">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Card 
+        className="calendar-toolbar"
+        bodyStyle={window.innerWidth <= 768 ? { padding: '12px' } : {}}
+      >
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          gap: window.innerWidth <= 768 ? '12px' : '0'
+        }}>
           <Space>
-            <Button icon={<LeftOutlined />} onClick={() => navigateDate('prev')} />
-            <span style={{ fontSize: 18, fontWeight: 'bold', minWidth: 200, textAlign: 'center' }}>
+            <Button 
+              icon={<LeftOutlined />} 
+              onClick={() => navigateDate('prev')}
+              size={window.innerWidth <= 768 ? 'middle' : 'middle'}
+            />
+            <span style={{ 
+              fontSize: window.innerWidth <= 768 ? 16 : 18, 
+              fontWeight: 'bold', 
+              minWidth: window.innerWidth <= 768 ? 150 : 200, 
+              textAlign: 'center' 
+            }}>
               {getDateRangeText()}
             </span>
-            <Button icon={<RightOutlined />} onClick={() => navigateDate('next')} />
+            <Button 
+              icon={<RightOutlined />} 
+              onClick={() => navigateDate('next')}
+              size={window.innerWidth <= 768 ? 'middle' : 'middle'}
+            />
           </Space>
           
           <Select
             value={viewType}
             onChange={setViewType}
-            style={{ width: 120 }}
+            style={{ 
+              width: window.innerWidth <= 768 ? '100%' : 120,
+              maxWidth: 200
+            }}
           >
             <Select.Option value="day">日视图</Select.Option>
             <Select.Option value="week">周视图</Select.Option>
