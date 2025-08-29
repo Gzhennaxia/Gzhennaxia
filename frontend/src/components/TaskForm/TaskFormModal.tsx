@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, DatePicker, Select, message } from 'antd';
 import dayjs from 'dayjs';
-import { Task, TaskFormData } from '../../types/Task';
+import { Task } from '../../types/Task';
 import { taskService } from '../../services/taskService';
 
 const { TextArea } = Input;
@@ -24,14 +24,21 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
   useEffect(() => {
     if (visible && task) {
+      // 转换数字优先级为文本
+      const priorityTextMap: { [key: string]: string } = {
+        '1': 'LOW',
+        '2': 'MEDIUM', 
+        '3': 'HIGH'
+      };
+      
       form.setFieldsValue({
         title: task.title,
         description: task.description,
         timeRange: [dayjs(task.startTime), dayjs(task.endTime)],
-        priority: task.priority,
+        priority: priorityTextMap[task.priority.toString()] || 'MEDIUM',
         status: task.status,
         category: task.category,
-        tags: task.tags,
+        tags: Array.isArray(task.tags) ? task.tags.join(', ') : task.tags,
       });
     } else if (visible) {
       form.resetFields();
@@ -40,15 +47,23 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
   const handleSubmit = async (values: any) => {
     try {
-      const taskData: TaskFormData = {
+      // 转换优先级文本为数字
+      const priorityMap: { [key: string]: number } = {
+        'LOW': 1,
+        'MEDIUM': 2,
+        'HIGH': 3
+      };
+
+      const taskData = {
         title: values.title,
         description: values.description,
-        startTime: values.timeRange[0].format('YYYY-MM-DD HH:mm:ss'),
-        endTime: values.timeRange[1].format('YYYY-MM-DD HH:mm:ss'),
-        priority: values.priority,
-        status: values.status,
+        startTime: values.timeRange[0].format('YYYY-MM-DDTHH:mm:ss'),
+        endTime: values.timeRange[1].format('YYYY-MM-DDTHH:mm:ss'),
+        priority: priorityMap[values.priority] || 2,
         category: values.category,
-        tags: values.tags,
+        tags: values.tags ? values.tags.split(',').map((tag: string) => tag.trim()) : [],
+        isAllDay: false,
+        repeatType: 'none'
       };
 
       if (task?.id) {
@@ -76,7 +91,7 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
       cancelText="取消"
       width={window.innerWidth <= 768 ? '95%' : 600}
       style={window.innerWidth <= 768 ? { top: 20 } : {}}
-      bodyStyle={window.innerWidth <= 768 ? { padding: '16px' } : {}}
+      styles={window.innerWidth <= 768 ? { body: { padding: '16px' } } : {}}
       className="task-form-modal"
     >
       <Form

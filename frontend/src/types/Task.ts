@@ -4,8 +4,8 @@ export interface Task {
   description?: string;
   startTime: string;
   endTime: string;
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  priority: 'HIGH' | 'MEDIUM' | 'LOW' | number;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | number;
   category?: string;
   tags?: string;
   createTime?: string;
@@ -17,10 +17,11 @@ export interface TaskFormData {
   description?: string;
   startTime: string;
   endTime: string;
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  priority: number;
   category?: string;
-  tags?: string;
+  tags?: string[];
+  isAllDay?: boolean;
+  repeatType?: string;
 }
 
 export type ViewType = 'day' | 'week' | 'month' | 'multiDay' | 'multiWeek';

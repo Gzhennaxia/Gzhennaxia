@@ -88,6 +88,13 @@ public class TaskController {
         return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
     }
     
+    @PutMapping("/{taskId}")
+    @Operation(summary = "更新任务", description = "更新指定的任务")
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long taskId, @Valid @RequestBody TaskCreateRequest request) {
+        TaskDTO task = taskService.updateTask(taskId, request);
+        return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
+    }
+    
     @DeleteMapping("/{taskId}")
     @Operation(summary = "删除任务", description = "删除指定的任务")
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {

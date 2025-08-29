@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +87,31 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
         return null;
     }
     
+    public TaskDTO updateTask(Long taskId, TaskCreateRequest request) {
+        Task existingTask = getById(taskId);
+        if (existingTask != null) {
+            existingTask.setTitle(request.getTitle());
+            existingTask.setDescription(request.getDescription());
+            existingTask.setStartTime(request.getStartTime());
+            existingTask.setEndTime(request.getEndTime());
+            existingTask.setPriority(request.getPriority());
+            existingTask.setCategory(request.getCategory());
+            existingTask.setIsAllDay(request.getIsAllDay());
+            existingTask.setRepeatType(request.getRepeatType());
+            existingTask.setRepeatEndDate(request.getRepeatEndDate());
+            existingTask.setReminderTime(request.getReminderTime());
+            
+            // 处理标签
+            if (request.getTags() != null && !request.getTags().isEmpty()) {
+                existingTask.setTags(String.join(",", request.getTags()));
+            }
+            
+            updateById(existingTask);
+            return convertToDTO(existingTask);
+        }
+        return null;
+    }
+    
     public TaskDTO convertToDTO(Task task) {
         TaskDTO dto = new TaskDTO();
         dto.setId(task.getId());
@@ -109,7 +137,7 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
                 dto.setTags(tags);
             }
         } catch (JsonProcessingException e) {
-            dto.setTags(List.of());
+            dto.setTags(new ArrayList<>());
         }
         
         return dto;

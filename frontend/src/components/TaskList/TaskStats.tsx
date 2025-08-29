@@ -3,8 +3,7 @@ import { Card, Row, Col, Statistic } from 'antd';
 import { 
   CheckCircleOutlined, 
   ClockCircleOutlined, 
-  ExclamationCircleOutlined,
-  StopOutlined 
+ 
 } from '@ant-design/icons';
 import { Task } from '../../types/Task';
 

@@ -20,10 +20,10 @@ public class Task {
     @TableField("description")
     private String description;
     
-    @TableField("start_time")
+    @TableField(value = "start_time", typeHandler = com.personal.management.config.MybatisConfig.CustomLocalDateTimeTypeHandler.class)
     private LocalDateTime startTime;
     
-    @TableField("end_time")
+    @TableField(value = "end_time", typeHandler = com.personal.management.config.MybatisConfig.CustomLocalDateTimeTypeHandler.class)
     private LocalDateTime endTime;
     
     @TableField("priority")
@@ -38,7 +38,7 @@ public class Task {
     @TableField("tags")
     private String tags; // JSON格式存储标签
     
-    @TableField("reminder_time")
+    @TableField(value = "reminder_time", typeHandler = com.personal.management.config.MybatisConfig.CustomLocalDateTimeTypeHandler.class)
     private LocalDateTime reminderTime;
     
     @TableField("is_all_day")
@@ -47,7 +47,7 @@ public class Task {
     @TableField("repeat_type")
     private String repeatType; // none, daily, weekly, monthly, yearly
     
-    @TableField("repeat_end_date")
+    @TableField(value = "repeat_end_date", typeHandler = com.personal.management.config.MybatisConfig.CustomLocalDateTimeTypeHandler.class)
     private LocalDateTime repeatEndDate;
     
     @TableField(value = "created_time", fill = FieldFill.INSERT)

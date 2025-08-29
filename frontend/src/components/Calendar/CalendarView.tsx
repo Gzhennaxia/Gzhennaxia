@@ -11,7 +11,7 @@ const CalendarView: React.FC = () => {
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
   const [viewType, setViewType] = useState<ViewType>('month');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Dayjs>();
+  const [, setSelectedDate] = useState<Dayjs>();
 
   useEffect(() => {
     loadTasks();

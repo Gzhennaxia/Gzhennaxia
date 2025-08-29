@@ -62,7 +62,7 @@ const ModernTaskCard: React.FC<ModernTaskCardProps> = ({ task, onEdit, onDelete 
 
   return (
     <Card
-      className={`modern-task-card priority-${task.priority.toLowerCase()} ${
+      className={`modern-task-card priority-${typeof task.priority === 'string' ? task.priority.toLowerCase() : task.priority} ${
         task.status === 'COMPLETED' ? 'status-completed' : ''
       }`}
       style={{
