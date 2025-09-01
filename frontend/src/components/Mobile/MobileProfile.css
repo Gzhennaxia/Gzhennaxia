@@ -1,0 +1,46 @@
+/* 移动端个人中心样式 */
+.mobile-profile {
+  padding: 16px;
+  background-color: #f5f5f5;
+  min-height: 100%;
+}
+
+.profile-header {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.user-details p {
+  margin: 0;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.profile-menu {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-menu .ant-list-item {
+  padding: 16px 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profile-menu .ant-list-item:hover {
+  background-color: #f5f5f5;
+}

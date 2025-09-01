@@ -1,0 +1,21 @@
+.sidebar-menu-item {
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.sidebar-menu-item:active {
+  background-color: #e6f7ff;
+}
+
+.ant-drawer-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border-bottom: none !important;
+}
+
+.ant-drawer-header .ant-drawer-title {
+  color: white !important;
+}

@@ -59,5 +59,16 @@ export const taskService = {
   getTasksByCategory: async (category: string): Promise<Task[]> => {
     const response = await axios.get(`${API_BASE_URL}/category/${category}`);
     return response.data;
+  },
+
+  // 获取任务统计信息
+  getTaskStats: async (): Promise<{
+    overdue: number;
+    today: number;
+    completed: number;
+    total: number;
+  }> => {
+    const response = await axios.get(`${API_BASE_URL}/stats`);
+    return response.data;
   }
 };

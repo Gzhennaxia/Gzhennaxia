@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,7 +88,7 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
         }
         return null;
     }
-    
+
     public TaskDTO updateTask(Long taskId, TaskCreateRequest request) {
         Task existingTask = getById(taskId);
         if (existingTask != null) {
@@ -100,12 +102,13 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
             existingTask.setRepeatType(request.getRepeatType());
             existingTask.setRepeatEndDate(request.getRepeatEndDate());
             existingTask.setReminderTime(request.getReminderTime());
-            
+            existingTask.setStatus(request.getStatus());
+
             // 处理标签
             if (request.getTags() != null && !request.getTags().isEmpty()) {
                 existingTask.setTags(String.join(",", request.getTags()));
             }
-            
+
             updateById(existingTask);
             return convertToDTO(existingTask);
         }
@@ -141,5 +144,40 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
         }
         
         return dto;
+    }
+    
+    public Map<String, Integer> getTaskStats() {
+        List<Task> allTasks = list();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime todayStart = now.toLocalDate().atStartOfDay();
+        LocalDateTime todayEnd = todayStart.plusDays(1);
+        
+        Map<String, Integer> stats = new HashMap<>();
+        
+        int overdueCount = 0;
+        int todayCount = 0;
+        int completedCount = 0;
+        
+        for (Task task : allTasks) {
+            if (task.getStatus() == 1) { // 已完成
+                completedCount++;
+            } else if (task.getStatus() == 0) { // 待办
+                LocalDateTime endTime = task.getEndTime();
+                if (endTime != null) {
+                    if (endTime.isBefore(todayStart)) {
+                        overdueCount++; // 已过期
+                    } else if (endTime.isAfter(todayStart) && endTime.isBefore(todayEnd)) {
+                        todayCount++; // 今天
+                    }
+                }
+            }
+        }
+        
+        stats.put("overdue", overdueCount);
+        stats.put("today", todayCount);
+        stats.put("completed", completedCount);
+        stats.put("total", allTasks.size());
+        
+        return stats;
     }
 }

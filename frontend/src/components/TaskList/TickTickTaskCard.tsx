@@ -2,6 +2,7 @@
 import React from 'react';
 import { Task } from '../../types/Task';
 import { ClockCircleOutlined, FlagOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import './TickTickTaskCard.css';
 
 interface TickTickTaskCardProps {
   task: Task;

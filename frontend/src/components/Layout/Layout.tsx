@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PlusOutlined, HomeOutlined, CheckSquareOutlined, CalendarOutlined, SettingOutlined, MenuOutlined } from '@ant-design/icons';
 import TaskFormModal from '../TaskForm/TaskFormModal';
+import './Layout.css';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   const [taskModalVisible, setTaskModalVisible] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
 

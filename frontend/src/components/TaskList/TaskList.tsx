@@ -5,11 +5,13 @@ import { Task } from '../../types/Task';
 import { taskService } from '../../services/taskService';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import TickTickTaskCard from './TickTickTaskCard';
+
 import dayjs from 'dayjs';
 
 const { Option } = Select;
 
 const TaskList: React.FC = () => {
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -18,6 +20,8 @@ const TaskList: React.FC = () => {
   const [quickTaskTitle, setQuickTaskTitle] = useState<string>('');
   const [quickTaskDate, setQuickTaskDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [activeTab, setActiveTab] = useState<string>('all');
+
+
 
   useEffect(() => {
     loadTasks();
@@ -158,6 +162,8 @@ const TaskList: React.FC = () => {
       </div>
     </div>
   );
+
+
 
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>

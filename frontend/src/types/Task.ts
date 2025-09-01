@@ -4,6 +4,7 @@ export interface Task {
   description?: string;
   startTime: string;
   endTime: string;
+  dueDate?: string; // 添加dueDate字段
   priority: 'HIGH' | 'MEDIUM' | 'LOW' | number;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | number;
   category?: string;
@@ -17,11 +18,16 @@ export interface TaskFormData {
   description?: string;
   startTime: string;
   endTime: string;
-  priority: number;
+  dueDate?: string;
+  priority: number | 'HIGH' | 'MEDIUM' | 'LOW';
+  status?: string | number;
   category?: string;
-  tags?: string[];
+  tags?: string[] | string;
   isAllDay?: boolean;
   repeatType?: string;
+  id?: number;
+  createTime?: string;
+  updateTime?: string;
 }
 
 export type ViewType = 'day' | 'week' | 'month' | 'multiDay' | 'multiWeek';

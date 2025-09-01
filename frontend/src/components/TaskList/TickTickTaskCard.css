@@ -1,0 +1,60 @@
+/* 移动端任务卡片优化 */
+.ticktick-task-card {
+  transition: all 0.2s ease;
+}
+
+.ticktick-task-card .ant-card-body {
+  padding: 16px;
+}
+
+.task-actions {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.ticktick-task-card:hover .task-actions {
+  opacity: 1;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .ticktick-task-card .ant-card-body {
+    padding: 12px;
+  }
+  
+  .task-actions {
+    opacity: 1;
+  }
+  
+  .task-actions .ant-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px;
+  }
+  
+  .task-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .task-title {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  
+  .task-description {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 480px) {
+  .ticktick-task-card .ant-card-body {
+    padding: 10px;
+  }
+  
+  .task-actions .ant-btn {
+    font-size: 12px;
+  }
+}

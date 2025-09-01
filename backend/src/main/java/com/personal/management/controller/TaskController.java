@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -79,6 +80,13 @@ public class TaskController {
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         List<TaskDTO> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
+    }
+    
+    @GetMapping("/stats")
+    @Operation(summary = "获取任务统计", description = "获取任务数量统计信息")
+    public ResponseEntity<Map<String, Integer>> getTaskStats() {
+        Map<String, Integer> stats = taskService.getTaskStats();
+        return ResponseEntity.ok(stats);
     }
     
     @GetMapping("/{taskId}")

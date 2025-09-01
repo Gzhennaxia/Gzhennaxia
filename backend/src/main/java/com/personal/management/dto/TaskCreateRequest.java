@@ -33,4 +33,7 @@ public class TaskCreateRequest {
     private String repeatType = "none";
     
     private LocalDateTime repeatEndDate;
+
+    private Integer status; // 0-待办, 1-进行中, 2-已完成, 3-已取消
+
 }

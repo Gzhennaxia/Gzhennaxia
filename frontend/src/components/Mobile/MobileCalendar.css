@@ -1,0 +1,27 @@
+/* 移动端日历样式 */
+.mobile-calendar {
+  padding: 16px;
+  background-color: #f5f5f5;
+  min-height: 100%;
+}
+
+.calendar-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+.selected-date-info {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.selected-date-info h3 {
+  margin: 0 0 8px 0;
+  color: #262626;
+}
+
+.selected-date-info p {
+  margin: 0;
+  color: #8c8c8c;
+}
