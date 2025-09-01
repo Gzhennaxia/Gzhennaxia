@@ -5,9 +5,14 @@ spring:
   datasource:
     driver-class-name: org.sqlite.JDBC
     url: jdbc:sqlite:data/gzhennaxia.sqlite
-    username: 
-    password: 
-  
+    username:
+    password:
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=30m   # 30min TTL；热点字典常驻可配 long TTL
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
