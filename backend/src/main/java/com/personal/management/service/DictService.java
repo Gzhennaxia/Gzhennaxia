@@ -27,6 +27,8 @@ public class DictService {
 
     /**
      * 获取单个字典（带缓存）
+     * @param code 字典编码
+     * @return 字典响应数据
      */
     @Cacheable(cacheNames = "dict", key = "#code", unless = "#result == null")
     public DictResponse getDict(String code) {
@@ -59,6 +61,8 @@ public class DictService {
 
     /**
      * 批量获取版本号
+     * @param codes 字典编码集合
+     * @return 字典编码与版本号的映射
      */
     public Map<String, String> getVersions(Collection<String> codes) {
         if (codes == null || codes.isEmpty()) return Collections.emptyMap();
@@ -72,7 +76,26 @@ public class DictService {
     }
 
     /**
+     * 批量获取多个字典数据
+     * @param codes 字典编码集合
+     * @return 字典编码与字典数据的映射
+     */
+    public Map<String, DictResponse> getBatch(Collection<String> codes) {
+        if (codes == null || codes.isEmpty()) return Collections.emptyMap();
+        Map<String, DictResponse> result = new HashMap<>();
+        for (String code : codes) {
+            DictResponse dict = getDict(code);
+            if (dict != null) {
+                result.put(code, dict);
+            }
+        }
+        return result;
+    }
+
+    /**
      * 字典发生变更后：更新版本号并清缓存
+     * @param code 字典编码
+     * @param newVersion 新版本号
      */
     @CacheEvict(cacheNames = "dict", key = "#code")
     @Transactional
@@ -87,6 +110,7 @@ public class DictService {
 
     /**
      * 帮助方法：生成版本号
+     * @return 新版本号字符串
      */
     public static String nextVersion() {
         return DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
