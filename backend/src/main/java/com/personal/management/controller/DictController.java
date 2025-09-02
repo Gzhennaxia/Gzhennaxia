@@ -1,6 +1,10 @@
 package com.personal.management.controller;
 
+import com.personal.management.base.IBaseController;
+import com.personal.management.base.IBaseService;
+import com.personal.management.entity.DictType;
 import com.personal.management.service.DictService;
+import com.personal.management.utils.DateTimeUtils;
 import com.personal.management.vo.DictResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,15 +18,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api/dict")
-public class DictController {
+public class DictController extends IBaseController<DictType> {
 
     @Autowired
     private DictService dictService;
+
+    @Override
+    protected IBaseService<DictType> getBaseService() {
+        return dictService;
+    }
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     /**
      * 获取单个字典
+     *
      * @param code 字典编码
      * @return 字典数据响应实体
      */
@@ -37,6 +47,7 @@ public class DictController {
 
     /**
      * 批量获取字典版本号
+     *
      * @param codes 字典编码列表
      * @return 字典编码与版本号的映射
      */
@@ -47,6 +58,7 @@ public class DictController {
 
     /**
      * 批量获取多个字典数据
+     *
      * @param codes 字典编码列表
      * @return 字典编码与字典数据的映射
      */
@@ -58,18 +70,20 @@ public class DictController {
 
     /**
      * 变更字典版本号（管理端接口）
+     *
      * @param code 字典编码
      * @return 空响应
      */
     @PostMapping("/admin/refresh/{code}")
     public ResponseEntity<Void> refreshDict(@PathVariable String code) {
-        dictService.bumpVersionAndEvict(code, DictService.nextVersion());
-        notifyClients(code, DictService.nextVersion());
+        dictService.bumpVersionAndEvict(code, DateTimeUtils.nextVersion());
+        notifyClients(code, DateTimeUtils.nextVersion());
         return ResponseEntity.ok().build();
     }
 
     /**
      * SSE订阅字典变更通知
+     *
      * @param clientId 客户端唯一标识
      * @return SSE事件流
      */
@@ -86,22 +100,24 @@ public class DictController {
 
     /**
      * 通知所有客户端字典变更
-     * @param dictCode 字典编码
+     *
+     * @param dictCode   字典编码
      * @param newVersion 新版本号
      */
     private void notifyClients(String dictCode, String newVersion) {
         emitters.forEach((clientId, emitter) -> {
             try {
                 emitter.send(SseEmitter.event()
-                    .name("dict-update")
-                    .data(Map.of(
-                        "dictCode", dictCode,
-                        "version", newVersion,
-                        "timestamp", System.currentTimeMillis()
-                    )));
+                        .name("dict-update")
+                        .data(Map.of(
+                                "dictCode", dictCode,
+                                "version", newVersion,
+                                "timestamp", System.currentTimeMillis()
+                        )));
             } catch (Exception e) {
                 emitters.remove(clientId);
             }
         });
     }
+
 }
