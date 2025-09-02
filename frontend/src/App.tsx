@@ -6,6 +6,8 @@ import Layout from './components/Layout/Layout';
 import TaskList from './components/TaskList/TaskList';
 import CalendarView from './components/Calendar/CalendarView';
 import MobileApp from './components/Mobile/MobileApp';
+import DictList from './components/Admin/DictManagement/DictList';
+import DictItemList from './components/Admin/DictManagement/DictItemList';
 import './App.css';
 
 const App: React.FC = () => {
@@ -41,6 +43,8 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<TaskList />} />
             <Route path="/calendar" element={<CalendarView />} />
+            <Route path="/admin/dict" element={<DictList />} />
+            <Route path="/admin/dict/:code" element={<DictItemList />} />
           </Routes>
         </Layout>
       </Router>

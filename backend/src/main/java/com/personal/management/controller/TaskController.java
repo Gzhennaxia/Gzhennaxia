@@ -1,5 +1,6 @@
 package com.personal.management.controller;
 
+import com.personal.management.dto.ApiResponse;
 import com.personal.management.dto.TaskCreateRequest;
 import com.personal.management.dto.TaskDTO;
 import com.personal.management.service.TaskService;
@@ -25,14 +26,14 @@ public class TaskController {
 
     @Autowired
     private final TaskService taskService;
-    
+
     @PostMapping
     @Operation(summary = "创建任务", description = "创建一个新的任务")
     public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskCreateRequest request) {
         TaskDTO task = taskService.createTask(request);
         return ResponseEntity.ok(task);
     }
-    
+
     @GetMapping("/date/{date}")
     @Operation(summary = "获取指定日期的任务", description = "获取某一天的所有任务")
     public ResponseEntity<List<TaskDTO>> getTasksByDate(
@@ -40,7 +41,7 @@ public class TaskController {
         List<TaskDTO> tasks = taskService.getTasksByDate(date);
         return ResponseEntity.ok(tasks);
     }
-    
+
     @GetMapping("/week/{weekStart}")
     @Operation(summary = "获取周视图任务", description = "获取一周内的所有任务")
     public ResponseEntity<List<TaskDTO>> getWeekTasks(
@@ -48,7 +49,7 @@ public class TaskController {
         List<TaskDTO> tasks = taskService.getWeekTasks(weekStart);
         return ResponseEntity.ok(tasks);
     }
-    
+
     @GetMapping("/month/{monthStart}")
     @Operation(summary = "获取月视图任务", description = "获取一个月内的所有任务")
     public ResponseEntity<List<TaskDTO>> getMonthTasks(
@@ -56,7 +57,7 @@ public class TaskController {
         List<TaskDTO> tasks = taskService.getMonthTasks(monthStart);
         return ResponseEntity.ok(tasks);
     }
-    
+
     @GetMapping("/range")
     @Operation(summary = "获取时间范围内的任务", description = "获取指定时间范围内的所有任务")
     public ResponseEntity<List<TaskDTO>> getTasksByRange(
@@ -65,44 +66,44 @@ public class TaskController {
         List<TaskDTO> tasks = taskService.getTasksByDateRange(startDate, endDate);
         return ResponseEntity.ok(tasks);
     }
-    
+
     @PutMapping("/{taskId}/status")
     @Operation(summary = "更新任务状态", description = "更新任务的完成状态")
     public ResponseEntity<TaskDTO> updateTaskStatus(
-            @PathVariable Long taskId, 
+            @PathVariable Long taskId,
             @RequestParam Integer status) {
         TaskDTO task = taskService.updateTaskStatus(taskId, status);
         return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
     }
-    
+
     @GetMapping
     @Operation(summary = "获取所有任务", description = "获取所有任务列表")
-    public ResponseEntity<List<TaskDTO>> getAllTasks() {
+    public ResponseEntity<ApiResponse<List<TaskDTO>>> getAllTasks() {
         List<TaskDTO> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(tasks);
+        return ResponseEntity.ok(ApiResponse.success("获取任务列表成功", tasks));
     }
-    
+
     @GetMapping("/stats")
     @Operation(summary = "获取任务统计", description = "获取任务数量统计信息")
-    public ResponseEntity<Map<String, Integer>> getTaskStats() {
+    public ResponseEntity<ApiResponse<Map<String, Integer>>> getTaskStats() {
         Map<String, Integer> stats = taskService.getTaskStats();
-        return ResponseEntity.ok(stats);
+        return ResponseEntity.ok(ApiResponse.success("获取任务统计成功", stats));
     }
-    
+
     @GetMapping("/{taskId}")
     @Operation(summary = "获取任务详情", description = "根据ID获取任务详细信息")
     public ResponseEntity<TaskDTO> getTask(@PathVariable Long taskId) {
         TaskDTO task = taskService.convertToDTO(taskService.getById(taskId));
         return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
     }
-    
+
     @PutMapping("/{taskId}")
     @Operation(summary = "更新任务", description = "更新指定的任务")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long taskId, @Valid @RequestBody TaskCreateRequest request) {
         TaskDTO task = taskService.updateTask(taskId, request);
         return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
     }
-    
+
     @DeleteMapping("/{taskId}")
     @Operation(summary = "删除任务", description = "删除指定的任务")
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {

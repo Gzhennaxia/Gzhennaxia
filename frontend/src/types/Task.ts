@@ -1,16 +1,31 @@
+// 通用API响应类型
+export interface ApiResponse<T = any> {
+  code: number;
+  message: string;
+  data: T;
+  timestamp: string;
+}
+
 export interface Task {
   id?: number;
   title: string;
   description?: string;
   startTime: string;
   endTime: string;
-  dueDate?: string; // 添加dueDate字段
+  dueDate?: string;
   priority: 'HIGH' | 'MEDIUM' | 'LOW' | number;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | number;
   category?: string;
-  tags?: string;
+  tags?: string[];
   createTime?: string;
   updateTime?: string;
+  isAllDay?: boolean;
+  repeatType?: string;
+  completed?: boolean;
+  deleted?: boolean;
+  userId?: number;
+  parentId?: number;
+  subtasks?: Task[];
 }
 
 export interface TaskFormData {

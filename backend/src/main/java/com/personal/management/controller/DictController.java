@@ -2,6 +2,7 @@ package com.personal.management.controller;
 
 import com.personal.management.service.DictService;
 import com.personal.management.vo.DictResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping("/api/dict")
 public class DictController {
-    private final DictService dictService;
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public DictController(DictService dictService) {
-        this.dictService = dictService;
-    }
+    @Autowired
+    private DictService dictService;
+
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     /**
      * 获取单个字典
