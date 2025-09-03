@@ -19,4 +19,8 @@ public class DictTypeConverter {
     public static List<DictTypeVo> convert(List<DictTypeDto> dicts) {
         return null;
     }
+
+    public static DictTypeVo convert(DictTypeDto savedDict) {
+        return null;
+    }
 }

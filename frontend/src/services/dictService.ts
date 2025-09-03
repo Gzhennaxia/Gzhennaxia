@@ -36,6 +36,15 @@ interface PageParams {
     sort?: Record<string, 'asc' | 'desc'>;
 }
 
+export const getDictDetail = async (code: string): Promise<DictType> => {
+    try {
+        return await apiClient.get(`/api/dict/admin/${code}`);
+    } catch (error) {
+        console.error('Failed to fetch dict detail', error);
+        throw error;
+    }
+};
+
 export const getDictList = async (): Promise<DictType[]> => {
     try {
         const data = await apiClient.get('/dict');
@@ -70,7 +79,7 @@ export const getDictItems = async (code: string): Promise<DictItem[]> => {
 
 export const createDict = async (data: Omit<DictType, 'id'>): Promise<DictType> => {
     try {
-        const result = await apiClient.post('/api/dict/admin', data);
+        const result = await apiClient.post('/dict', data);
         DictCacheManager.updateDict(result);
         return result;
     } catch (error) {

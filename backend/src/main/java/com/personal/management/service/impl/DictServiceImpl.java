@@ -5,9 +5,11 @@ import com.personal.management.base.IBaseServiceImpl;
 import com.personal.management.mapper.DictItemMapper;
 import com.personal.management.mapper.DictTypeMapper;
 import com.personal.management.pojo.converter.DictTypeConverter;
+import com.personal.management.pojo.dto.DictItemDto;
 import com.personal.management.pojo.dto.DictTypeDto;
 import com.personal.management.pojo.entity.DictItem;
 import com.personal.management.pojo.entity.DictType;
+import com.personal.management.pojo.request.DictTypeCreateRequest;
 import com.personal.management.service.DictService;
 import com.personal.management.vo.DictResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +103,53 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
     @Override
     public List<DictTypeDto> getAllDicts() {
         return DictTypeConverter.convertToDto(this.list());
+    }
+
+    @Override
+    @Transactional
+    public DictTypeDto addDict(DictTypeDto dictTypeDto) {
+        // 1. 检查字典编码是否已存在
+        DictType existingDict = baseMapper.selectOne(
+                new LambdaQueryWrapper<DictType>()
+                        .eq(DictType::getCode, dictTypeDto.getCode())
+        );
+        if (existingDict != null) {
+            throw new RuntimeException("字典编码已存在: " + dictTypeDto.getCode());
+        }
+
+        // 2. 创建字典类型
+        DictType dictType = new DictType();
+        dictType.setCode(dictTypeDto.getCode());
+        dictType.setName(dictTypeDto.getName());
+        dictType.setVersion(dictTypeDto.getVersion() != null ? dictTypeDto.getVersion() : "1");
+        dictType.setStatus(dictTypeDto.getStatus() != null ? dictTypeDto.getStatus() : 1);
+        dictType.setRemark(dictTypeDto.getRemark());
+        dictType.setCreatedTime(LocalDateTime.now().toString());
+        dictType.setUpdatedTime(LocalDateTime.now().toString());
+
+        // 3. 保存字典类型
+        baseMapper.insert(dictType);
+
+        // 4. 保存字典项
+        if (dictTypeDto.getDictItems() != null && !dictTypeDto.getDictItems().isEmpty()) {
+            for (int i = 0; i < dictTypeDto.getDictItems().size(); i++) {
+                DictItemDto itemDto = dictTypeDto.getDictItems().get(i);
+                DictItem dictItem = new DictItem();
+                dictItem.setTypeCode(dictTypeDto.getCode());
+                dictItem.setItemKey(itemDto.getItemKey());
+                dictItem.setItemValue(itemDto.getItemValue());
+                dictItem.setStatus(itemDto.getStatus() != null ? itemDto.getStatus() : 1);
+                dictItem.setSort(itemDto.getSort() != null ? itemDto.getSort() : i);
+                dictItem.setCreatedTime(LocalDateTime.now().toString());
+                dictItem.setUpdatedTime(LocalDateTime.now().toString());
+                
+                itemMapper.insert(dictItem);
+            }
+        }
+
+        // 5. 返回创建的字典信息
+        dictTypeDto.setId(dictType.getId());
+        return dictTypeDto;
     }
 
     /**

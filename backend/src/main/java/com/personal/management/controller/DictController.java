@@ -6,11 +6,13 @@ import com.personal.management.common.ApiResult;
 import com.personal.management.pojo.converter.DictTypeConverter;
 import com.personal.management.pojo.dto.DictTypeDto;
 import com.personal.management.pojo.entity.DictType;
+import com.personal.management.pojo.request.DictTypeCreateRequest;
 import com.personal.management.pojo.vo.DictTypeVo;
 import com.personal.management.service.DictService;
 import com.personal.management.utils.DateTimeUtils;
 import com.personal.management.vo.DictResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +44,6 @@ public class DictController extends IBaseController<DictType> {
     }
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
-
 
     /**
      * 获取所有字典
@@ -65,6 +68,26 @@ public class DictController extends IBaseController<DictType> {
     public ApiResult<List<DictTypeVo>> getAllDicts() {
         List<DictTypeDto> dicts = dictService.getAllDicts();
         return ApiResult.success(DictTypeConverter.convert(dicts));
+    }
+
+    /**
+     * 新增字典（包含子项）
+     * POST /api/dicts
+     */
+    @PostMapping
+    @Operation(
+            summary = "新增字典",
+            description = "创建新的字典及其子项，字典编码唯一，子项至少包含一条"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "新增成功"
+    )
+    public DictTypeVo addDict(
+            @Parameter(description = "字典新增参数（包含子项）", required = true)
+            @Valid @RequestBody DictTypeDto dictDto) {
+        DictTypeDto savedDict = dictService.addDict(dictDto);
+        return DictTypeConverter.convert(savedDict);
     }
 
     /**
@@ -144,13 +167,14 @@ public class DictController extends IBaseController<DictType> {
     private void notifyClients(String dictCode, String newVersion) {
         emitters.forEach((clientId, emitter) -> {
             try {
+                Map<String, Object> data = new HashMap<>();
+                data.put("dictCode", dictCode);
+                data.put("version", newVersion);
+                data.put("timestamp", System.currentTimeMillis());
+                
                 emitter.send(SseEmitter.event()
                         .name("dict-update")
-                        .data(Map.of(
-                                "dictCode", dictCode,
-                                "version", newVersion,
-                                "timestamp", System.currentTimeMillis()
-                        )));
+                        .data(data));
             } catch (Exception e) {
                 emitters.remove(clientId);
             }

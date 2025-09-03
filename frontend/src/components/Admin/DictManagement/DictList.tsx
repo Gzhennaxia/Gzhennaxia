@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Space, message, Form, Input, DatePicker } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import DictCacheManager from '../../../services/dictCacheManager';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { getDictList, deleteDict, getDictPage } from '../../../services/dictService';
+import DictFormModal from './DictFormModal';
+import DictDetailModal from './DictDetailModal';
 import dayjs from 'dayjs';
 
 interface DictType {
@@ -18,6 +20,9 @@ interface DictType {
 const DictList: React.FC = () => {
     const [dicts, setDicts] = useState<DictType[]>([]);
     const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [detailVisible, setDetailVisible] = useState(false);
+    const [currentDict, setCurrentDict] = useState<string>();
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
@@ -52,6 +57,14 @@ const DictList: React.FC = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
+                    <Button
+                        type="text"
+                        icon={<EyeOutlined />}
+                        onClick={() => {
+                            setCurrentDict(record.code);
+                            setDetailVisible(true);
+                        }}
+                    />
                     <Button
                         type="text"
                         icon={<EditOutlined />}
@@ -106,10 +119,23 @@ const DictList: React.FC = () => {
         console.log('Edit:', record);
     };
 
-    const handleDelete = (code: string) => {
-        // TODO: 实现删除逻辑
-        console.log('Delete:', code);
-    };
+  const handleDelete = async (code: string) => {
+    Modal.confirm({
+      title: '确认删除',
+      content: `确定要删除字典 ${code} 吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          await deleteDict(code);
+          message.success('删除成功');
+          fetchDicts();
+        } catch (error) {
+          message.error('删除失败');
+        }
+      }
+    });
+  };
 
     const handleTableChange = (pagination: any) => {
         setPagination(pagination);
@@ -144,7 +170,11 @@ const DictList: React.FC = () => {
                     <Button onClick={handleReset}>重置</Button>
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" icon={<PlusOutlined />}>
+                    <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={() => setModalVisible(true)}
+                    >
                         新增字典
                     </Button>
                 </Form.Item>
@@ -156,6 +186,19 @@ const DictList: React.FC = () => {
                 loading={loading}
                 pagination={pagination}
                 onChange={handleTableChange}
+            />
+            <DictFormModal
+              open={modalVisible}
+              onCancel={() => setModalVisible(false)}
+              onSuccess={() => {
+                setModalVisible(false);
+                fetchDicts();
+              }}
+            />
+            <DictDetailModal
+              open={detailVisible}
+              dictCode={currentDict}
+              onCancel={() => setDetailVisible(false)}
             />
         </div>
     );
