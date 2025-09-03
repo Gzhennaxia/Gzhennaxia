@@ -1,6 +1,6 @@
 package com.personal.management.base.exception;
 
-import com.personal.management.common.ApiResponse;
+import com.personal.management.common.ApiResult;
 import com.personal.management.common.ResponseCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -21,16 +21,16 @@ public class GlobalExceptionHandler {
      * 1. 处理自定义业务异常（BusinessException）
      */
     @ExceptionHandler(BusinessException.class)
-    public ApiResponse<Void> handleBusinessException(BusinessException e) {
+    public ApiResult<Void> handleBusinessException(BusinessException e) {
         // 返回自定义的错误码和信息
-        return ApiResponse.error(e.getResponseCode(), e.getCustomMessage());
+        return ApiResult.error(e.getResponseCode(), e.getCustomMessage());
     }
 
     /**
      * 2. 处理参数校验异常（@Valid 注解触发，如 @NotNull、@Size 等）
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ApiResponse<Void> handleValidException(MethodArgumentNotValidException e) {
+    public ApiResult<Void> handleValidException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
         // 拼接所有参数错误信息（如："username: 不能为空; password: 长度不能小于6"）
         StringBuilder errorMsg = new StringBuilder();
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
             errorMsg.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append("; ");
         }
         // 返回 400 错误码 + 拼接的错误信息
-        return ApiResponse.error(ResponseCode.BAD_REQUEST, errorMsg.toString().trim());
+        return ApiResult.error(ResponseCode.BAD_REQUEST, errorMsg.toString().trim());
     }
 
     /**
@@ -46,8 +46,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND) // 设置 HTTP 状态码为 404（可选，前端可通过状态码快速判断）
-    public ApiResponse<Void> handleNoHandlerFoundException(NoHandlerFoundException e) {
-        return ApiResponse.error(ResponseCode.NOT_FOUND);
+    public ApiResult<Void> handleNoHandlerFoundException(NoHandlerFoundException e) {
+        return ApiResult.error(ResponseCode.NOT_FOUND);
     }
 
     /**
@@ -55,9 +55,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 设置 HTTP 状态码为 500
-    public ApiResponse<Void> handleOtherException(Exception e) {
+    public ApiResult<Void> handleOtherException(Exception e) {
         // 生产环境建议记录日志（避免暴露敏感信息），这里简化处理
         e.printStackTrace();
-        return ApiResponse.error(ResponseCode.INTERNAL_ERROR, "服务器内部错误，请联系管理员");
+        return ApiResult.error(ResponseCode.INTERNAL_ERROR, "服务器内部错误，请联系管理员");
     }
 }

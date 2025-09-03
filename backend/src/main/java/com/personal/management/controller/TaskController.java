@@ -1,6 +1,6 @@
 package com.personal.management.controller;
 
-import com.personal.management.common.ApiResponse;
+import com.personal.management.common.ApiResult;
 import com.personal.management.dto.TaskCreateRequest;
 import com.personal.management.dto.TaskDTO;
 import com.personal.management.service.TaskService;
@@ -78,16 +78,16 @@ public class TaskController {
 
     @GetMapping
     @Operation(summary = "获取所有任务", description = "获取所有任务列表")
-    public ResponseEntity<ApiResponse<List<TaskDTO>>> getAllTasks() {
+    public ResponseEntity<ApiResult<List<TaskDTO>>> getAllTasks() {
         List<TaskDTO> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(ApiResponse.success("获取任务列表成功", tasks));
+        return ResponseEntity.ok(ApiResult.success("获取任务列表成功", tasks));
     }
 
     @GetMapping("/stats")
     @Operation(summary = "获取任务统计", description = "获取任务数量统计信息")
-    public ResponseEntity<ApiResponse<Map<String, Integer>>> getTaskStats() {
+    public ResponseEntity<ApiResult<Map<String, Integer>>> getTaskStats() {
         Map<String, Integer> stats = taskService.getTaskStats();
-        return ResponseEntity.ok(ApiResponse.success("获取任务统计成功", stats));
+        return ResponseEntity.ok(ApiResult.success("获取任务统计成功", stats));
     }
 
     @GetMapping("/{taskId}")

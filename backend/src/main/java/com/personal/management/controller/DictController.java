@@ -2,10 +2,20 @@ package com.personal.management.controller;
 
 import com.personal.management.base.IBaseController;
 import com.personal.management.base.IBaseService;
-import com.personal.management.entity.DictType;
+import com.personal.management.common.ApiResult;
+import com.personal.management.pojo.converter.DictTypeConverter;
+import com.personal.management.pojo.dto.DictTypeDto;
+import com.personal.management.pojo.entity.DictType;
+import com.personal.management.pojo.vo.DictTypeVo;
 import com.personal.management.service.DictService;
 import com.personal.management.utils.DateTimeUtils;
 import com.personal.management.vo.DictResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api/dict")
+@Tag(name = "字典管理", description = "字典的查询、新增、修改、删除接口") // 类级别分组
 public class DictController extends IBaseController<DictType> {
 
     @Autowired
@@ -29,6 +40,32 @@ public class DictController extends IBaseController<DictType> {
     }
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+
+
+    /**
+     * 获取所有字典
+     * GET /api/dicts
+     */
+    @GetMapping
+    @Operation(
+            summary = "获取所有字典",
+            description = "返回系统中所有字典数据（包含所有类型），支持分页和筛选"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "查询成功",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResult.class) // 响应体类型为统一响应类
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "服务器内部错误")
+    })
+    public ApiResult<List<DictTypeVo>> getAllDicts() {
+        List<DictTypeDto> dicts = dictService.getAllDicts();
+        return ApiResult.success(DictTypeConverter.convert(dicts));
+    }
 
     /**
      * 获取单个字典

@@ -2,10 +2,12 @@ package com.personal.management.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.personal.management.base.IBaseServiceImpl;
-import com.personal.management.entity.DictItem;
-import com.personal.management.entity.DictType;
 import com.personal.management.mapper.DictItemMapper;
 import com.personal.management.mapper.DictTypeMapper;
+import com.personal.management.pojo.converter.DictTypeConverter;
+import com.personal.management.pojo.dto.DictTypeDto;
+import com.personal.management.pojo.entity.DictItem;
+import com.personal.management.pojo.entity.DictType;
 import com.personal.management.service.DictService;
 import com.personal.management.vo.DictResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +96,11 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
             }
         }
         return result;
+    }
+
+    @Override
+    public List<DictTypeDto> getAllDicts() {
+        return DictTypeConverter.convertToDto(this.list());
     }
 
     /**

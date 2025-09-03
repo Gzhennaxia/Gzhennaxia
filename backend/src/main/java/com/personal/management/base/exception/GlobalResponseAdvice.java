@@ -2,7 +2,7 @@ package com.personal.management.base.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.personal.management.common.ApiResponse;
+import com.personal.management.common.ApiResult;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -23,7 +23,7 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         // 排除本身就是 ApiResponse 的情况（避免重复封装）
-        return !returnType.getParameterType().isAssignableFrom(ApiResponse.class);
+        return !returnType.getParameterType().isAssignableFrom(ApiResult.class);
     }
 
     /**
@@ -42,13 +42,13 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         if (body instanceof String) {
             // 这里需要引入 Jackson 依赖，将 ApiResponse 转为 JSON 字符串
             try {
-                return new ObjectMapper().writeValueAsString(ApiResponse.success(body));
+                return new ObjectMapper().writeValueAsString(ApiResult.success(body));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("String 类型响应封装失败", e);
             }
         }
 
         // 2. 处理其他类型（直接封装为成功响应）
-        return ApiResponse.success(body);
+        return ApiResult.success(body);
     }
 }

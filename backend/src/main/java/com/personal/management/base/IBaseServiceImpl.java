@@ -62,7 +62,8 @@ public abstract class IBaseServiceImpl<M extends BaseMapper<T>, T> extends Servi
             Map<String, String> sort = pageDto.getSort();
             if (sort != null && !sort.isEmpty()) {
                 for (Map.Entry<String, String> entry : sort.entrySet()) {
-                    wrapper.orderBy(true, "asc".equalsIgnoreCase(entry.getValue()), entry.getKey());
+                    String fieldName = StringUtils.camelToUnderline(entry.getKey());
+                    wrapper.orderBy(true, "asc".equalsIgnoreCase(entry.getValue()), fieldName);
                 }
             }
         }

@@ -1,12 +1,9 @@
-package com.personal.management.entity;
+package com.personal.management.pojo.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("dict_type")
-public class DictType {
-    private Long id;
+public class DictTypeDto {
     private String code;
     private String name;
     private String version;

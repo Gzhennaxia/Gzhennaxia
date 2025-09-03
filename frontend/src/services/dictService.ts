@@ -21,24 +21,47 @@ interface DictItem {
     remark?: string;
 }
 
+interface PageResult<T> {
+    records: T[];
+    total: number;
+    size: number;
+    current: number;
+    pages: number;
+}
+
+interface PageParams {
+    pageNo: number;
+    pageSize: number;
+    query?: Record<string, any>;
+    sort?: Record<string, 'asc' | 'desc'>;
+}
+
 export const getDictList = async (): Promise<DictType[]> => {
     try {
-        const response = await apiClient.get('/dict');
+        const data = await apiClient.get('/dict');
         // 更新缓存
-        response.data.forEach((dict: DictType) => {
+        data.forEach((dict: DictType) => {
             DictCacheManager.updateDict(dict);
         });
-        return response.data;
+        return data;
     } catch (error) {
         console.error('Failed to fetch dict list', error);
         throw error;
     }
 };
 
+export const getDictPage = async (params: PageParams): Promise<PageResult<DictType>> => {
+    try {
+        return await apiClient.post('/dict/page', params);
+    } catch (error) {
+        console.error('Failed to fetch dict page', error);
+        throw error;
+    }
+};
+
 export const getDictItems = async (code: string): Promise<DictItem[]> => {
     try {
-        const response = await apiClient.get(`/api/dict/admin/${code}/items`);
-        return response.data;
+        return await apiClient.get(`/api/dict/admin/${code}/items`);
     } catch (error) {
         console.error('Failed to fetch dict items', error);
         throw error;
@@ -47,9 +70,9 @@ export const getDictItems = async (code: string): Promise<DictItem[]> => {
 
 export const createDict = async (data: Omit<DictType, 'id'>): Promise<DictType> => {
     try {
-        const response = await apiClient.post('/api/dict/admin', data);
-        DictCacheManager.updateDict(response.data);
-        return response.data;
+        const result = await apiClient.post('/api/dict/admin', data);
+        DictCacheManager.updateDict(result);
+        return result;
     } catch (error) {
         console.error('Failed to create dict', error);
         throw error;

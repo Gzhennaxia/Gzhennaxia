@@ -1,7 +1,8 @@
 package com.personal.management.service;
 
 import com.personal.management.base.IBaseService;
-import com.personal.management.entity.DictType;
+import com.personal.management.pojo.dto.DictTypeDto;
+import com.personal.management.pojo.entity.DictType;
 import com.personal.management.vo.DictResponse;
 
 import java.util.List;
@@ -19,4 +20,7 @@ public interface DictService extends IBaseService<DictType> {
     Map<String, String> getVersions(List<String> codes);
 
     Map<String, DictResponse> getBatch(List<String> codes);
+
+    List<DictTypeDto> getAllDicts();
+
 }

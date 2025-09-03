@@ -61,12 +61,12 @@ const TaskList: React.FC = () => {
       if (!task) return;
 
       // 状态字典转换：字符串 -> 数字
-      const currentStatus = typeof task.status === 'string' ? 
-        (task.status === 'COMPLETED' ? 2 : task.status === 'IN_PROGRESS' ? 1 : 0) : 
+      const currentStatus = typeof task.status === 'string' ?
+        (task.status === 'COMPLETED' ? 2 : task.status === 'IN_PROGRESS' ? 1 : 0) :
         task.status;
-      
+
       const newStatusNumber = currentStatus === 2 ? 0 : 2; // 0: PENDING, 2: COMPLETED
-      
+
       // 使用正确的 TaskFormData 格式，包含状态字段
       const taskFormData = {
         title: task.title,
@@ -120,7 +120,7 @@ const TaskList: React.FC = () => {
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          task.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return matchesSearch;
   });
 

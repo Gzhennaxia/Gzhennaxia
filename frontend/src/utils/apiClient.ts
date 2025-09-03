@@ -25,14 +25,22 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
     // 统一处理响应数据
-    if (response.data.code !== 200) {
-      return Promise.reject(response.data);
+    const { code, message, data } = response.data;
+    if (code !== 200) {
+      return Promise.reject({ code, message });
     }
-    return response.data.data;
+    return data; // 直接返回data字段
   },
   (error) => {
     // 统一处理错误
-    return Promise.reject(error);
+    if (error.response) {
+      const { code, message } = error.response.data;
+      return Promise.reject({ code, message });
+    }
+    return Promise.reject({
+      code: -1,
+      message: error.message || '网络错误'
+    });
   }
 );
 
