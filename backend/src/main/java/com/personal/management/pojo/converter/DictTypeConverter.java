@@ -6,7 +6,6 @@ import com.personal.management.pojo.entity.DictItem;
 import com.personal.management.pojo.entity.DictType;
 import com.personal.management.pojo.vo.DictTypeVo;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -14,21 +13,26 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DictTypeConverter {
 
+    // 保留单例实例（非 Spring 环境使用）
     DictTypeConverter INSTANCE = Mappers.getMapper(DictTypeConverter.class);
 
+    /**
+     * 实体转 DTO（核心映射方法，集合转换会自动复用）
+     */
+    DictTypeDto toDto(DictType dictType);
 
     /**
-     * 实体列表转DTO列表
+     * 实体列表转 DTO 列表（MapStruct 会自动调用 toDto() 处理每个元素）
      */
     List<DictTypeDto> toDtoList(List<DictType> dictTypes);
 
     /**
-     * DTO转VO
+     * DTO 转 VO
      */
     DictTypeVo toVo(DictTypeDto dictTypeDto);
 
     /**
-     * DTO列表转VO列表
+     * DTO 列表转 VO 列表（自动复用 toVo() 处理每个元素）
      */
     List<DictTypeVo> toVoList(List<DictTypeDto> dictTypeDtos);
 
@@ -36,16 +40,5 @@ public interface DictTypeConverter {
      * DictItemDto 转实体
      */
     DictItem itemToEntity(DictItemDto dictItemDto);
-
-    /**
-     * 静态方法保持向后兼容
-     */
-    static List<DictTypeDto> convertToDto(List<DictType> list) {
-        return INSTANCE.toDtoList(list);
-    }
-
-    static List<DictTypeVo> convert(List<DictTypeDto> dicts) {
-        return INSTANCE.toVoList(dicts);
-    }
 
 }

@@ -3,11 +3,8 @@ package com.personal.management.controller;
 import com.personal.management.base.IBaseController;
 import com.personal.management.base.IBaseService;
 import com.personal.management.common.ApiResult;
-import com.personal.management.pojo.converter.DictTypeConverter;
 import com.personal.management.pojo.dto.DictTypeDto;
 import com.personal.management.pojo.entity.DictType;
-import com.personal.management.pojo.request.DictTypeCreateRequest;
-import com.personal.management.pojo.vo.DictTypeVo;
 import com.personal.management.service.DictService;
 import com.personal.management.utils.DateTimeUtils;
 import com.personal.management.vo.DictResponse;
@@ -65,9 +62,8 @@ public class DictController extends IBaseController<DictType> {
             ),
             @ApiResponse(responseCode = "500", description = "服务器内部错误")
     })
-    public ApiResult<List<DictTypeVo>> getAllDicts() {
-        List<DictTypeDto> dicts = dictService.getAllDicts();
-        return ApiResult.success(DictTypeConverter.convert(dicts));
+    public List<DictTypeDto> getAllDicts() {
+        return dictService.getAllDicts();
     }
 
     /**
@@ -96,12 +92,8 @@ public class DictController extends IBaseController<DictType> {
      * @return 字典数据响应实体
      */
     @GetMapping("/{code}")
-    public ResponseEntity<DictResponse> getDict(@PathVariable String code) {
-        DictResponse resp = dictService.getDict(code);
-        if (resp == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(resp);
+    public DictTypeDto getDict(@PathVariable String code) {
+        return dictService.getDict(code);
     }
 
     /**
@@ -122,9 +114,8 @@ public class DictController extends IBaseController<DictType> {
      * @return 字典编码与字典数据的映射
      */
     @PostMapping("/batch")
-    public ResponseEntity<Map<String, DictResponse>> getBatch(@RequestBody List<String> codes) {
-        Map<String, DictResponse> result = dictService.getBatch(codes);
-        return ResponseEntity.ok(result);
+    public Map<String, DictTypeDto> getBatch(@RequestBody List<String> codes) {
+        return dictService.getBatch(codes);
     }
 
     /**
@@ -170,7 +161,7 @@ public class DictController extends IBaseController<DictType> {
                 data.put("dictCode", dictCode);
                 data.put("version", newVersion);
                 data.put("timestamp", System.currentTimeMillis());
-                
+
                 emitter.send(SseEmitter.event()
                         .name("dict-update")
                         .data(data));

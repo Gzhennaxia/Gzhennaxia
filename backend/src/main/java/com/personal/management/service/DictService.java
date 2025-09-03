@@ -17,11 +17,11 @@ public interface DictService extends IBaseService<DictType> {
 
     void bumpVersionAndEvict(String code, String version);
 
-    DictResponse getDict(String code);
+    DictTypeDto getDict(String code);
 
     Map<String, String> getVersions(List<String> codes);
 
-    Map<String, DictResponse> getBatch(List<String> codes);
+    Map<String, DictTypeDto> getBatch(List<String> codes);
 
     List<DictTypeDto> getAllDicts();
 

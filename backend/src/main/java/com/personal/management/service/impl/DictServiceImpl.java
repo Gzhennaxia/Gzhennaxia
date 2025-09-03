@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.personal.management.base.IBaseServiceImpl;
 import com.personal.management.mapper.DictItemMapper;
 import com.personal.management.mapper.DictTypeMapper;
+import com.personal.management.pojo.converter.DictItemConverter;
 import com.personal.management.pojo.converter.DictTypeConverter;
 import com.personal.management.pojo.dto.DictItemDto;
 import com.personal.management.pojo.dto.DictTypeDto;
 import com.personal.management.pojo.entity.DictItem;
 import com.personal.management.pojo.entity.DictType;
-import com.personal.management.pojo.request.DictTypeCreateRequest;
 import com.personal.management.service.DictService;
 import com.personal.management.vo.DictResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> implements DictService {
@@ -35,7 +38,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
      */
     @Override
     @Cacheable(cacheNames = "dict", key = "#code", unless = "#result == null")
-    public DictResponse getDict(String code) {
+    public DictTypeDto getDict(String code) {
         DictType type = baseMapper.selectOne(
                 new LambdaQueryWrapper<DictType>()
                         .eq(DictType::getCode, code)
@@ -48,18 +51,9 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
                         .eq(DictItem::getStatus, 1)
                         .orderByAsc(DictItem::getSort, DictItem::getId));
 
-        DictResponse resp = new DictResponse();
-        resp.setDictCode(code);
-        resp.setVersion(type.getVersion());
-        List<DictResponse.Item> list = new ArrayList<>();
-        for (DictItem it : items) {
-            DictResponse.Item vo = new DictResponse.Item();
-            vo.key = it.getItemKey();
-            vo.value = it.getItemValue();
-            vo.sort = it.getSort();
-            list.add(vo);
-        }
-        resp.setItems(list);
+        // convert
+        DictTypeDto resp = DictTypeConverter.INSTANCE.toDto(type);
+        resp.setDictItems(DictItemConverter.INSTANCE.toDtoList(items));
         return resp;
     }
 
@@ -88,11 +82,11 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
      * @return 字典编码与字典数据的映射
      */
     @Override
-    public Map<String, DictResponse> getBatch(List<String> codes) {
+    public Map<String, DictTypeDto> getBatch(List<String> codes) {
         if (codes == null || codes.isEmpty()) return Collections.emptyMap();
-        Map<String, DictResponse> result = new HashMap<>();
+        Map<String, DictTypeDto> result = new HashMap<>();
         for (String code : codes) {
-            DictResponse dict = getDict(code);
+            DictTypeDto dict = getDict(code);
             if (dict != null) {
                 result.put(code, dict);
             }
@@ -102,7 +96,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
 
     @Override
     public List<DictTypeDto> getAllDicts() {
-        return DictTypeConverter.convertToDto(this.list());
+        return DictTypeConverter.INSTANCE.toDtoList(this.list());
     }
 
     @Override
@@ -142,7 +136,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
                 dictItem.setSort(itemDto.getSort() != null ? itemDto.getSort() : i);
                 dictItem.setCreatedTime(LocalDateTime.now().toString());
                 dictItem.setUpdatedTime(LocalDateTime.now().toString());
-                
+
                 itemMapper.insert(dictItem);
             }
         }

@@ -4,7 +4,7 @@ import { DictType, DictItem, PageResult, PageParams } from '../types/dict';
 
 export const getDictDetail = async (code: string): Promise<DictType> => {
     try {
-        return await apiClient.get(`/api/dict/admin/${code}`);
+        return await apiClient.get(`/dict/${code}`);
     } catch (error) {
         console.error('Failed to fetch dict detail', error);
         throw error;
