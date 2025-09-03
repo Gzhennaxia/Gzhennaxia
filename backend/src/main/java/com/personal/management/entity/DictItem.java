@@ -13,5 +13,6 @@ public class DictItem {
     private Integer sort;
     private Integer status;
     private String remark;
-    private String updateTime;
+    private String createdTime;
+    private String updatedTime;
 }

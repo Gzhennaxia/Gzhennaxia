@@ -1,6 +1,7 @@
 package com.personal.management.base;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.personal.management.common.ApiResponse;
 import com.personal.management.pojo.converter.PageConverter;
 import com.personal.management.pojo.dto.PageDto;
 import com.personal.management.pojo.request.PageRequest;

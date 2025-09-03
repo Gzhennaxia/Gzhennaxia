@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.management.entity.DictType;
 import com.personal.management.service.DictService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,6 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -30,8 +34,16 @@ public class DictControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    void printDataSource() throws SQLException {
+        // 打印测试环境连接的数据库URL
+        log.info("测试数据库连接: {}", dataSource.getConnection().getMetaData().getURL());
+    }
 
     /**
      * 使用Java 17文本块（Text Blocks）定义JSON请求参数
@@ -46,9 +58,9 @@ public class DictControllerTest {
               "pageSize": 10,
               "query": {
                 "id": 123,
-                "type_like": "EAD",
-                "createTime_le": "2025-08-28 18:32:26",
-                "createTime_ge": "2025-08-28 18:32:26"
+                "code_like": "EAD",
+                "createdTime_le": "2025-08-28 18:32:26",
+                "createdTime_ge": "2025-08-28 18:32:26"
               },
               "sort": {
                 "createTime": "desc"

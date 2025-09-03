@@ -1,6 +1,6 @@
 package com.personal.management.controller;
 
-import com.personal.management.dto.ApiResponse;
+import com.personal.management.common.ApiResponse;
 import com.personal.management.dto.TaskCreateRequest;
 import com.personal.management.dto.TaskDTO;
 import com.personal.management.service.TaskService;
