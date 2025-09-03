@@ -110,7 +110,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
                 new LambdaQueryWrapper<DictType>().eq(DictType::getCode, code));
         if (type == null) return;
         type.setVersion(newVersion);
-        type.setUpdateTime(LocalDateTime.now().toString());
+        type.setUpdatedTime(LocalDateTime.now().toString());
         baseMapper.updateById(type);
     }
 

@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:data/gzhennaxia.sqlite
+    url: jdbc:sqlite:data/gzhennaxia-prod.sqlite
     username:
     password:
 

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Configuration
 public class MyBatisPlusConfig {
 
-    @Bean
+    //@Bean
     public MetaObjectHandler metaObjectHandler() {
         return new MetaObjectHandler() {
             @Override

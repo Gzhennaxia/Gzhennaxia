@@ -3,11 +3,11 @@ package com.personal.management.base;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personal.management.pojo.dto.PageDto;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,17 +21,17 @@ public abstract class IBaseServiceImpl<M extends BaseMapper<T>, T> extends Servi
         QueryWrapper<T> wrapper = new QueryWrapper<>();
 
         if (pageDto != null) {
-            Class<?> clazz = getEntityClass();
-            Field[] fields = clazz.getDeclaredFields();
             Map<String, Object> queryParams = pageDto.getQuery();
             if (queryParams != null && !queryParams.isEmpty()) {
                 for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
                     String[] s = key.split("_");
-                    String fieldName = s[0];
-                    String opt = Optional.ofNullable(s[1]).orElse("eq");
-
+                    String fieldName = StringUtils.camelToUnderline(s[0]);
+                    String opt = "eq";
+                    if (s.length > 1) {
+                        opt = Optional.ofNullable(s[1]).orElse("eq");
+                    }
                     switch (opt) {
                         case "eq":
                             wrapper.eq(fieldName, value);

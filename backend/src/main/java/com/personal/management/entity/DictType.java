@@ -12,5 +12,6 @@ public class DictType {
     private String version;
     private Integer status;
     private String remark;
-    private String updateTime;
+    private String createdTime;
+    private String updatedTime;
 }
