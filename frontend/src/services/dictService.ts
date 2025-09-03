@@ -1,40 +1,6 @@
 import DictCacheManager from './dictCacheManager';
 import apiClient from '../utils/apiClient';
-
-interface DictType {
-    id: number;
-    code: string;
-    name: string;
-    version: string;
-    status: number;
-    remark?: string;
-    items?: DictItem[];
-}
-
-interface DictItem {
-    id: number;
-    type_code: string;
-    item_key: string;
-    item_value: string;
-    sort: number;
-    status: number;
-    remark?: string;
-}
-
-interface PageResult<T> {
-    records: T[];
-    total: number;
-    size: number;
-    current: number;
-    pages: number;
-}
-
-interface PageParams {
-    pageNo: number;
-    pageSize: number;
-    query?: Record<string, any>;
-    sort?: Record<string, 'asc' | 'desc'>;
-}
+import { DictType, DictItem, PageResult, PageParams } from '../types/dict';
 
 export const getDictDetail = async (code: string): Promise<DictType> => {
     try {
@@ -47,7 +13,7 @@ export const getDictDetail = async (code: string): Promise<DictType> => {
 
 export const getDictList = async (): Promise<DictType[]> => {
     try {
-        const data = await apiClient.get('/dict');
+        const data: DictType[] = await apiClient.get('/dict');
         // 更新缓存
         data.forEach((dict: DictType) => {
             DictCacheManager.updateDict(dict);
@@ -79,7 +45,8 @@ export const getDictItems = async (code: string): Promise<DictItem[]> => {
 
 export const createDict = async (data: Omit<DictType, 'id'>): Promise<DictType> => {
     try {
-        const result = await apiClient.post('/dict', data);
+        const response = await apiClient.post('/dict', data);
+        const result = response.data;
         DictCacheManager.updateDict(result);
         return result;
     } catch (error) {
@@ -94,7 +61,7 @@ export const updateDict = async (code: string, data: Partial<DictType>): Promise
         // 更新缓存
         const current = DictCacheManager.getDict(code);
         if (current) {
-            DictCacheManager.updateDict({ ...current, ...data });
+            DictCacheManager.updateDict({ ...current, ...data } as DictType);
         }
     } catch (error) {
         console.error('Failed to update dict', error);

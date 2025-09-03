@@ -1,26 +1,4 @@
-interface DictItem {
-    id: number;
-    type_code: string;
-    item_key: string;
-    item_value: string;
-    sort: number;
-    status: number;
-    remark?: string;
-    created_time: string;
-    updated_time: string;
-}
-
-interface DictType {
-    id: number;
-    code: string;
-    name: string;
-    version: string;
-    status: number;
-    remark?: string;
-    created_time: string;
-    updated_time: string;
-    items?: DictItem[];
-}
+import { DictType, DictItem } from '../types/dict';
 
 class DictCacheManager {
     private memoryCache: Map<string, DictType> = new Map();

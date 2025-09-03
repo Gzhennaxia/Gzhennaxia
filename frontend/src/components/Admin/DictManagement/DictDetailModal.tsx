@@ -1,22 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Descriptions, Tag, Button } from 'antd';
 import { getDictDetail } from '../../../services/dictService';
-
-interface DictType {
-    id: number;
-    code: string;
-    name: string;
-    version: string;
-    status: number;
-    remark?: string;
-    items?: Array<{
-        id: number;
-        item_key: string;
-        item_value: string;
-        status: number;
-        sort: number;
-    }>;
-}
+import { DictType } from '../../../types/dict';
 
 interface DictDetailModalProps {
     open: boolean;

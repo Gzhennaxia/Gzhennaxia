@@ -8,14 +8,7 @@ import DictFormModal from './DictFormModal';
 import DictDetailModal from './DictDetailModal';
 import dayjs from 'dayjs';
 
-interface DictType {
-    id: number;
-    code: string;
-    name: string;
-    version: string;
-    status: number;
-    remark?: string;
-}
+import { DictType, PageParams } from '../../../types/dict';
 
 const DictList: React.FC = () => {
     const [dicts, setDicts] = useState<DictType[]>([]);

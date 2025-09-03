@@ -83,11 +83,10 @@ public class DictController extends IBaseController<DictType> {
             responseCode = "200",
             description = "新增成功"
     )
-    public DictTypeVo addDict(
+    public DictTypeDto addDict(
             @Parameter(description = "字典新增参数（包含子项）", required = true)
             @Valid @RequestBody DictTypeDto dictDto) {
-        DictTypeDto savedDict = dictService.addDict(dictDto);
-        return DictTypeConverter.convert(savedDict);
+        return dictService.addDict(dictDto);
     }
 
     /**
