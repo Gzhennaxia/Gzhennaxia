@@ -38,13 +38,20 @@ const App: React.FC = () => {
   return (
     <ConfigProvider locale={zhCN}>
       <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<TaskList />} />
-            <Route path="/calendar" element={<CalendarView />} />
-            <Route path="/admin/*" element={<AdminRoutes />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          {/* 管理后台路由 - 独立布局 */}
+          <Route path="/admin/*" element={<AdminRoutes />} />
+          
+          {/* 主应用路由 - 使用全局Layout */}
+          <Route path="/*" element={
+            <Layout>
+              <Routes>
+                <Route path="/" element={<TaskList />} />
+                <Route path="/calendar" element={<CalendarView />} />
+              </Routes>
+            </Layout>
+          } />
+        </Routes>
       </Router>
     </ConfigProvider>
   );

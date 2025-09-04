@@ -26,4 +26,8 @@ public interface DictService extends IBaseService<DictType> {
     List<DictTypeDto> getAllDicts();
 
     DictTypeDto addDict(DictTypeDto dictTypeDto);
+
+    void updateDictStatus(String code, Integer status);
+
+    void softDeleteDict(String code);
 }

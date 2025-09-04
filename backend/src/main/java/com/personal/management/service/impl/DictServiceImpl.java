@@ -42,7 +42,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
         DictType type = baseMapper.selectOne(
                 new LambdaQueryWrapper<DictType>()
                         .eq(DictType::getCode, code)
-                        .eq(DictType::getStatus, 1));
+                        .eq(DictType::getStatus, 1)
+                        .eq(DictType::getDeleted, false));
         if (type == null) return null;
 
         List<DictItem> items = itemMapper.selectList(
@@ -96,7 +97,12 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
 
     @Override
     public List<DictTypeDto> getAllDicts() {
-        return DictTypeConverter.INSTANCE.toDtoList(this.list());
+        List<DictType> dictTypes = baseMapper.selectList(
+                new LambdaQueryWrapper<DictType>()
+                        .eq(DictType::getDeleted, false)
+                        .orderByDesc(DictType::getCreatedTime)
+        );
+        return DictTypeConverter.INSTANCE.toDtoList(dictTypes);
     }
 
     @Override
@@ -164,5 +170,43 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
         baseMapper.updateById(type);
     }
 
+    /**
+     * 更新字典状态
+     *
+     * @param code   字典编码
+     * @param status 状态值
+     */
+    @Override
+    @CacheEvict(cacheNames = "dict", key = "#code")
+    @Transactional
+    public void updateDictStatus(String code, Integer status) {
+        DictType type = baseMapper.selectOne(
+                new LambdaQueryWrapper<DictType>().eq(DictType::getCode, code));
+        if (type == null) {
+            throw new RuntimeException("字典不存在: " + code);
+        }
+        type.setStatus(status);
+        type.setUpdatedTime(LocalDateTime.now().toString());
+        baseMapper.updateById(type);
+    }
+
+    /**
+     * 软删除字典
+     *
+     * @param code 字典编码
+     */
+    @Override
+    @CacheEvict(cacheNames = "dict", key = "#code")
+    @Transactional
+    public void softDeleteDict(String code) {
+        DictType type = baseMapper.selectOne(
+                new LambdaQueryWrapper<DictType>().eq(DictType::getCode, code));
+        if (type == null) {
+            throw new RuntimeException("字典不存在: " + code);
+        }
+        type.setDeleted(true);
+        type.setUpdatedTime(LocalDateTime.now().toString());
+        baseMapper.updateById(type);
+    }
 
 }

@@ -149,6 +149,81 @@ public class DictController extends IBaseController<DictType> {
     }
 
     /**
+     * 更新字典状态
+     *
+     * @param code 字典编码
+     * @param statusMap 状态映射
+     * @return 更新结果
+     */
+    @PutMapping("/{code}/status")
+    @Operation(
+            summary = "更新字典状态",
+            description = "启用或禁用指定的字典"
+    )
+    public ResponseEntity<ApiResult<Void>> updateDictStatus(
+            @PathVariable String code,
+            @RequestBody Map<String, Integer> statusMap) {
+        try {
+            Integer status = statusMap.get("status");
+            dictService.updateDictStatus(code, status);
+            return ResponseEntity.ok(ApiResult.success(null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResult.error(500, "状态更新失败: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 删除字典（软删除）
+     *
+     * @param code 字典编码
+     * @return 删除结果
+     */
+    @DeleteMapping("/{code}")
+    @Operation(
+            summary = "删除字典",
+            description = "软删除指定的字典，不会物理删除数据"
+    )
+    public ResponseEntity<ApiResult<Void>> deleteDict(@PathVariable String code) {
+        try {
+            dictService.softDeleteDict(code);
+            return ResponseEntity.ok(ApiResult.success(null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResult.error(500, "删除失败: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 更新字典状态
+     */
+    @PutMapping("/{code}/status")
+    @Operation(summary = "更新字典状态", description = "启用或禁用指定的字典")
+    public ResponseEntity<ApiResult<Void>> updateDictStatus(
+            @PathVariable String code,
+            @RequestBody Map<String, Integer> statusMap) {
+        try {
+            Integer status = statusMap.get("status");
+            dictService.updateDictStatus(code, status);
+            return ResponseEntity.ok(ApiResult.success(null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResult.error(500, "状态更新失败: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 删除字典（软删除）
+     */
+    @DeleteMapping("/{code}")
+    @Operation(summary = "删除字典", description = "软删除指定的字典，不会物理删除数据")
+    public ResponseEntity<ApiResult<Void>> deleteDict(@PathVariable String code) {
+        try {
+            dictService.softDeleteDict(code);
+            return ResponseEntity.ok(ApiResult.success(null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResult.error(500, "删除失败: " + e.getMessage()));
+        }
+    }
+
+    /**
      * 通知所有客户端字典变更
      *
      * @param dictCode   字典编码

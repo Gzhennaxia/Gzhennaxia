@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, message, Form, Input, DatePicker, Modal } from 'antd';
+import { Table, Button, Space, message, Form, Input, DatePicker, Modal, Switch } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import DictCacheManager from '../../../services/dictCacheManager';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EyeOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { getDictList, deleteDict, getDictPage } from '../../../services/dictService';
 import DictFormModal from './DictFormModal';
 import DictDetailModal from './DictDetailModal';
@@ -16,6 +16,7 @@ const DictList: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [detailVisible, setDetailVisible] = useState(false);
     const [currentDict, setCurrentDict] = useState<string>();
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
@@ -43,7 +44,14 @@ const DictList: React.FC = () => {
             title: '状态',
             dataIndex: 'status',
             key: 'status',
-            render: (status) => (status === 1 ? '启用' : '禁用'),
+            render: (status: number, record: DictType) => (
+                <Switch
+                    checked={status === 1}
+                    onChange={(checked) => handleStatusChange(record.code, checked)}
+                    checkedChildren="启用"
+                    unCheckedChildren="禁用"
+                />
+            ),
         },
         {
             title: '创建时间',
@@ -77,6 +85,13 @@ const DictList: React.FC = () => {
                     />
                     <Button
                         type="text"
+                        icon={record.status === 1 ? <StopOutlined /> : <CheckOutlined />}
+                        onClick={() => handleStatusChange(record.code, record.status !== 1)}
+                    >
+                        {record.status === 1 ? '禁用' : '启用'}
+                    </Button>
+                    <Button
+                        type="text"
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => handleDelete(record.code)}
@@ -106,7 +121,7 @@ const DictList: React.FC = () => {
                 pageNo: pagination.current,
                 pageSize: pagination.pageSize,
                 query,
-                sort: { created_time: 'desc' }
+                sort: { created_time: 'desc' as 'desc' }
             };
 
             const { records, total } = await getDictPage(params);
@@ -120,8 +135,80 @@ const DictList: React.FC = () => {
     };
 
     const handleEdit = (record: DictType) => {
-        // TODO: 跳转到编辑页面
-        console.log('Edit:', record);
+        setCurrentDict(record.code);
+        setDetailVisible(true);
+    };
+
+    const handleStatusChange = async (code: string, enabled: boolean) => {
+        try {
+            // 调用API更新状态
+            const response = await fetch(`/api/dict/${code}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: enabled ? 1 : 0 }),
+            });
+            
+            if (response.ok) {
+                message.success(enabled ? '启用成功' : '禁用成功');
+                fetchDicts();
+            } else {
+                message.error('状态更新失败');
+            }
+        } catch (error) {
+            message.error('状态更新失败');
+        }
+    };
+
+    const handleBatchEnable = async () => {
+        if (selectedRowKeys.length === 0) {
+            message.warning('请选择要启用的字典项');
+            return;
+        }
+        try {
+            await Promise.all(
+                selectedRowKeys.map(code => 
+                    fetch(`/api/dict/${code}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ status: 1 }),
+                    })
+                )
+            );
+            message.success('批量启用成功');
+            fetchDicts();
+            setSelectedRowKeys([]);
+        } catch (error) {
+            message.error('批量启用失败');
+        }
+    };
+
+    const handleBatchDisable = async () => {
+        if (selectedRowKeys.length === 0) {
+            message.warning('请选择要禁用的字典项');
+            return;
+        }
+        try {
+            await Promise.all(
+                selectedRowKeys.map(code => 
+                    fetch(`/api/dict/${code}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ status: 0 }),
+                    })
+                )
+            );
+            message.success('批量禁用成功');
+            fetchDicts();
+            setSelectedRowKeys([]);
+        } catch (error) {
+            message.error('批量禁用失败');
+        }
     };
 
     const handleDelete = async (code: string) => {
@@ -175,13 +262,29 @@ const DictList: React.FC = () => {
                     <Button onClick={handleReset}>重置</Button>
                 </Form.Item>
                 <Form.Item>
-                    <Button
-                      type="primary"
-                      icon={<PlusOutlined />}
-                      onClick={() => setModalVisible(true)}
-                    >
-                        新增字典
-                    </Button>
+                    <Space>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setModalVisible(true)}
+                        >
+                            新增字典
+                        </Button>
+                        <Button 
+                            icon={<CheckOutlined />} 
+                            onClick={handleBatchEnable}
+                            disabled={selectedRowKeys.length === 0}
+                        >
+                            批量启用
+                        </Button>
+                        <Button 
+                            icon={<StopOutlined />} 
+                            onClick={handleBatchDisable}
+                            disabled={selectedRowKeys.length === 0}
+                        >
+                            批量禁用
+                        </Button>
+                    </Space>
                 </Form.Item>
             </Form>
             <Table
@@ -191,6 +294,10 @@ const DictList: React.FC = () => {
                 loading={loading}
                 pagination={pagination}
                 onChange={handleTableChange}
+                rowSelection={{
+                    selectedRowKeys,
+                    onChange: setSelectedRowKeys,
+                }}
             />
             <DictFormModal
               open={modalVisible}
