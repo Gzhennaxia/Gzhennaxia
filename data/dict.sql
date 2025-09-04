@@ -1,9 +1,9 @@
 -- 字典表
-CREATE TABLE IF NOT EXISTS dict_type
+CREATE TABLE IF NOT EXISTS dict
 (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    code         TEXT    NOT NULL UNIQUE,    -- 例如 ORDER_STATUS、GENDER
-    name         TEXT    NOT NULL,           -- 展示名称
+    dict_code         TEXT    NOT NULL UNIQUE,    -- 例如 ORDER_STATUS、GENDER
+    dict_name         TEXT    NOT NULL,           -- 展示名称
     version      TEXT    NOT NULL,           -- 例如 2025090101（日期+递增）或 UUID
     status       INTEGER NOT NULL DEFAULT 1, -- 1=启用, 0=禁用
     deleted      INTEGER NOT NULL DEFAULT 0, -- 0=未删除, 1=已删除
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS dict_type
     updated_time DATETIME         default CURRENT_TIMESTAMP
 );
 -- 初始化5条
-INSERT INTO dict_type (code, name, version)
+INSERT INTO dict (dict_code, dict_name, version)
 VALUES ('ORDER_STATUS', '订单状态', '2025090101'),
        ('GENDER', '性别', '2025090102'),
        ('PAYMENT_METHOD', '支付方式', '2025090103'),
@@ -24,7 +24,7 @@ VALUES ('ORDER_STATUS', '订单状态', '2025090101'),
 CREATE TABLE IF NOT EXISTS dict_item
 (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    type_code    TEXT    NOT NULL,           -- 外键：dict_type.code
+    type_code    TEXT    NOT NULL,           -- 外键：dict.dict_code
     item_key     TEXT    NOT NULL,           -- 业务代码，例如 PENDING、DONE
     item_value   TEXT    NOT NULL,           -- 展示文案，例如 待处理、已完成
     sort         INTEGER NOT NULL DEFAULT 0,

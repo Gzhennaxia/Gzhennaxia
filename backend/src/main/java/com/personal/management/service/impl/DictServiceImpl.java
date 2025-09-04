@@ -3,13 +3,13 @@ package com.personal.management.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.personal.management.base.IBaseServiceImpl;
 import com.personal.management.mapper.DictItemMapper;
-import com.personal.management.mapper.DictTypeMapper;
+import com.personal.management.mapper.DictMapper;
+import com.personal.management.pojo.converter.DictConverter;
 import com.personal.management.pojo.converter.DictItemConverter;
-import com.personal.management.pojo.converter.DictTypeConverter;
+import com.personal.management.pojo.dto.DictDto;
 import com.personal.management.pojo.dto.DictItemDto;
-import com.personal.management.pojo.dto.DictTypeDto;
+import com.personal.management.pojo.entity.Dict;
 import com.personal.management.pojo.entity.DictItem;
-import com.personal.management.pojo.entity.DictType;
 import com.personal.management.service.DictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> implements DictService {
+public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implements DictService {
 
     @Autowired
     private DictItemMapper dictItemMapper;
@@ -37,12 +37,12 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
      */
     @Override
     @Cacheable(cacheNames = "dict", key = "#code", unless = "#result == null")
-    public DictTypeDto getDict(String code) {
-        DictType type = baseMapper.selectOne(
-                new LambdaQueryWrapper<DictType>()
-                        .eq(DictType::getCode, code)
-                        .eq(DictType::getStatus, 1)
-                        .eq(DictType::getDeleted, false));
+    public DictDto getDict(String code) {
+        Dict type = baseMapper.selectOne(
+                new LambdaQueryWrapper<Dict>()
+                        .eq(Dict::getDictCode, code)
+                        .eq(Dict::getStatus, 1)
+                        .eq(Dict::getDeleted, false));
         if (type == null) return null;
 
         List<DictItem> items = dictItemMapper.selectList(
@@ -52,7 +52,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
                         .orderByAsc(DictItem::getSort, DictItem::getId));
 
         // convert
-        DictTypeDto resp = DictTypeConverter.INSTANCE.toDto(type);
+        DictDto resp = DictConverter.INSTANCE.toDto(type);
         resp.setDictItems(DictItemConverter.INSTANCE.toDtoList(items));
         return resp;
     }
@@ -66,12 +66,12 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
     @Override
     public Map<String, String> getVersions(List<String> codes) {
         if (codes == null || codes.isEmpty()) return Collections.emptyMap();
-        List<DictType> types = baseMapper.selectList(
-                new LambdaQueryWrapper<DictType>()
-                        .in(DictType::getCode, codes)
-                        .eq(DictType::getStatus, 1));
+        List<Dict> types = baseMapper.selectList(
+                new LambdaQueryWrapper<Dict>()
+                        .in(Dict::getDictCode, codes)
+                        .eq(Dict::getStatus, 1));
         Map<String, String> map = new HashMap<>();
-        for (DictType t : types) map.put(t.getCode(), t.getVersion());
+        for (Dict t : types) map.put(t.getDictCode(), t.getVersion());
         return map;
     }
 
@@ -82,11 +82,11 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
      * @return 字典编码与字典数据的映射
      */
     @Override
-    public Map<String, DictTypeDto> getBatch(List<String> codes) {
+    public Map<String, DictDto> getBatch(List<String> codes) {
         if (codes == null || codes.isEmpty()) return Collections.emptyMap();
-        Map<String, DictTypeDto> result = new HashMap<>();
+        Map<String, DictDto> result = new HashMap<>();
         for (String code : codes) {
-            DictTypeDto dict = getDict(code);
+            DictDto dict = getDict(code);
             if (dict != null) {
                 result.put(code, dict);
             }
@@ -95,46 +95,46 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
     }
 
     @Override
-    public List<DictTypeDto> getAllDicts() {
-        List<DictType> dictTypes = baseMapper.selectList(
-                new LambdaQueryWrapper<DictType>()
-                        .eq(DictType::getDeleted, false)
-                        .orderByDesc(DictType::getCreatedTime)
+    public List<DictDto> getAllDicts() {
+        List<Dict> dicts = baseMapper.selectList(
+                new LambdaQueryWrapper<Dict>()
+                        .eq(Dict::getDeleted, false)
+                        .orderByDesc(Dict::getCreatedTime)
         );
-        return DictTypeConverter.INSTANCE.toDtoList(dictTypes);
+        return DictConverter.INSTANCE.toDtoList(dicts);
     }
 
     @Override
     @Transactional
-    public DictTypeDto addDict(DictTypeDto dictTypeDto) {
+    public DictDto addDict(DictDto dictDto) {
         // 1. 检查字典编码是否已存在
-        DictType existingDict = baseMapper.selectOne(
-                new LambdaQueryWrapper<DictType>()
-                        .eq(DictType::getCode, dictTypeDto.getCode())
+        Dict existingDict = baseMapper.selectOne(
+                new LambdaQueryWrapper<Dict>()
+                        .eq(Dict::getDictCode, dictDto.getDictCode())
         );
         if (existingDict != null) {
-            throw new RuntimeException("字典编码已存在: " + dictTypeDto.getCode());
+            throw new RuntimeException("字典编码已存在: " + dictDto.getDictCode());
         }
 
         // 2. 创建字典类型
-        DictType dictType = new DictType();
-        dictType.setCode(dictTypeDto.getCode());
-        dictType.setName(dictTypeDto.getName());
-        dictType.setVersion(dictTypeDto.getVersion() != null ? dictTypeDto.getVersion() : "1");
-        dictType.setStatus(dictTypeDto.getStatus() != null ? dictTypeDto.getStatus() : 1);
-        dictType.setRemark(dictTypeDto.getRemark());
-        dictType.setCreatedTime(LocalDateTime.now().toString());
-        dictType.setUpdatedTime(LocalDateTime.now().toString());
+        Dict dict = new Dict();
+        dict.setDictCode(dictDto.getDictCode());
+        dict.setDictName(dictDto.getDictName());
+        dict.setVersion(dictDto.getVersion() != null ? dictDto.getVersion() : "1");
+        dict.setStatus(dictDto.getStatus() != null ? dictDto.getStatus() : 1);
+        dict.setRemark(dictDto.getRemark());
+        dict.setCreatedTime(LocalDateTime.now().toString());
+        dict.setUpdatedTime(LocalDateTime.now().toString());
 
         // 3. 保存字典类型
-        baseMapper.insert(dictType);
+        baseMapper.insert(dict);
 
         // 4. 保存字典项
-        if (dictTypeDto.getDictItems() != null && !dictTypeDto.getDictItems().isEmpty()) {
-            for (int i = 0; i < dictTypeDto.getDictItems().size(); i++) {
-                DictItemDto itemDto = dictTypeDto.getDictItems().get(i);
+        if (dictDto.getDictItems() != null && !dictDto.getDictItems().isEmpty()) {
+            for (int i = 0; i < dictDto.getDictItems().size(); i++) {
+                DictItemDto itemDto = dictDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
-                dictItem.setTypeCode(dictTypeDto.getCode());
+                dictItem.setTypeCode(dictDto.getDictCode());
                 dictItem.setItemKey(itemDto.getItemKey());
                 dictItem.setItemValue(itemDto.getItemValue());
                 dictItem.setStatus(itemDto.getStatus() != null ? itemDto.getStatus() : 1);
@@ -147,8 +147,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
         }
 
         // 5. 返回创建的字典信息
-        dictTypeDto.setId(dictType.getId());
-        return dictTypeDto;
+        dictDto.setId(dict.getId());
+        return dictDto;
     }
 
     /**
@@ -161,8 +161,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
     @CacheEvict(cacheNames = "dict", key = "#code")
     @Transactional
     public void bumpVersionAndEvict(String code, String newVersion) {
-        DictType type = baseMapper.selectOne(
-                new LambdaQueryWrapper<DictType>().eq(DictType::getCode, code));
+        Dict type = baseMapper.selectOne(
+                new LambdaQueryWrapper<Dict>().eq(Dict::getDictCode, code));
         if (type == null) return;
         type.setVersion(newVersion);
         type.setUpdatedTime(LocalDateTime.now().toString());
@@ -179,8 +179,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
     @CacheEvict(cacheNames = "dict", key = "#code")
     @Transactional
     public void updateDictStatus(String code, Integer status) {
-        DictType type = baseMapper.selectOne(
-                new LambdaQueryWrapper<DictType>().eq(DictType::getCode, code));
+        Dict type = baseMapper.selectOne(
+                new LambdaQueryWrapper<Dict>().eq(Dict::getDictCode, code));
         if (type == null) {
             throw new RuntimeException("字典不存在: " + code);
         }
@@ -198,8 +198,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
     @CacheEvict(cacheNames = "dict", key = "#code")
     @Transactional
     public void softDeleteDict(String code) {
-        DictType type = baseMapper.selectOne(
-                new LambdaQueryWrapper<DictType>().eq(DictType::getCode, code));
+        Dict type = baseMapper.selectOne(
+                new LambdaQueryWrapper<Dict>().eq(Dict::getDictCode, code));
         if (type == null) {
             throw new RuntimeException("字典不存在: " + code);
         }
@@ -209,22 +209,22 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
 
     @Override
     @Transactional
-    public DictTypeDto updateDict(DictTypeDto dictTypeDto) {
+    public DictDto updateDict(DictDto dictDto) {
         // 查找现有字典
-        DictType existingDict = baseMapper.selectOne(
-                new LambdaQueryWrapper<DictType>()
-                        .eq(DictType::getCode, dictTypeDto.getCode())
-                        .eq(DictType::getDeleted, 0));
+        Dict existingDict = baseMapper.selectOne(
+                new LambdaQueryWrapper<Dict>()
+                        .eq(Dict::getDictCode, dictDto.getDictCode())
+                        .eq(Dict::getDeleted, 0));
         
         if (existingDict == null) {
-            throw new RuntimeException("字典不存在: " + dictTypeDto.getCode());
+            throw new RuntimeException("字典不存在: " + dictDto.getDictCode());
         }
 
         // 更新字典基本信息
-        existingDict.setName(dictTypeDto.getName());
-        existingDict.setVersion(dictTypeDto.getVersion());
-        existingDict.setStatus(dictTypeDto.getStatus());
-        existingDict.setRemark(dictTypeDto.getRemark());
+        existingDict.setDictName(dictDto.getDictName());
+        existingDict.setVersion(dictDto.getVersion());
+        existingDict.setStatus(dictDto.getStatus());
+        existingDict.setRemark(dictDto.getRemark());
         existingDict.setUpdatedTime(LocalDateTime.now().toString());
 
         // 保存字典
@@ -232,14 +232,14 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
 
         // 删除现有的字典项
         dictItemMapper.delete(new LambdaQueryWrapper<DictItem>()
-                .eq(DictItem::getTypeCode, existingDict.getCode()));
+                .eq(DictItem::getTypeCode, existingDict.getDictCode()));
 
         // 添加新的字典项
-        if (dictTypeDto.getDictItems() != null && !dictTypeDto.getDictItems().isEmpty()) {
-            for (int i = 0; i < dictTypeDto.getDictItems().size(); i++) {
-                var itemDto = dictTypeDto.getDictItems().get(i);
+        if (dictDto.getDictItems() != null && !dictDto.getDictItems().isEmpty()) {
+            for (int i = 0; i < dictDto.getDictItems().size(); i++) {
+                var itemDto = dictDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
-                dictItem.setTypeCode(existingDict.getCode());
+                dictItem.setTypeCode(existingDict.getDictCode());
                 dictItem.setItemKey(itemDto.getItemKey());
                 dictItem.setItemValue(itemDto.getItemValue());
                 dictItem.setStatus(itemDto.getStatus());
@@ -251,10 +251,10 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
         }
 
         // 更新版本号并清理缓存
-        bumpVersionAndEvict(existingDict.getCode(), String.valueOf(existingDict.getVersion()));
+        bumpVersionAndEvict(existingDict.getDictCode(), String.valueOf(existingDict.getVersion()));
 
         // 转换为DTO返回
-        return getDict(existingDict.getCode());
+        return getDict(existingDict.getDictCode());
     }
 
 }

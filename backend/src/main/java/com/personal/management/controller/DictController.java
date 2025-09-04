@@ -3,8 +3,8 @@ package com.personal.management.controller;
 import com.personal.management.base.IBaseController;
 import com.personal.management.base.IBaseService;
 import com.personal.management.common.ApiResult;
-import com.personal.management.pojo.dto.DictTypeDto;
-import com.personal.management.pojo.entity.DictType;
+import com.personal.management.pojo.dto.DictDto;
+import com.personal.management.pojo.entity.Dict;
 import com.personal.management.service.DictService;
 import com.personal.management.utils.DateTimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,13 +29,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping("/api/dict")
 @Tag(name = "字典管理", description = "字典的查询、新增、修改、删除接口") // 类级别分组
-public class DictController extends IBaseController<DictType> {
+public class DictController extends IBaseController<Dict> {
 
     @Autowired
     private DictService dictService;
 
     @Override
-    protected IBaseService<DictType> getBaseService() {
+    protected IBaseService<Dict> getBaseService() {
         return dictService;
     }
 
@@ -51,7 +51,7 @@ public class DictController extends IBaseController<DictType> {
             @ApiResponse(responseCode = "200", description = "查询成功", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResult.class))),
             @ApiResponse(responseCode = "500", description = "服务器内部错误")
     })
-    public List<DictTypeDto> getAllDicts() {
+    public List<DictDto> getAllDicts() {
         return dictService.getAllDicts();
     }
 
@@ -62,14 +62,14 @@ public class DictController extends IBaseController<DictType> {
     @PostMapping
     @Operation(summary = "新增字典", description = "创建新的字典及其子项，字典编码唯一，子项至少包含一条")
     @ApiResponse(responseCode = "200", description = "新增成功")
-    public DictTypeDto addDict(
+    public DictDto addDict(
             @Parameter(description = "字典新增参数（包含子项）", required = true)
-            @Valid @RequestBody DictTypeDto dictDto) {
+            @Valid @RequestBody DictDto dictDto) {
         // 新增时设置初始版本号为1
         //dictDto.setVersion(1);
-        DictTypeDto result = dictService.addDict(dictDto);
+        DictDto result = dictService.addDict(dictDto);
         // 通知客户端字典变更
-        notifyClients(result.getCode(), String.valueOf(result.getVersion()));
+        notifyClients(result.getDictCode(), String.valueOf(result.getVersion()));
         return result;
     }
 
@@ -80,7 +80,7 @@ public class DictController extends IBaseController<DictType> {
      * @return 字典数据响应实体
      */
     @GetMapping("/{code}")
-    public DictTypeDto getDict(@PathVariable String code) {
+    public DictDto getDict(@PathVariable String code) {
         return dictService.getDict(code);
     }
 
@@ -91,18 +91,18 @@ public class DictController extends IBaseController<DictType> {
     @PutMapping("/{code}")
     @Operation(summary = "修改字典", description = "更新指定字典及其子项，版本号自动递增")
     @ApiResponse(responseCode = "200", description = "修改成功")
-    public DictTypeDto updateDict(
+    public DictDto updateDict(
             @PathVariable String code,
             @Parameter(description = "字典修改参数（包含子项）", required = true)
-            @Valid @RequestBody DictTypeDto dictDto) {
+            @Valid @RequestBody DictDto dictDto) {
         // 获取当前字典的版本号
-        DictTypeDto currentDict = dictService.getDict(code);
+        DictDto currentDict = dictService.getDict(code);
         // 修改时版本号递增
         dictDto.setVersion(currentDict.getVersion() + 1);
-        dictDto.setCode(code); // 确保编码一致
-        DictTypeDto result = dictService.updateDict(dictDto);
+        dictDto.setDictCode(code); // 确保编码一致
+        DictDto result = dictService.updateDict(dictDto);
         // 通知客户端字典变更
-        notifyClients(result.getCode(), String.valueOf(result.getVersion()));
+        notifyClients(result.getDictCode(), String.valueOf(result.getVersion()));
         return result;
     }
 
@@ -124,7 +124,7 @@ public class DictController extends IBaseController<DictType> {
      * @return 字典编码与字典数据的映射
      */
     @PostMapping("/batch")
-    public Map<String, DictTypeDto> getBatch(@RequestBody List<String> codes) {
+    public Map<String, DictDto> getBatch(@RequestBody List<String> codes) {
         return dictService.getBatch(codes);
     }
 

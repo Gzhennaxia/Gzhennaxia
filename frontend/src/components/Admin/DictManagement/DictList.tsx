@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Space, message, Form, Input, DatePicker, Modal, Switch } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import DictCacheManager from '../../../services/dictCacheManager';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EyeOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons';
-import { getDictList, deleteDict, getDictPage } from '../../../services/dictService';
+import { deleteDict, getDictPage } from '../../../services/dictService';
 import DictFormModal from './DictFormModal';
 import DictDetailModal from './DictDetailModal';
 import dayjs from 'dayjs';
 
-import { DictType, PageParams } from '../../../types/dict';
+import { Dict } from '../../../types/dict';
 
 const DictList: React.FC = () => {
-    const [dicts, setDicts] = useState<DictType[]>([]);
+    const [dicts, setDicts] = useState<Dict[]>([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [detailVisible, setDetailVisible] = useState(false);
@@ -24,16 +23,16 @@ const DictList: React.FC = () => {
     });
     const [searchForm] = Form.useForm();
 
-    const columns: ColumnsType<DictType> = [
+    const columns: ColumnsType<Dict> = [
         {
             title: '字典编码',
-            dataIndex: 'dict_code',
-            key: 'dict_code',
+            dataIndex: 'dictCode',
+            key: 'dictCode',
         },
         {
             title: '字典名称',
-            dataIndex: 'dict_name',
-            key: 'dict_name',
+            dataIndex: 'dictName',
+            key: 'dictName',
         },
         {
             title: '版本号',
@@ -44,10 +43,10 @@ const DictList: React.FC = () => {
             title: '状态',
             dataIndex: 'status',
             key: 'status',
-            render: (status: number, record: DictType) => (
+            render: (status: number, record: Dict) => (
                 <Switch
                     checked={status === 1}
-                    onChange={(checked) => handleStatusChange(record.dict_code, checked)}
+                    onChange={(checked) => handleStatusChange(record.dictCode, checked)}
                     checkedChildren="启用"
                     unCheckedChildren="禁用"
                 />
@@ -74,7 +73,7 @@ const DictList: React.FC = () => {
                         type="text"
                         icon={<EyeOutlined />}
                         onClick={() => {
-                            setCurrentDict(record.dict_code);
+                            setCurrentDict(record.dictCode);
                             setDetailVisible(true);
                         }}
                     />
@@ -86,7 +85,7 @@ const DictList: React.FC = () => {
                     <Button
                         type="text"
                         icon={record.status === 1 ? <StopOutlined /> : <CheckOutlined />}
-                        onClick={() => handleStatusChange(record.dict_code, record.status !== 1)}
+                        onClick={() => handleStatusChange(record.dictCode, record.status !== 1)}
                     >
                         {record.status === 1 ? '禁用' : '启用'}
                     </Button>
@@ -94,7 +93,7 @@ const DictList: React.FC = () => {
                         type="text"
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleDelete(record.dict_code)}
+                        onClick={() => handleDelete(record.dictCode)}
                     />
                 </Space>
             ),
@@ -111,7 +110,7 @@ const DictList: React.FC = () => {
             const values = searchForm.getFieldsValue();
             const query: Record<string, any> = {};
 
-            if (values.dict_code) query.dict_code_like = values.dict_code;
+            if (values.dictCode) query.dictCode_like = values.dictCode;
             if (values.createdTime) {
                 query.createdTime_ge = dayjs(values.createdTime[0]).format('YYYY-MM-DD HH:mm:ss');
                 query.createdTime_le = dayjs(values.createdTime[1]).format('YYYY-MM-DD HH:mm:ss');
@@ -134,8 +133,8 @@ const DictList: React.FC = () => {
         }
     };
 
-    const handleEdit = (record: DictType) => {
-        setCurrentDict(record.dict_code);
+    const handleEdit = (record: Dict) => {
+        setCurrentDict(record.dictCode);
         setDetailVisible(true);
     };
 
@@ -149,7 +148,7 @@ const DictList: React.FC = () => {
                 },
                 body: JSON.stringify({ status: enabled ? 1 : 0 }),
             });
-            
+
             if (response.ok) {
                 message.success(enabled ? '启用成功' : '禁用成功');
                 fetchDicts();
@@ -168,7 +167,7 @@ const DictList: React.FC = () => {
         }
         try {
             await Promise.all(
-                selectedRowKeys.map(code => 
+                selectedRowKeys.map(code =>
                     fetch(`/api/dict/${code}/status`, {
                         method: 'PUT',
                         headers: {
@@ -193,7 +192,7 @@ const DictList: React.FC = () => {
         }
         try {
             await Promise.all(
-                selectedRowKeys.map(code => 
+                selectedRowKeys.map(code =>
                     fetch(`/api/dict/${code}/status`, {
                         method: 'PUT',
                         headers: {
@@ -270,15 +269,15 @@ const DictList: React.FC = () => {
                         >
                             新增字典
                         </Button>
-                        <Button 
-                            icon={<CheckOutlined />} 
+                        <Button
+                            icon={<CheckOutlined />}
                             onClick={handleBatchEnable}
                             disabled={selectedRowKeys.length === 0}
                         >
                             批量启用
                         </Button>
-                        <Button 
-                            icon={<StopOutlined />} 
+                        <Button
+                            icon={<StopOutlined />}
                             onClick={handleBatchDisable}
                             disabled={selectedRowKeys.length === 0}
                         >
@@ -290,7 +289,7 @@ const DictList: React.FC = () => {
             <Table
                 columns={columns}
                 dataSource={dicts}
-                rowKey="code"
+                rowKey="dictCode"
                 loading={loading}
                 pagination={pagination}
                 onChange={handleTableChange}

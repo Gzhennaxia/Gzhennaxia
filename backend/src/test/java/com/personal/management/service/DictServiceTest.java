@@ -1,7 +1,7 @@
 package com.personal.management.service;
 
 import com.personal.management.pojo.dto.DictItemDto;
-import com.personal.management.pojo.dto.DictTypeDto;
+import com.personal.management.pojo.dto.DictDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,12 +19,12 @@ public class DictServiceTest {
     @Test
     public void testAddDict() {
         // 准备测试数据
-        DictTypeDto dictTypeDto = new DictTypeDto();
-        dictTypeDto.setCode("TEST");
-        dictTypeDto.setName("测试");
-        dictTypeDto.setVersion("1");
-        dictTypeDto.setStatus(1);
-        dictTypeDto.setRemark("测试");
+        DictDto dictDto = new DictDto();
+        dictDto.setDictCode("TEST");
+        dictDto.setDictName("测试");
+        dictDto.setVersion("1");
+        dictDto.setStatus(1);
+        dictDto.setRemark("测试");
 
         // 准备字典项
         DictItemDto item1 = new DictItemDto();
@@ -39,15 +39,15 @@ public class DictServiceTest {
         item2.setStatus(1);
         item2.setSort(1);
 
-        dictTypeDto.setDictItems(Arrays.asList(item1, item2));
+        dictDto.setDictItems(Arrays.asList(item1, item2));
 
         // 执行测试
-        DictTypeDto result = dictService.addDict(dictTypeDto);
+        DictDto result = dictService.addDict(dictDto);
 
         // 验证结果
         assert result != null;
         assert result.getId() != null;
-        assert "TEST".equals(result.getCode());
-        assert "测试".equals(result.getName());
+        assert "TEST".equals(result.getDictCode());
+        assert "测试".equals(result.getDictName());
     }
 }

@@ -1,35 +1,32 @@
 package com.personal.management.service;
 
 import com.personal.management.base.IBaseService;
-import com.personal.management.pojo.dto.DictTypeDto;
-import com.personal.management.pojo.entity.DictType;
-import com.personal.management.pojo.request.DictTypeCreateRequest;
-import com.personal.management.vo.DictResponse;
+import com.personal.management.pojo.dto.DictDto;
+import com.personal.management.pojo.entity.Dict;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Gzhennaxia
  */
-public interface DictService extends IBaseService<DictType> {
+public interface DictService extends IBaseService<Dict> {
 
     void bumpVersionAndEvict(String code, String version);
 
-    DictTypeDto getDict(String code);
+    DictDto getDict(String code);
 
     Map<String, String> getVersions(List<String> codes);
 
-    Map<String, DictTypeDto> getBatch(List<String> codes);
+    Map<String, DictDto> getBatch(List<String> codes);
 
-    List<DictTypeDto> getAllDicts();
+    List<DictDto> getAllDicts();
 
-    DictTypeDto addDict(DictTypeDto dictTypeDto);
+    DictDto addDict(DictDto dictDto);
 
     void updateDictStatus(String code, Integer status);
 
     void softDeleteDict(String code);
 
-    DictTypeDto updateDict(DictTypeDto dictTypeDto);
+    DictDto updateDict(DictDto dictDto);
 }

@@ -3,7 +3,7 @@ import { Card, Form, Input, Switch, Button, Space, message, Spin } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import { getDictDetail, updateDict, createDict } from '../../../services/dictService';
-import { DictType, DictItem } from '../../../types/dict';
+import { Dict, DictItem } from '../../../types/dict';
 import DraggableDictItemList from './DraggableDictItemList';
 import dayjs from 'dayjs';
 
@@ -15,7 +15,7 @@ const DictDetail: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [dict, setDict] = useState<DictType | null>(null);
+  const [dict, setDict] = useState<Dict | null>(null);
   const [dictItems, setDictItems] = useState<DictItem[]>([]);
   const isNew = code === 'new';
 
@@ -24,7 +24,7 @@ const DictDetail: React.FC = () => {
       fetchDictDetail(code);
     } else {
       // 新建模式，初始化空数据
-      const newDict: DictType = {
+      const newDict: Dict = {
         id: 0,
         code: '',
         name: '',

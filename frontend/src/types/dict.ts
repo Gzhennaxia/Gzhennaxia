@@ -1,7 +1,7 @@
-export interface DictType {
+export interface Dict {
     id: number;
-    dict_code: string;
-    dict_name: string;
+    dictCode: string;
+    dictName: string;
     version: string;
     status: number;
     remark?: string;

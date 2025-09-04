@@ -1,7 +1,7 @@
-import { DictType, DictItem } from '../types/dict';
+import { Dict, DictItem } from '../types/dict';
 
 class DictCacheManager {
-    private memoryCache: Map<string, DictType> = new Map();
+    private memoryCache: Map<string, Dict> = new Map();
     private localStorageKey = 'dict_cache';
 
     constructor() {
@@ -14,7 +14,7 @@ class DictCacheManager {
             try {
                 const parsedData = JSON.parse(cachedData);
                 Object.entries(parsedData).forEach(([code, dict]) => {
-                    this.memoryCache.set(code, dict as DictType);
+                    this.memoryCache.set(code, dict as Dict);
                 });
             } catch (e) {
                 console.error('Failed to parse cached dict data', e);
@@ -28,17 +28,17 @@ class DictCacheManager {
         localStorage.setItem(this.localStorageKey, JSON.stringify(cacheObj));
     }
 
-    public getDict(code: string): DictType | undefined {
+    public getDict(code: string): Dict | undefined {
         // TODO: 实现从内存缓存获取字典
         return undefined;
     }
 
-    public getBatch(codes: string[]): Map<string, DictType> {
+    public getBatch(codes: string[]): Map<string, Dict> {
         // TODO: 实现批量获取字典
         return new Map();
     }
 
-    public updateDict(dict: DictType) {
+    public updateDict(dict: Dict) {
         // TODO: 实现更新字典
     }
 

@@ -8,10 +8,10 @@ import java.util.List;
  * @author Gzhennaxia
  */
 @Data
-public class DictTypeDto {
+public class DictDto {
     private Long id;
-    private String code;
-    private String name;
+    private String dictCode;
+    private String dictName;
     private String version;
     private Integer status;
     private String remark;

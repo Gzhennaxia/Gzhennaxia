@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Descriptions, Tag, Button } from 'antd';
 import { getDictDetail } from '../../../services/dictService';
-import { DictType } from '../../../types/dict';
+import { Dict } from '../../../types/dict';
 import dayjs from 'dayjs';
 
 interface DictDetailModalProps {
@@ -11,7 +11,7 @@ interface DictDetailModalProps {
 }
 
 const DictDetailModal: React.FC<DictDetailModalProps> = ({ open, dictCode, onCancel }) => {
-    const [dict, setDict] = useState<DictType | null>(null);
+    const [dict, setDict] = useState<Dict | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {

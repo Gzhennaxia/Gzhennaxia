@@ -1,8 +1,8 @@
 import DictCacheManager from './dictCacheManager';
 import apiClient from '../utils/apiClient';
-import { DictType, DictItem, PageResult, PageParams } from '../types/dict';
+import { Dict, DictItem, PageResult, PageParams } from '../types/dict';
 
-export const getDictDetail = async (dict_code: string): Promise<DictType> => {
+export const getDictDetail = async (dict_code: string): Promise<Dict> => {
     try {
         return await apiClient.get(`/dict/${dict_code}`);
     } catch (error) {
@@ -11,11 +11,11 @@ export const getDictDetail = async (dict_code: string): Promise<DictType> => {
     }
 };
 
-export const getDictList = async (): Promise<DictType[]> => {
+export const getDictList = async (): Promise<Dict[]> => {
     try {
-        const data: DictType[] = await apiClient.get('/dict');
+        const data: Dict[] = await apiClient.get('/dict');
         // 更新缓存
-        data.forEach((dict: DictType) => {
+        data.forEach((dict: Dict) => {
             DictCacheManager.updateDict(dict);
         });
         return data;
@@ -25,7 +25,7 @@ export const getDictList = async (): Promise<DictType[]> => {
     }
 };
 
-export const getDictPage = async (params: PageParams): Promise<PageResult<DictType>> => {
+export const getDictPage = async (params: PageParams): Promise<PageResult<Dict>> => {
     try {
         return await apiClient.post('/dict/page', params);
     } catch (error) {
@@ -43,7 +43,7 @@ export const getDictItems = async (dict_code: string): Promise<DictItem[]> => {
     }
 };
 
-export const createDict = async (data: Partial<DictType>): Promise<DictType> => {
+export const createDict = async (data: Partial<Dict>): Promise<Dict> => {
     try {
         const response = await apiClient.post('/dict', data);
         const result = response.data;
@@ -55,13 +55,13 @@ export const createDict = async (data: Partial<DictType>): Promise<DictType> => 
     }
 };
 
-export const updateDict = async (dict_code: string, data: Partial<DictType>): Promise<void> => {
+export const updateDict = async (dict_code: string, data: Partial<Dict>): Promise<void> => {
     try {
         await apiClient.put(`/api/dict/admin/${dict_code}`, data);
         // 更新缓存
         const current = DictCacheManager.getDict(dict_code);
         if (current) {
-            DictCacheManager.updateDict({ ...current, ...data } as DictType);
+            DictCacheManager.updateDict({ ...current, ...data } as Dict);
         }
     } catch (error) {
         console.error('Failed to update dict', error);
