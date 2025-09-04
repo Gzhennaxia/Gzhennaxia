@@ -1,8 +1,8 @@
 1. frontend/src/components/Admin/DictManagement
 2. 版本号是后端维护的，修改一次更新一次，无需用户干预
 3. 字典项需要跟换成列表的样式，然后最后一行是个新增的按钮，点击后新增一行，并且字典项的行是可以拖动排序的
-4. Admin管理界面增加侧边栏，展示菜单
-5. 字典列表页、详情页，增加创建时间和更新时间字段
+4. ~~Admin管理界面增加侧边栏，展示菜单~~
+5. ~~字典列表页、详情页，增加创建时间和更新时间字段~~
 
 
 
@@ -28,5 +28,5 @@ App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下
 
 ---
 
-1. 新增字段弹框，去掉版本号
+1.  [DictList.tsx](..\frontend\src\components\Admin\DictManagement\DictList.tsx)  新增字典弹框，去掉版本号
 2. 
