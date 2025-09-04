@@ -204,7 +204,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
         if (type == null) {
             throw new RuntimeException("字典不存在: " + code);
         }
-        type.setDeleted(true);
+        type.setDeleted(1);
         type.setUpdatedTime(LocalDateTime.now().toString());
         baseMapper.updateById(type);
     }

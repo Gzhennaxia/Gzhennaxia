@@ -15,4 +15,5 @@ public class DictItem {
     private String remark;
     private String createdTime;
     private String updatedTime;
+    private Integer deleted = 0;
 }

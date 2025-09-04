@@ -55,14 +55,14 @@ const DictList: React.FC = () => {
         },
         {
             title: '创建时间',
-            dataIndex: 'created_time',
-            key: 'created_time',
+            dataIndex: 'createdTime',
+            key: 'createdTime',
             render: (time) => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-',
         },
         {
             title: '更新时间',
-            dataIndex: 'updated_time',
-            key: 'updated_time',
+            dataIndex: 'updatedTime',
+            key: 'updatedTime',
             render: (time) => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-',
         },
         {

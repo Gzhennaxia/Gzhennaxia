@@ -14,5 +14,5 @@ public class DictType {
     private String remark;
     private String createdTime;
     private String updatedTime;
-    private Boolean deleted = false;
+    private Integer deleted = 0;
 }
