@@ -6,8 +6,8 @@ export interface Dict {
     status: number;
     remark?: string;
     items?: DictItem[];
-    created_time: string;
-    updated_time: string;
+    createdTime: string;
+    updatedTime: string;
 }
 
 export interface DictItem {
@@ -18,8 +18,8 @@ export interface DictItem {
     sort: number;
     status: number;
     remark?: string;
-    created_time: string;
-    updated_time: string;
+    createdTime: string;
+    updatedTime: string;
 }
 
 export interface PageResult<T> {

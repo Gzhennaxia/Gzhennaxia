@@ -10,24 +10,24 @@ import dayjs from 'dayjs';
 const { TextArea } = Input;
 
 const DictDetail: React.FC = () => {
-  const { code } = useParams<{ code: string }>();
+  const { dictCode } = useParams<{ dictCode: string }>();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [dict, setDict] = useState<Dict | null>(null);
   const [dictItems, setDictItems] = useState<DictItem[]>([]);
-  const isNew = code === 'new';
+  const isNew = dictCode === 'new';
 
   useEffect(() => {
-    if (!isNew && code) {
-      fetchDictDetail(code);
+    if (!isNew && dictCode) {
+      fetchDictDetail(dictCode);
     } else {
       // 新建模式，初始化空数据
       const newDict: Dict = {
         id: 0,
-        code: '',
-        name: '',
+        dictCode: '',
+        dictName: '',
         version: '1.0',
         status: 1,
         remark: '',
@@ -39,7 +39,7 @@ const DictDetail: React.FC = () => {
       setDictItems([]);
       form.setFieldsValue(newDict);
     }
-  }, [code, isNew, form]);
+  }, [dictCode, isNew, form]);
 
   const fetchDictDetail = async (dictCode: string) => {
     setLoading(true);
@@ -48,8 +48,8 @@ const DictDetail: React.FC = () => {
       setDict(data);
       setDictItems(data.items || []);
       form.setFieldsValue({
-        code: data.code,
-        name: data.name,
+        dictCode: data.dictCode,
+        dictName: data.dictName,
         status: data.status === 1,
         remark: data.remark,
       });
@@ -97,14 +97,14 @@ const DictDetail: React.FC = () => {
       setSaving(true);
 
       const dictData = {
-        code: values.code,
-        name: values.name,
+        dictCode: values.dictCode,
+        dictName: values.dictName,
         status: values.status ? 1 : 0,
         remark: values.remark,
         items: dictItems.map((item, index) => ({
           ...item,
           sort: index + 1,
-          type_code: values.code,
+          type_code: values.dictCode,
         })),
       };
 
@@ -112,7 +112,7 @@ const DictDetail: React.FC = () => {
         await createDict(dictData);
         message.success('字典创建成功');
       } else {
-        await updateDict(code!, dictData);
+        await updateDict(dictCode!, dictData);
         message.success('字典更新成功');
       }
 
@@ -147,7 +147,7 @@ const DictDetail: React.FC = () => {
               icon={<ArrowLeftOutlined />}
               onClick={() => navigate('/admin/dict')}
             />
-            <span>{isNew ? '新建字典' : `编辑字典 - ${dict?.name}`}</span>
+            <span>{isNew ? '新建字典' : `编辑字典 - ${dict?.dictName}`}</span>
             {!isNew && dict && (
               <span style={{ fontSize: '12px', color: '#666' }}>
                 版本: {dict.version}
@@ -177,7 +177,7 @@ const DictDetail: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <Form.Item
               label="字典编码"
-              name="code"
+              name="dictCode"
               rules={[
                 { required: true, message: '请输入字典编码' },
                 { pattern: /^[A-Z0-9_]+$/, message: '只能包含大写字母、数字和下划线' },
@@ -192,7 +192,7 @@ const DictDetail: React.FC = () => {
 
             <Form.Item
               label="字典名称"
-              name="name"
+              name="dictName"
               rules={[{ required: true, message: '请输入字典名称' }]}
             >
               <Input placeholder="请输入字典名称" />

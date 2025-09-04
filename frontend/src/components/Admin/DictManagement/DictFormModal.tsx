@@ -210,14 +210,14 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          name="dict_code"
+          name="dictCode"
           label="字典编码"
           rules={[{ required: true, message: '请输入字典编码' }]}
         >
           <Input placeholder="请输入字典编码" disabled={mode === 'edit'} />
         </Form.Item>
         <Form.Item
-          name="dict_name"
+          name="dictName"
           label="字典名称"
           rules={[{ required: true, message: '请输入字典名称' }]}
         >

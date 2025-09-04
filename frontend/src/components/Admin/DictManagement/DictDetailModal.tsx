@@ -20,10 +20,10 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({ open, dictCode, onCan
         }
     }, [open, dictCode]);
 
-    const fetchDictDetail = async (code: string) => {
+    const fetchDictDetail = async (dictCode: string) => {
         try {
             setLoading(true);
-            const data = await getDictDetail(code);
+            const data = await getDictDetail(dictCode);
             setDict(data);
         } catch (error) {
             console.error('Failed to fetch dict detail', error);
@@ -46,8 +46,8 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({ open, dictCode, onCan
         >
             {dict && (
                 <Descriptions bordered column={1}>
-                    <Descriptions.Item label="字典编码">{dict.code}</Descriptions.Item>
-                    <Descriptions.Item label="字典名称">{dict.name}</Descriptions.Item>
+                    <Descriptions.Item label="字典编码">{dict.dictCode}</Descriptions.Item>
+                    <Descriptions.Item label="字典名称">{dict.dictName}</Descriptions.Item>
                     <Descriptions.Item label="版本号">{dict.version}</Descriptions.Item>
                     <Descriptions.Item label="状态">
                         <Tag color={dict.status === 1 ? 'green' : 'red'}>

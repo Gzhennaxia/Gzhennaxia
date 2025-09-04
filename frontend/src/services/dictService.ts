@@ -2,9 +2,9 @@ import DictCacheManager from './dictCacheManager';
 import apiClient from '../utils/apiClient';
 import { Dict, DictItem, PageResult, PageParams } from '../types/dict';
 
-export const getDictDetail = async (dict_code: string): Promise<Dict> => {
+export const getDictDetail = async (dictCode: string): Promise<Dict> => {
     try {
-        return await apiClient.get(`/dict/${dict_code}`);
+        return await apiClient.get(`/dict/${dictCode}`);
     } catch (error) {
         console.error('Failed to fetch dict detail', error);
         throw error;
@@ -34,9 +34,9 @@ export const getDictPage = async (params: PageParams): Promise<PageResult<Dict>>
     }
 };
 
-export const getDictItems = async (dict_code: string): Promise<DictItem[]> => {
+export const getDictItems = async (dictCode: string): Promise<DictItem[]> => {
     try {
-        return await apiClient.get(`/api/dict/admin/${dict_code}/items`);
+        return await apiClient.get(`/api/dict/admin/${dictCode}/items`);
     } catch (error) {
         console.error('Failed to fetch dict items', error);
         throw error;
@@ -55,11 +55,11 @@ export const createDict = async (data: Partial<Dict>): Promise<Dict> => {
     }
 };
 
-export const updateDict = async (dict_code: string, data: Partial<Dict>): Promise<void> => {
+export const updateDict = async (dictCode: string, data: Partial<Dict>): Promise<void> => {
     try {
-        await apiClient.put(`/api/dict/admin/${dict_code}`, data);
+        await apiClient.put(`/api/dict/admin/${dictCode}`, data);
         // 更新缓存
-        const current = DictCacheManager.getDict(dict_code);
+        const current = DictCacheManager.getDict(dictCode);
         if (current) {
             DictCacheManager.updateDict({ ...current, ...data } as Dict);
         }
@@ -69,10 +69,10 @@ export const updateDict = async (dict_code: string, data: Partial<Dict>): Promis
     }
 };
 
-export const deleteDict = async (dict_code: string): Promise<void> => {
+export const deleteDict = async (dictCode: string): Promise<void> => {
     try {
-        await apiClient.delete(`/dict/${dict_code}`);
-        DictCacheManager.removeDict(dict_code);
+        await apiClient.delete(`/dict/${dictCode}`);
+        DictCacheManager.removeDict(dictCode);
     } catch (error) {
         console.error('Failed to delete dict', error);
         throw error;
