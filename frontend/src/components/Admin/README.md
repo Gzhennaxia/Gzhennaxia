@@ -38,7 +38,7 @@ Admin管理后台提供了完整的系统管理功能，包括字典管理等核
 - 编辑字典：`/admin/dict/:code`
 
 ### 从主应用访问
-在浏览器地址栏输入：`http://localhost:3001/admin`
+在浏览器地址栏输入：`http://localhost:3000/admin`
 
 ## 新增功能详解
 

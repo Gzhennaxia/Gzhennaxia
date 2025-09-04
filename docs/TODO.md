@@ -14,9 +14,12 @@
 
    实现 handleEdit 方法
 
-3. DictController 中实现字典删除接口，符合restful
+3. DictController 中实现字典删除接口，符合restful，软删除
 
 ---
 
 对文件列表及其内容做一个汇总
 
+---
+
+App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下
