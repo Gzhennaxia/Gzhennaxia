@@ -48,8 +48,8 @@ const SortableItem = ({ id, value, onRemove, onChange }: any) => {
       <div style={{ flex: 1, marginRight: 16 }}>
         <Input
           placeholder="字典项值"
-          value={value.item_key}
-          onChange={(e) => onChange(id, 'item_key', e.target.value)}
+          value={value.item_code}
+          onChange={(e) => onChange(id, 'item_code', e.target.value)}
           bordered={false}
           style={{ padding: '4px 0' }}
         />
@@ -59,8 +59,8 @@ const SortableItem = ({ id, value, onRemove, onChange }: any) => {
       <div style={{ flex: 1, marginRight: 16 }}>
         <Input
           placeholder="字典项名称"
-          value={value.item_value}
-          onChange={(e) => onChange(id, 'item_value', e.target.value)}
+          value={value.item_name}
+          onChange={(e) => onChange(id, 'item_name', e.target.value)}
           bordered={false}
           style={{ padding: '4px 0' }}
         />
@@ -130,8 +130,8 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
       });
       setItems(data.items?.map(item => ({
         id: item.id || Date.now(),
-        item_key: item.item_key,
-        item_value: item.item_value,
+        item_code: item.item_code,
+        item_name: item.item_name,
         status: item.status
       })) || []);
     } catch (error) {
@@ -152,7 +152,7 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
   };
 
   const handleAddItem = () => {
-    setItems([...items, { id: Date.now(), item_key: '', item_value: '', status: 1 }]);
+    setItems([...items, { id: Date.now(), item_code: '', item_name: '', status: 1 }]);
   };
 
   const handleRemoveItem = (id: number) => {
@@ -174,8 +174,8 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
         ...values,
         status: values.status ? 1 : 0,
         items: items.map((item, index) => ({
-          item_key: item.item_key,
-          item_value: item.item_value,
+          item_code: item.item_code,
+          item_name: item.item_name,
           status: item.status,
           sort: index
         }))
@@ -263,7 +263,7 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
             fontWeight: 500
           }}>
             <div style={{ width: '40px' }}></div>
-            <div style={{ flex: 1, marginRight: 16 }}>字典项值</div>
+            <div style={{ flex: 1, marginRight: 16 }}>字典项编码</div>
             <div style={{ flex: 1, marginRight: 16 }}>字典项名称</div>
             <div style={{ width: '80px', marginRight: 16 }}>状态</div>
             <div style={{ width: '60px' }}>操作</div>
