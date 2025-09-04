@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Descriptions, Tag, Button } from 'antd';
 import { getDictDetail } from '../../../services/dictService';
 import { DictType } from '../../../types/dict';
+import dayjs from 'dayjs';
 
 interface DictDetailModalProps {
     open: boolean;
@@ -54,6 +55,12 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({ open, dictCode, onCan
                         </Tag>
                     </Descriptions.Item>
                     <Descriptions.Item label="备注">{dict.remark || '-'}</Descriptions.Item>
+                    <Descriptions.Item label="创建时间">
+                        {dict.created_time ? dayjs(dict.created_time).format('YYYY-MM-DD HH:mm:ss') : '-'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="更新时间">
+                        {dict.updated_time ? dayjs(dict.updated_time).format('YYYY-MM-DD HH:mm:ss') : '-'}
+                    </Descriptions.Item>
                     <Descriptions.Item label="字典项">
                         {dict.items?.map(item => (
                             <div key={item.id} style={{ marginBottom: 8 }}>
