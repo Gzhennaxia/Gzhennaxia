@@ -30,4 +30,6 @@ public interface DictService extends IBaseService<DictType> {
     void updateDictStatus(String code, Integer status);
 
     void softDeleteDict(String code);
+
+    DictTypeDto updateDict(DictTypeDto dictTypeDto);
 }

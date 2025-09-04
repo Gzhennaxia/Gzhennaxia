@@ -65,7 +65,12 @@ public class DictController extends IBaseController<DictType> {
     public DictTypeDto addDict(
             @Parameter(description = "字典新增参数（包含子项）", required = true)
             @Valid @RequestBody DictTypeDto dictDto) {
-        return dictService.addDict(dictDto);
+        // 新增时设置初始版本号为1
+        dictDto.setVersion(1);
+        DictTypeDto result = dictService.addDict(dictDto);
+        // 通知客户端字典变更
+        notifyClients(result.getCode(), String.valueOf(result.getVersion()));
+        return result;
     }
 
     /**
@@ -77,6 +82,28 @@ public class DictController extends IBaseController<DictType> {
     @GetMapping("/{code}")
     public DictTypeDto getDict(@PathVariable String code) {
         return dictService.getDict(code);
+    }
+
+    /**
+     * 修改字典
+     * PUT /api/dict/{code}
+     */
+    @PutMapping("/{code}")
+    @Operation(summary = "修改字典", description = "更新指定字典及其子项，版本号自动递增")
+    @ApiResponse(responseCode = "200", description = "修改成功")
+    public DictTypeDto updateDict(
+            @PathVariable String code,
+            @Parameter(description = "字典修改参数（包含子项）", required = true)
+            @Valid @RequestBody DictTypeDto dictDto) {
+        // 获取当前字典的版本号
+        DictTypeDto currentDict = dictService.getDict(code);
+        // 修改时版本号递增
+        dictDto.setVersion(currentDict.getVersion() + 1);
+        dictDto.setCode(code); // 确保编码一致
+        DictTypeDto result = dictService.updateDict(dictDto);
+        // 通知客户端字典变更
+        notifyClients(result.getCode(), String.valueOf(result.getVersion()));
+        return result;
     }
 
     /**
