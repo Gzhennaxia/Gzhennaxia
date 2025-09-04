@@ -3,7 +3,8 @@ import { Table, Button, Space, message, Card, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-
+import { getDictItems, getDictDetail } from '../../../services/dictService';
+import DictCacheManager from '../../../services/dictCacheManager';
 import { DictItem } from '../../../types/dict';
 
 const DictItemList: React.FC = () => {
@@ -88,7 +89,7 @@ const DictItemList: React.FC = () => {
                     version: dict.version
                 });
             } else {
-                const freshDict = await getDict(dictCode);
+                const freshDict = await getDictDetail(dictCode);
                 setDictInfo({
                     name: freshDict.name,
                     version: freshDict.version

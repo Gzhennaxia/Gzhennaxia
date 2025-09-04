@@ -43,7 +43,7 @@ export const getDictItems = async (code: string): Promise<DictItem[]> => {
     }
 };
 
-export const createDict = async (data: Omit<DictType, 'id'>): Promise<DictType> => {
+export const createDict = async (data: Partial<DictType>): Promise<DictType> => {
     try {
         const response = await apiClient.post('/dict', data);
         const result = response.data;

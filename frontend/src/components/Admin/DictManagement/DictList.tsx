@@ -46,6 +46,18 @@ const DictList: React.FC = () => {
             render: (status) => (status === 1 ? '启用' : '禁用'),
         },
         {
+            title: '创建时间',
+            dataIndex: 'created_time',
+            key: 'created_time',
+            render: (time) => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-',
+        },
+        {
+            title: '更新时间',
+            dataIndex: 'updated_time',
+            key: 'updated_time',
+            render: (time) => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-',
+        },
+        {
             title: '操作',
             key: 'action',
             render: (_, record) => (
@@ -94,7 +106,7 @@ const DictList: React.FC = () => {
                 pageNo: pagination.current,
                 pageSize: pagination.pageSize,
                 query,
-                sort: { createdTime: 'desc' }
+                sort: { created_time: 'desc' }
             };
 
             const { records, total } = await getDictPage(params);
@@ -112,23 +124,23 @@ const DictList: React.FC = () => {
         console.log('Edit:', record);
     };
 
-  const handleDelete = async (code: string) => {
-    Modal.confirm({
-      title: '确认删除',
-      content: `确定要删除字典 ${code} 吗？`,
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async () => {
-        try {
-          await deleteDict(code);
-          message.success('删除成功');
-          fetchDicts();
-        } catch (error) {
-          message.error('删除失败');
-        }
-      }
-    });
-  };
+    const handleDelete = async (code: string) => {
+        Modal.confirm({
+            title: '确认删除',
+            content: `确定要删除字典 ${code} 吗？`,
+            okText: '确认',
+            cancelText: '取消',
+            onOk: async () => {
+                try {
+                    await deleteDict(code);
+                    message.success('删除成功');
+                    fetchDicts();
+                } catch (error) {
+                    message.error('删除失败');
+                }
+            }
+        });
+    };
 
     const handleTableChange = (pagination: any) => {
         setPagination(pagination);
@@ -190,7 +202,7 @@ const DictList: React.FC = () => {
             />
             <DictDetailModal
               open={detailVisible}
-              dictCode={currentDict}
+              dictCode={currentDict || ''}
               onCancel={() => setDetailVisible(false)}
             />
         </div>
