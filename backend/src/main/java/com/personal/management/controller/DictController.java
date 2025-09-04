@@ -66,7 +66,7 @@ public class DictController extends IBaseController<DictType> {
             @Parameter(description = "字典新增参数（包含子项）", required = true)
             @Valid @RequestBody DictTypeDto dictDto) {
         // 新增时设置初始版本号为1
-        dictDto.setVersion(1);
+        //dictDto.setVersion(1);
         DictTypeDto result = dictService.addDict(dictDto);
         // 通知客户端字典变更
         notifyClients(result.getCode(), String.valueOf(result.getVersion()));

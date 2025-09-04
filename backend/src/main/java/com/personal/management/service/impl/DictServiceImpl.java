@@ -11,7 +11,6 @@ import com.personal.management.pojo.dto.DictTypeDto;
 import com.personal.management.pojo.entity.DictItem;
 import com.personal.management.pojo.entity.DictType;
 import com.personal.management.service.DictService;
-import com.personal.management.vo.DictResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,7 +27,7 @@ import java.util.Map;
 public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> implements DictService {
 
     @Autowired
-    private DictItemMapper itemMapper;
+    private DictItemMapper dictItemMapper;
 
     /**
      * 获取单个字典（带缓存）
@@ -46,7 +45,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
                         .eq(DictType::getDeleted, false));
         if (type == null) return null;
 
-        List<DictItem> items = itemMapper.selectList(
+        List<DictItem> items = dictItemMapper.selectList(
                 new LambdaQueryWrapper<DictItem>()
                         .eq(DictItem::getTypeCode, code)
                         .eq(DictItem::getStatus, 1)
@@ -143,7 +142,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
                 dictItem.setCreatedTime(LocalDateTime.now().toString());
                 dictItem.setUpdatedTime(LocalDateTime.now().toString());
 
-                itemMapper.insert(dictItem);
+                dictItemMapper.insert(dictItem);
             }
         }
 
@@ -233,16 +232,16 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
 
         // 删除现有的字典项
         dictItemMapper.delete(new LambdaQueryWrapper<DictItem>()
-                .eq(DictItem::getDictTypeId, existingDict.getId()));
+                .eq(DictItem::getTypeCode, existingDict.getCode()));
 
         // 添加新的字典项
-        if (dictTypeDto.getItems() != null && !dictTypeDto.getItems().isEmpty()) {
-            for (int i = 0; i < dictTypeDto.getItems().size(); i++) {
-                var itemDto = dictTypeDto.getItems().get(i);
+        if (dictTypeDto.getDictItems() != null && !dictTypeDto.getDictItems().isEmpty()) {
+            for (int i = 0; i < dictTypeDto.getDictItems().size(); i++) {
+                var itemDto = dictTypeDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
-                dictItem.setDictTypeId(existingDict.getId());
-                dictItem.setItemKey(itemDto.getItem_key());
-                dictItem.setItemValue(itemDto.getItem_value());
+                dictItem.setTypeCode(existingDict.getCode());
+                dictItem.setItemKey(itemDto.getItemKey());
+                dictItem.setItemValue(itemDto.getItemValue());
                 dictItem.setStatus(itemDto.getStatus());
                 dictItem.setSort(i);
                 dictItem.setCreatedTime(LocalDateTime.now().toString());
