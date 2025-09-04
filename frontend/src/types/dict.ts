@@ -1,7 +1,7 @@
 export interface DictType {
     id: number;
-    code: string;
-    name: string;
+    dict_code: string;
+    dict_name: string;
     version: string;
     status: number;
     remark?: string;

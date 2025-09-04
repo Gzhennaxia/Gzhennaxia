@@ -27,13 +27,13 @@ const DictList: React.FC = () => {
     const columns: ColumnsType<DictType> = [
         {
             title: '字典编码',
-            dataIndex: 'code',
-            key: 'code',
+            dataIndex: 'dict_code',
+            key: 'dict_code',
         },
         {
             title: '字典名称',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'dict_name',
+            key: 'dict_name',
         },
         {
             title: '版本号',
@@ -47,7 +47,7 @@ const DictList: React.FC = () => {
             render: (status: number, record: DictType) => (
                 <Switch
                     checked={status === 1}
-                    onChange={(checked) => handleStatusChange(record.code, checked)}
+                    onChange={(checked) => handleStatusChange(record.dict_code, checked)}
                     checkedChildren="启用"
                     unCheckedChildren="禁用"
                 />
@@ -74,7 +74,7 @@ const DictList: React.FC = () => {
                         type="text"
                         icon={<EyeOutlined />}
                         onClick={() => {
-                            setCurrentDict(record.code);
+                            setCurrentDict(record.dict_code);
                             setDetailVisible(true);
                         }}
                     />
@@ -86,7 +86,7 @@ const DictList: React.FC = () => {
                     <Button
                         type="text"
                         icon={record.status === 1 ? <StopOutlined /> : <CheckOutlined />}
-                        onClick={() => handleStatusChange(record.code, record.status !== 1)}
+                        onClick={() => handleStatusChange(record.dict_code, record.status !== 1)}
                     >
                         {record.status === 1 ? '禁用' : '启用'}
                     </Button>
@@ -94,7 +94,7 @@ const DictList: React.FC = () => {
                         type="text"
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleDelete(record.code)}
+                        onClick={() => handleDelete(record.dict_code)}
                     />
                 </Space>
             ),
@@ -111,7 +111,7 @@ const DictList: React.FC = () => {
             const values = searchForm.getFieldsValue();
             const query: Record<string, any> = {};
 
-            if (values.code) query.code_like = values.code;
+            if (values.dict_code) query.dict_code_like = values.dict_code;
             if (values.createdTime) {
                 query.createdTime_ge = dayjs(values.createdTime[0]).format('YYYY-MM-DD HH:mm:ss');
                 query.createdTime_le = dayjs(values.createdTime[1]).format('YYYY-MM-DD HH:mm:ss');
@@ -135,7 +135,7 @@ const DictList: React.FC = () => {
     };
 
     const handleEdit = (record: DictType) => {
-        setCurrentDict(record.code);
+        setCurrentDict(record.dict_code);
         setDetailVisible(true);
     };
 
