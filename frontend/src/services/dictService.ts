@@ -71,7 +71,7 @@ export const updateDict = async (code: string, data: Partial<DictType>): Promise
 
 export const deleteDict = async (code: string): Promise<void> => {
     try {
-        await apiClient.delete(`/api/dict/admin/${code}`);
+        await apiClient.delete(`/dict/${code}`);
         DictCacheManager.removeDict(code);
     } catch (error) {
         console.error('Failed to delete dict', error);
