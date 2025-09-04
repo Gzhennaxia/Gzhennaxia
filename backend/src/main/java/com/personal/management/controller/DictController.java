@@ -62,11 +62,8 @@ public class DictController extends IBaseController<Dict> {
     @PostMapping
     @Operation(summary = "新增字典", description = "创建新的字典及其子项，字典编码唯一，子项至少包含一条")
     @ApiResponse(responseCode = "200", description = "新增成功")
-    public DictDto addDict(
-            @Parameter(description = "字典新增参数（包含子项）", required = true)
-            @Valid @RequestBody DictDto dictDto) {
-        // 新增时设置初始版本号为1
-        //dictDto.setVersion(1);
+    public DictDto addDict(@Parameter(description = "字典新增参数（包含子项）", required = true) @Valid @RequestBody DictDto dictDto) {
+        dictDto.setVersion(DateTimeUtils.nextVersion());
         DictDto result = dictService.addDict(dictDto);
         // 通知客户端字典变更
         notifyClients(result.getDictCode(), String.valueOf(result.getVersion()));
