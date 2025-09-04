@@ -31,8 +31,16 @@ App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下
 ---
 
 1.  [DictFormModal.tsx](..\frontend\src\components\Admin\DictManagement\DictFormModal.tsx) 新增字典弹框，去掉版本号
+2.  修改dict_item表的字段名
+    1. type_code 改为 dict_code
+    2. item_key 改为 item_code
+    3. item_value 改为 item_name
+3.  需要修改的地方
+    1.   [DictItem.java](..\backend\src\main\java\com\personal\management\pojo\entity\DictItem.java) 
+    2.   [DictManagement](..\frontend\src\components\Admin\DictManagement) 
 
 
+---
 
 对 dict_type表做以下操作
 

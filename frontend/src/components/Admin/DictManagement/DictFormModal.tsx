@@ -43,29 +43,29 @@ const SortableItem = ({ id, value, onRemove, onChange }: any) => {
       >
         <MenuOutlined />
       </div>
-      
+
       {/* 字典项值 */}
       <div style={{ flex: 1, marginRight: 16 }}>
-        <Input
-          placeholder="字典项值"
-          value={value.item_code}
-          onChange={(e) => onChange(id, 'item_code', e.target.value)}
-          bordered={false}
-          style={{ padding: '4px 0' }}
-        />
+          <Input
+            placeholder="字典项值"
+            value={value.itemCode}
+            onChange={(e) => onChange(id, 'item_code', e.target.value)}
+            variant="borderless"
+            style={{ padding: '4px 0' }}
+          />
       </div>
-      
+
       {/* 字典项名称 */}
       <div style={{ flex: 1, marginRight: 16 }}>
-        <Input
-          placeholder="字典项名称"
-          value={value.item_name}
-          onChange={(e) => onChange(id, 'item_name', e.target.value)}
-          bordered={false}
-          style={{ padding: '4px 0' }}
-        />
+          <Input
+            placeholder="字典项名称"
+            value={value.itemName}
+            onChange={(e) => onChange(id, 'item_name', e.target.value)}
+            variant="borderless"
+            style={{ padding: '4px 0' }}
+          />
       </div>
-      
+
       {/* 状态开关 */}
       <div style={{ width: '80px', marginRight: 16 }}>
         <Switch
@@ -76,7 +76,7 @@ const SortableItem = ({ id, value, onRemove, onChange }: any) => {
           onChange={(checked) => onChange(id, 'status', checked ? 1 : 0)}
         />
       </div>
-      
+
       {/* 删除按钮 */}
       <div style={{ width: '60px', display: 'flex', justifyContent: 'center' }}>
         <Button

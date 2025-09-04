@@ -79,7 +79,7 @@ export const deleteDict = async (dictCode: string): Promise<void> => {
     }
 };
 
-export const createDictItem = async (dictCode: string, data: Omit<DictItem, 'id' | 'type_code'>): Promise<DictItem> => {
+export const createDictItem = async (dictCode: string, data: Omit<DictItem, 'id' | 'dictCode'>): Promise<DictItem> => {
     try {
         const response = await apiClient.post(`/api/dict/admin/${dictCode}/items`, data);
         return response.data;

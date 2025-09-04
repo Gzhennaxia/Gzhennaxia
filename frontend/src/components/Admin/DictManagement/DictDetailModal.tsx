@@ -64,8 +64,8 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({ open, dictCode, onCan
                     <Descriptions.Item label="字典项">
                         {dict.items?.map(item => (
                             <div key={item.id} style={{ marginBottom: 8 }}>
-                                <Tag>{item.item_key}</Tag>
-                                <span style={{ margin: '0 8px' }}>{item.item_value}</span>
+                                <Tag>{item.itemCode}</Tag>
+                                <span style={{ margin: '0 8px' }}>{item.itemName}</span>
                                 <Tag color={item.status === 1 ? 'green' : 'red'}>
                                     {item.status === 1 ? '启用' : '禁用'}
                                 </Tag>

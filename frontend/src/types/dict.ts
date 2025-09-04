@@ -12,9 +12,9 @@ export interface Dict {
 
 export interface DictItem {
     id: number;
-    dict_code: string;
-    item_code: string;
-    item_name: string;
+    dictCode: string;
+    itemCode: string;
+    itemName: string;
     sort: number;
     status: number;
     remark?: string;

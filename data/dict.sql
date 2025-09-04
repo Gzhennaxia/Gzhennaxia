@@ -19,24 +19,23 @@ VALUES ('ORDER_STATUS', '订单状态', '2025090101'),
        ('PRODUCT_TYPE', '产品类型', '2025090104'),
        ('USER_ROLE', '用户角色', '2025090105');
 
-
 -- 字典项表
 CREATE TABLE IF NOT EXISTS dict_item
 (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    type_code    TEXT    NOT NULL,           -- 外键：dict.dict_code
-    item_key     TEXT    NOT NULL,           -- 业务代码，例如 PENDING、DONE
-    item_value   TEXT    NOT NULL,           -- 展示文案，例如 待处理、已完成
+    dict_code    TEXT    NOT NULL,           -- 外键：dict.dict_code
+    item_code    TEXT    NOT NULL,           -- 业务代码，例如 PENDING、DONE
+    item_name    TEXT    NOT NULL,           -- 展示文案，例如 待处理、已完成
     sort         INTEGER NOT NULL DEFAULT 0,
     status       INTEGER NOT NULL DEFAULT 1, -- 1=启用, 0=禁用
     deleted      INTEGER NOT NULL DEFAULT 0, -- 0=未删除, 1=已删除
     remark       TEXT,
     created_time DATETIME         DEFAULT CURRENT_TIMESTAMP,
     updated_time DATETIME         default CURRENT_TIMESTAMP,
-    CONSTRAINT uk_type_key UNIQUE (type_code, item_key)
-);
+    CONSTRAINT uk_type_key UNIQUE (dict_code, item_code)
+    );
 -- 初始化5条
-INSERT INTO dict_item (type_code, item_key, item_value)
+INSERT INTO dict_item (dict_code, item_code, item_name)
 VALUES ('ORDER_STATUS', 'PENDING', '待处理'),
        ('ORDER_STATUS', 'DONE', '已完成'),
        ('GENDER', 'MALE', '男'),

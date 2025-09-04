@@ -17,13 +17,13 @@ const DictItemList: React.FC = () => {
     const columns: ColumnsType<DictItem> = [
         {
             title: '键名',
-            dataIndex: 'item_key',
-            key: 'item_key',
+            dataIndex: 'itemCode',
+            key: 'itemCode',
         },
         {
             title: '键值',
-            dataIndex: 'item_value',
-            key: 'item_value',
+            dataIndex: 'itemName',
+            key: 'itemName',
         },
         {
             title: '排序',

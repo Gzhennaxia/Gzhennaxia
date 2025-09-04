@@ -37,11 +37,11 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, onUpdate, onDelete, d
   };
 
   const handleKeyChange = (value: string) => {
-    onUpdate({ ...item, item_key: value });
+    onUpdate({ ...item, itemCode: value });
   };
 
   const handleValueChange = (value: string) => {
-    onUpdate({ ...item, item_value: value });
+    onUpdate({ ...item, itemName: value });
   };
 
   const handleStatusChange = (checked: boolean) => {
@@ -71,7 +71,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, onUpdate, onDelete, d
                 <div style={{ width: '120px' }}>
                   <div style={{ marginBottom: '4px', fontSize: '12px', color: '#666' }}>标签</div>
                   <Input
-                    value={item.item_key}
+                    value={item.itemCode}
                     onChange={(e) => handleKeyChange(e.target.value)}
                     placeholder="请输入标签"
                     size="small"
@@ -81,7 +81,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, onUpdate, onDelete, d
                 <div style={{ width: '120px' }}>
                   <div style={{ marginBottom: '4px', fontSize: '12px', color: '#666' }}>值</div>
                   <Input
-                    value={item.item_value}
+                    value={item.itemName}
                     onChange={(e) => handleValueChange(e.target.value)}
                     placeholder="请输入值"
                     size="small"
@@ -165,13 +165,13 @@ const DraggableDictItemList: React.FC<DraggableDictItemListProps> = ({
   const handleAddItem = () => {
     const newItem: DictItem = {
       id: nextId,
-      type_code: '',
-      item_key: '',
-      item_value: '',
+      dictCode: '',
+      itemCode: '',
+      itemName: '',
       sort: localItems.length + 1,
       status: 1,
-      created_time: new Date().toISOString(),
-      updated_time: new Date().toISOString(),
+      createdTime: new Date().toISOString(),
+      updatedTime: new Date().toISOString(),
     };
 
     const newItems = [...localItems, newItem];
@@ -202,16 +202,16 @@ const DraggableDictItemList: React.FC<DraggableDictItemListProps> = ({
     const values = new Set<string>();
     
     localItems.forEach((item, index) => {
-      if (!item.item_key.trim()) {
+      if (!item.itemCode.trim()) {
         errors.push(`第${index + 1}行：标签不能为空`);
       }
-      if (!item.item_value.trim()) {
+      if (!item.itemName.trim()) {
         errors.push(`第${index + 1}行：值不能为空`);
       }
-      if (values.has(item.item_value)) {
-        errors.push(`第${index + 1}行：值"${item.item_value}"重复`);
+      if (values.has(item.itemName)) {
+        errors.push(`第${index + 1}行：值"${item.itemName}"重复`);
       } else {
-        values.add(item.item_value);
+        values.add(item.itemName);
       }
     });
 

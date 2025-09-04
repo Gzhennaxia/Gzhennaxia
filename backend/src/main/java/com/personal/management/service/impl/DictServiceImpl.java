@@ -47,7 +47,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
 
         List<DictItem> items = dictItemMapper.selectList(
                 new LambdaQueryWrapper<DictItem>()
-                        .eq(DictItem::getTypeCode, code)
+                        .eq(DictItem::getDictCode, code)
                         .eq(DictItem::getStatus, 1)
                         .orderByAsc(DictItem::getSort, DictItem::getId));
 
@@ -134,9 +134,9 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
             for (int i = 0; i < dictDto.getDictItems().size(); i++) {
                 DictItemDto itemDto = dictDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
-                dictItem.setTypeCode(dictDto.getDictCode());
-                dictItem.setItemKey(itemDto.getItemKey());
-                dictItem.setItemValue(itemDto.getItemValue());
+                dictItem.setDictCode(dictDto.getDictCode());
+                dictItem.setItemCode(itemDto.getItemKey());
+                dictItem.setItemName(itemDto.getItemValue());
                 dictItem.setStatus(itemDto.getStatus() != null ? itemDto.getStatus() : 1);
                 dictItem.setSort(itemDto.getSort() != null ? itemDto.getSort() : i);
                 dictItem.setCreatedTime(LocalDateTime.now().toString());
@@ -232,16 +232,16 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
 
         // 删除现有的字典项
         dictItemMapper.delete(new LambdaQueryWrapper<DictItem>()
-                .eq(DictItem::getTypeCode, existingDict.getDictCode()));
+                .eq(DictItem::getDictCode, existingDict.getDictCode()));
 
         // 添加新的字典项
         if (dictDto.getDictItems() != null && !dictDto.getDictItems().isEmpty()) {
             for (int i = 0; i < dictDto.getDictItems().size(); i++) {
                 var itemDto = dictDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
-                dictItem.setTypeCode(existingDict.getDictCode());
-                dictItem.setItemKey(itemDto.getItemKey());
-                dictItem.setItemValue(itemDto.getItemValue());
+                dictItem.setDictCode(existingDict.getDictCode());
+                dictItem.setItemCode(itemDto.getItemKey());
+                dictItem.setItemName(itemDto.getItemValue());
                 dictItem.setStatus(itemDto.getStatus());
                 dictItem.setSort(i);
                 dictItem.setCreatedTime(LocalDateTime.now().toString());

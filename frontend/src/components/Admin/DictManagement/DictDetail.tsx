@@ -32,8 +32,8 @@ const DictDetail: React.FC = () => {
         status: 1,
         remark: '',
         items: [],
-        created_time: '',
-        updated_time: '',
+        createdTime: '',
+        updatedTime: '',
       };
       setDict(newDict);
       setDictItems([]);
@@ -76,16 +76,16 @@ const DictDetail: React.FC = () => {
       const valueSet = new Set<string>();
       
       dictItems.forEach((item, index) => {
-        if (!item.item_key.trim()) {
+        if (!item.itemCode.trim()) {
           errors.push(`第${index + 1}行：标签不能为空`);
         }
-        if (!item.item_value.trim()) {
+        if (!item.itemName.trim()) {
           errors.push(`第${index + 1}行：值不能为空`);
         }
-        if (valueSet.has(item.item_value)) {
-          errors.push(`第${index + 1}行：值"${item.item_value}"重复`);
+        if (valueSet.has(item.itemName)) {
+          errors.push(`第${index + 1}行：值"${item.itemName}"重复`);
         } else {
-          valueSet.add(item.item_value);
+          valueSet.add(item.itemName);
         }
       });
 
@@ -104,7 +104,7 @@ const DictDetail: React.FC = () => {
         items: dictItems.map((item, index) => ({
           ...item,
           sort: index + 1,
-          type_code: values.dictCode,
+          dictCode: values.dictCode,
         })),
       };
 
@@ -224,13 +224,13 @@ const DictDetail: React.FC = () => {
               <div>
                 <label style={{ fontSize: '14px', color: '#666' }}>创建时间</label>
                 <div style={{ padding: '4px 0' }}>
-                  {dict.created_time ? dayjs(dict.created_time).format('YYYY-MM-DD HH:mm:ss') : '-'}
+                  {dict.createdTime ? dayjs(dict.createdTime).format('YYYY-MM-DD HH:mm:ss') : '-'}
                 </div>
               </div>
               <div>
                 <label style={{ fontSize: '14px', color: '#666' }}>更新时间</label>
                 <div style={{ padding: '4px 0' }}>
-                  {dict.updated_time ? dayjs(dict.updated_time).format('YYYY-MM-DD HH:mm:ss') : '-'}
+                  {dict.updatedTime ? dayjs(dict.updatedTime).format('YYYY-MM-DD HH:mm:ss') : '-'}
                 </div>
               </div>
             </div>
