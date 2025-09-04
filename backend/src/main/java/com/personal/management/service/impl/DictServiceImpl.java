@@ -209,4 +209,54 @@ public class DictServiceImpl extends IBaseServiceImpl<DictTypeMapper, DictType> 
         baseMapper.updateById(type);
     }
 
+    @Override
+    @Transactional
+    public DictTypeDto updateDict(DictTypeDto dictTypeDto) {
+        // 查找现有字典
+        DictType existingDict = baseMapper.selectOne(
+                new LambdaQueryWrapper<DictType>()
+                        .eq(DictType::getCode, dictTypeDto.getCode())
+                        .eq(DictType::getDeleted, 0));
+        
+        if (existingDict == null) {
+            throw new RuntimeException("字典不存在: " + dictTypeDto.getCode());
+        }
+
+        // 更新字典基本信息
+        existingDict.setName(dictTypeDto.getName());
+        existingDict.setVersion(dictTypeDto.getVersion());
+        existingDict.setStatus(dictTypeDto.getStatus());
+        existingDict.setRemark(dictTypeDto.getRemark());
+        existingDict.setUpdatedTime(LocalDateTime.now().toString());
+
+        // 保存字典
+        baseMapper.updateById(existingDict);
+
+        // 删除现有的字典项
+        dictItemMapper.delete(new LambdaQueryWrapper<DictItem>()
+                .eq(DictItem::getDictTypeId, existingDict.getId()));
+
+        // 添加新的字典项
+        if (dictTypeDto.getItems() != null && !dictTypeDto.getItems().isEmpty()) {
+            for (int i = 0; i < dictTypeDto.getItems().size(); i++) {
+                var itemDto = dictTypeDto.getItems().get(i);
+                DictItem dictItem = new DictItem();
+                dictItem.setDictTypeId(existingDict.getId());
+                dictItem.setItemKey(itemDto.getItem_key());
+                dictItem.setItemValue(itemDto.getItem_value());
+                dictItem.setStatus(itemDto.getStatus());
+                dictItem.setSort(i);
+                dictItem.setCreatedTime(LocalDateTime.now().toString());
+                dictItem.setUpdatedTime(LocalDateTime.now().toString());
+                dictItemMapper.insert(dictItem);
+            }
+        }
+
+        // 更新版本号并清理缓存
+        bumpVersionAndEvict(existingDict.getCode(), String.valueOf(existingDict.getVersion()));
+
+        // 转换为DTO返回
+        return getDict(existingDict.getCode());
+    }
+
 }
