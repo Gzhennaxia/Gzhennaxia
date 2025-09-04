@@ -192,13 +192,7 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
         >
           <Input placeholder="请输入字典名称" />
         </Form.Item>
-        <Form.Item
-          name="version"
-          label="版本号"
-          initialValue="1"
-        >
-          <Input placeholder="请输入版本号" />
-        </Form.Item>
+
         <Form.Item
           name="status"
           label="状态"
