@@ -67,29 +67,11 @@
 
 ---
 
-调整编辑接口
+## 软删除的特殊场景
 
-```
-curl 'http://localhost:3000/api/api/dict/admin/ORDER_STATUS' \
-  -X 'PUT' \
-  -H 'Accept: application/json, text/plain, */*' \
-  -H 'Accept-Language: zh-CN,zh;q=0.9' \
-  -H 'Connection: keep-alive' \
-  -H 'Content-Type: application/json' \
-  -b 'SBID=w69kny6isv9megxpfo8; device.info=eyJpZCI6ImI5NmY5MjVkIiwibWFjIjoiMTY6Q0Q6OTg6QzY6M0I6NzQifQ==' \
-  -H 'Origin: http://localhost:3000' \
-  -H 'Referer: http://localhost:3000/admin/dict' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: same-origin' \
-  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36' \
-  -H 'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "Windows"' \
-  --data-raw '{"dictCode":"ORDER_STATUS","dictName":"订单状态","status":1,"remark":null,"dictItems":[{"dictCode":"ORDER_STATUS","itemCode":"PENDING","itemName":"待处理","status":1,"sort":0,"createdTime":"2025-09-05T08:05:36.904Z","updatedTime":"2025-09-05T08:05:36.904Z","id":1},{"dictCode":"ORDER_STATUS","itemCode":"DONE","itemName":"已完成1","status":1,"sort":1,"createdTime":"2025-09-05T08:05:36.904Z","updatedTime":"2025-09-05T08:05:36.904Z","id":2}]}'
-```
+针对同样的数据（唯一键相同），新增-删除-再新增-再删除
 
+例如，字典表的唯一键是 CONSTRAINT uk_dict_key UNIQUE (dict_code, deleted)
 
-
-
+先新增（id1，code1，0），再软删除（id1，code1，1），再新增，此时会产生一条新纪录（id2，code1，0），再软删除，此时会因为唯一键冲突报错。
 
