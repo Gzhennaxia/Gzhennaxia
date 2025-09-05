@@ -7,7 +7,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { getDictDetail, createDict, updateDict } from '../../../services/dictService';
-import { Dict, DictItem } from '../../../types/dict';
+import { Dict } from '../../../types/dict';
 
 const { TextArea } = Input;
 
@@ -47,7 +47,6 @@ const SortableRow: React.FC<SortableRowProps> = ({ children, ...props }) => {
   });
 
   const style: React.CSSProperties = {
-    ...props.style,
     transform: CSS.Transform.toString(transform && { ...transform, scaleY: 1 }),
     transition,
     ...(isDragging ? { position: 'relative', zIndex: 9999 } : {}),
@@ -88,9 +87,9 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
   onSuccess
 }) => {
   const [dict, setDict] = useState<Dict | null>(null);
-  const [loading, setLoading] = useState(false);
+
   const [saving, setSaving] = useState(false);
-  const [items, setItems] = useState<DictItemFormData[]>([]);
+  const [dictItems, setDictItems] = useState<DictItemFormData[]>([]);
   const [form] = Form.useForm();
 
   const sensors = useSensors(
@@ -111,7 +110,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
         form.setFieldsValue({
           status: true,
         });
-        setItems([]);
+        setDictItems([]);
         setDict(null);
       } else if ((mode === 'edit' || mode === 'view') && dictCode) {
         loadDictData(dictCode);
@@ -121,7 +120,6 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
 
   const loadDictData = async (code: string) => {
     try {
-      setLoading(true);
       const data = await getDictDetail(code);
       setDict(data);
       form.setFieldsValue({
@@ -141,12 +139,10 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
         isEditing: false,
       }));
       
-      setItems(formattedItems);
+      setDictItems(formattedItems);
     } catch (error) {
       console.error('Failed to load dict detail', error);
       message.error('加载字典详情失败');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -155,23 +151,31 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       const values = await form.validateFields();
       setSaving(true);
       
-      const validItems = items.filter(item => item.itemCode && item.itemName);
+      const validItems = dictItems.filter(item => item.itemCode && item.itemName);
       
       const dictData = {
         dictCode: values.dictCode,
         dictName: values.dictName,
         status: values.status ? 1 : 0,
         remark: values.remark,
-        items: validItems.map((item, index) => ({
-          id: typeof item.id === 'string' && item.id.startsWith('temp-') ? undefined : item.id,
-          dictCode: values.dictCode,
-          itemCode: item.itemCode,
-          itemName: item.itemName,
-          status: item.status,
-          sort: index,
-          createdTime: new Date().toISOString(),
-          updatedTime: new Date().toISOString()
-        }))
+        dictItems: validItems.map((item, index) => {
+          const baseItem = {
+            dictCode: values.dictCode,
+            itemCode: item.itemCode,
+            itemName: item.itemName,
+            status: item.status,
+            sort: index,
+            createdTime: new Date().toISOString(),
+            updatedTime: new Date().toISOString()
+          };
+          
+          // 只有当id不是临时id时才包含id字段
+          if (typeof item.id === 'number' || (typeof item.id === 'string' && !item.id.startsWith('temp-'))) {
+            return { ...baseItem, id: item.id as number };
+          }
+          
+          return baseItem;
+        })
       };
 
       if (mode === 'create') {
@@ -194,10 +198,10 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     if (active.id !== over?.id) {
-      setItems((items) => {
-        const oldIndex = items.findIndex(item => item.id.toString() === active.id);
-        const newIndex = items.findIndex(item => item.id.toString() === over?.id);
-        return arrayMove(items, oldIndex, newIndex);
+      setDictItems((dictItems) => {
+        const oldIndex = dictItems.findIndex(item => item.id.toString() === active.id);
+        const newIndex = dictItems.findIndex(item => item.id.toString() === over?.id);
+        return arrayMove(dictItems, oldIndex, newIndex);
       });
     }
   };
@@ -208,27 +212,27 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       itemCode: '',
       itemName: '',
       status: 1,
-      sort: items.length,
+      sort: dictItems.length,
       isNew: true,
       isEditing: true,
     };
-    setItems([...items, newItem]);
+    setDictItems([...dictItems, newItem]);
   };
 
   const handleEditItem = (id: number | string) => {
-    setItems(items.map(item => 
+    setDictItems(dictItems.map(item => 
       item.id === id ? { ...item, isEditing: true } : { ...item, isEditing: false }
     ));
   };
 
   const handleSaveItem = (id: number | string) => {
-    setItems(items.map(item => 
+    setDictItems(dictItems.map(item => 
       item.id === id ? { ...item, isEditing: false, isNew: false } : item
     ));
   };
 
   const handleCancelEdit = (id: number | string) => {
-    setItems(items.map(item => {
+    setDictItems(dictItems.map(item => {
       if (item.id === id) {
         if (item.isNew) {
           return null;
@@ -240,11 +244,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
   };
 
   const handleDeleteItem = (id: number | string) => {
-    setItems(items.filter(item => item.id !== id));
+    setDictItems(dictItems.filter(item => item.id !== id));
   };
 
   const handleItemChange = (id: number | string, field: keyof DictItemFormData, value: any) => {
-    setItems(items.map(item => 
+    setDictItems(dictItems.map(item => 
       item.id === id ? { ...item, [field]: value } : item
     ));
   };
@@ -254,7 +258,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
 
   // 创建表格数据，包含添加按钮行
   const getTableDataSource = () => {
-    const dataSource = [...items];
+    const dataSource = [...dictItems];
     
     // 如果可以编辑，添加一个特殊的添加按钮行
     if (canEdit) {
@@ -263,7 +267,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
         itemCode: '',
         itemName: '',
         status: 1,
-        sort: items.length,
+        sort: dictItems.length,
         isNew: false,
         isEditing: false,
         isAddButtonRow: true,
@@ -622,7 +626,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             </SortableContext>
           </DndContext>
           
-          {items.length === 0 && !canEdit && (
+          {dictItems.length === 0 && !canEdit && (
             <div style={{ 
               textAlign: 'center', 
               padding: 40, 

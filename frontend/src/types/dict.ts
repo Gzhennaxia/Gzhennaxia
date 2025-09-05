@@ -6,12 +6,13 @@ export interface Dict {
     status: number;
     remark?: string;
     items?: DictItem[];
+    dictItems?: DictItem[]; // 新增字段，用于接口参数
     createdTime: string;
     updatedTime: string;
 }
 
 export interface DictItem {
-    id: number;
+    id?: number; // 创建时可选
     dictCode: string;
     itemCode: string;
     itemName: string;
