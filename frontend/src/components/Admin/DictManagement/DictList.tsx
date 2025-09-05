@@ -257,19 +257,43 @@ const DictList: React.FC = () => {
                 style={{ marginBottom: 16 }}
                 onFinish={handleSearch}
             >
-                <Form.Item name="dictCode" label="字典编码">
-                    <Input placeholder="请输入字典编码" allowClear />
+                <Form.Item 
+                    name="dictCode" 
+                    label="字典编码"
+                    style={{ marginBottom: 0 }}
+                >
+                    <Input 
+                        placeholder="请输入字典编码" 
+                        allowClear 
+                        style={{ height: '32px' }}
+                    />
                 </Form.Item>
-                <Form.Item name="dictName" label="字典名称">
-                    <Input placeholder="请输入字典名称" allowClear />
+                <Form.Item 
+                    name="dictName" 
+                    label="字典名称"
+                    style={{ marginBottom: 0 }}
+                >
+                    <Input 
+                        placeholder="请输入字典名称" 
+                        allowClear 
+                        style={{ height: '32px' }}
+                    />
                 </Form.Item>
-                <Form.Item name="status" label="状态">
+                <Form.Item 
+                    name="status" 
+                    label="状态"
+                    style={{ marginBottom: 0 }}
+                >
                     <div style={{ height: '32px', display: 'flex', alignItems: 'center' }}>
                         <Switch checkedChildren="启用" unCheckedChildren="禁用" />
                     </div>
                 </Form.Item>
-                <Form.Item name="dateRange" label="创建时间">
-                    <DatePicker.RangePicker />
+                <Form.Item 
+                    name="dateRange" 
+                    label="创建时间"
+                    style={{ marginBottom: 0 }}
+                >
+                    <DatePicker.RangePicker style={{ height: '32px' }} />
                 </Form.Item>
                 <Form.Item>
                     <Space>
