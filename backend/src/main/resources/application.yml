@@ -3,10 +3,29 @@ server:
 
 spring:
   datasource:
-    driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:data/gzhennaxia.sqlite
-    username:
-    password:
+#    driver-class-name: org.sqlite.JDBC
+#    url: jdbc:sqlite:data/gzhennaxia.sqlite
+#    username:
+#    password:
+
+    # H2嵌入式模式配置（文件存储，数据持久化到本地）
+    driver-class-name: org.h2.Driver
+    # 数据库文件路径：./data/h2db 表示项目根目录下的data文件夹，自动创建
+    # AUTO_SERVER=TRUE 允许同一台机器上的多个进程访问数据库
+    # DB_CLOSE_DELAY=-1 避免连接关闭时自动关闭数据库
+    url: jdbc:h2:./data/gzhennaxia;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;MODE=MySQL;DEFAULT_NULL_ORDERING=LOW
+    username: sa  # 默认用户名，可自定义
+    password: 123456  # 密码，建议设置（默认空）
+    hikari:
+      maximum-pool-size: 5  # 连接池大小（H2支持多连接，按需调整）
+
+  # 可选：启用H2控制台（网页管理界面，方便调试）
+  h2:
+    console:
+      enabled: true  # 开启控制台
+      path: /h2-console  # 访问路径：http://localhost:8080/h2-console
+      settings:
+        web-allow-others: false  # 禁止远程访问（生产环境建议关闭）
 
   cache:
     type: caffeine

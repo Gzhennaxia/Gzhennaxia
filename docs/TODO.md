@@ -8,7 +8,7 @@
 
 ---
 
-1. 字典列表操作列，增加启用禁用按钮，列表顶部也增加相应操作按钮
+1. ~~字典列表操作列，增加启用禁用按钮，列表顶部也增加相应操作按钮~~
 2. ~~字典列表操作列中的编辑按钮点击无反应，实现 handleEdit 方法~~
 3. DictController 中实现字典删除接口，符合restful，软删除
 
@@ -58,4 +58,11 @@ App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下
 6.  [dictService.ts](..\frontend\src\services\dictService.ts) 
 7.  [dict.ts](..\frontend\src\types\dict.ts) 
 8. 其他
+
+
+
+
+
+
+
 

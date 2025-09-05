@@ -61,11 +61,12 @@
             <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
 
-        <!-- SQLite -->
+        <!-- H2数据库依赖 -->
         <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.42.0.0</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version> <!-- 最新的 2.x 版本 -->
+            <scope>runtime</scope> <!-- 运行时依赖，不参与编译 -->
         </dependency>
 
         <!-- JSON处理 -->

@@ -1,0 +1,6 @@
+2025-09-05 09:08:07.355640+08:00 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "dict" not found (this database is empty); SQL statement:
+SELECT COUNT(*) AS total FROM DICT WHERE deleted = 0 [42104-232]
+2025-09-05 09:08:07.355640+08:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "dict" not found (this database is empty); SQL statement:
+SELECT COUNT(*) AS total FROM DICT WHERE deleted = 0 [42104-232]

@@ -1,7 +1,7 @@
 -- 字典表
 CREATE TABLE IF NOT EXISTS dict
 (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    id           INTEGER AUTO_INCREMENT PRIMARY KEY,
     dict_code         TEXT    NOT NULL UNIQUE,    -- 例如 ORDER_STATUS、GENDER
     dict_name         TEXT    NOT NULL,           -- 展示名称
     version      TEXT    NOT NULL,           -- 例如 2025090101（日期+递增）或 UUID
@@ -22,7 +22,7 @@ VALUES ('ORDER_STATUS', '订单状态', '2025090101'),
 -- 字典项表
 CREATE TABLE IF NOT EXISTS dict_item
 (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    id           INTEGER AUTO_INCREMENT PRIMARY KEY,
     dict_code    TEXT    NOT NULL,           -- 外键：dict.dict_code
     item_code    TEXT    NOT NULL,           -- 业务代码，例如 PENDING、DONE
     item_name    TEXT    NOT NULL,           -- 展示文案，例如 待处理、已完成
