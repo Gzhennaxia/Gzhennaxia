@@ -35,7 +35,7 @@ const DictList: React.FC = () => {
             setLoading(true);
             const searchValues = searchForm.getFieldsValue();
             const query: Record<string, any> = {};
-            
+
             if (searchValues.dictCode) query.dictCode = searchValues.dictCode;
             if (searchValues.dictName) query.dictName = searchValues.dictName;
             if (searchValues.status !== undefined) query.status = searchValues.status;
@@ -177,18 +177,25 @@ const DictList: React.FC = () => {
             title: '版本号',
             dataIndex: 'version',
             key: 'version',
-            width: 80,
+            width: 180,
         },
         {
             title: '备注',
             dataIndex: 'remark',
             key: 'remark',
-            ellipsis: true,
+            width: 180,
         },
         {
             title: '创建时间',
             dataIndex: 'createdTime',
             key: 'createdTime',
+            width: 180,
+            render: (time: string) => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-',
+        },
+        {
+            title: '更新时间',
+            dataIndex: 'updatedTime',
+            key: 'updatedTime',
             width: 180,
             render: (time: string) => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-',
         },
