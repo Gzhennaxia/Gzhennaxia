@@ -15,6 +15,7 @@ const DictList: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [detailVisible, setDetailVisible] = useState(false);
     const [currentDict, setCurrentDict] = useState<string>();
+    const [detailModalMode, setDetailModalMode] = useState<'view' | 'edit'>('view');
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState({
         current: 1,
@@ -74,6 +75,7 @@ const DictList: React.FC = () => {
                         icon={<EyeOutlined />}
                         onClick={() => {
                             setCurrentDict(record.dictCode);
+                            setDetailModalMode('view');
                             setDetailVisible(true);
                         }}
                     />
@@ -135,6 +137,7 @@ const DictList: React.FC = () => {
 
     const handleEdit = (record: Dict) => {
         setCurrentDict(record.dictCode);
+        setDetailModalMode('edit');
         setDetailVisible(true);
     };
 
@@ -309,7 +312,12 @@ const DictList: React.FC = () => {
             <DictDetailModal
               open={detailVisible}
               dictCode={currentDict || ''}
+              mode={detailModalMode}
               onCancel={() => setDetailVisible(false)}
+              onSuccess={() => {
+                setDetailVisible(false);
+                fetchDicts();
+              }}
             />
         </div>
     );
