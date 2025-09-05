@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Modal, Form, Input, Switch, Table, Button, Space, message, Popconfirm } from 'antd';
 import { PlusOutlined, DeleteOutlined, DragOutlined, SaveOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -129,7 +129,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
         remark: data.remark
       });
       
-      const formattedItems = (data.items || []).map((item, index) => ({
+      const formattedItems = (data.dictItems || data.items || []).map((item, index) => ({
         id: item.id || `item-${index}`,
         itemCode: item.itemCode,
         itemName: item.itemName,
@@ -206,33 +206,35 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
     }
   };
 
-  const handleAddItem = () => {
-    const newItem: DictItemFormData = {
-      id: `temp-${Date.now()}`,
-      itemCode: '',
-      itemName: '',
-      status: 1,
-      sort: dictItems.length,
-      isNew: true,
-      isEditing: true,
-    };
-    setDictItems([...dictItems, newItem]);
-  };
+  const handleAddItem = useCallback(() => {
+    setDictItems(prevItems => {
+      const newItem: DictItemFormData = {
+        id: `temp-${Date.now()}`,
+        itemCode: '',
+        itemName: '',
+        status: 1,
+        sort: prevItems.length,
+        isNew: true,
+        isEditing: true,
+      };
+      return [...prevItems, newItem];
+    });
+  }, []);
 
-  const handleEditItem = (id: number | string) => {
-    setDictItems(dictItems.map(item => 
+  const handleEditItem = useCallback((id: number | string) => {
+    setDictItems(prevItems => prevItems.map(item => 
       item.id === id ? { ...item, isEditing: true } : { ...item, isEditing: false }
     ));
-  };
+  }, []);
 
-  const handleSaveItem = (id: number | string) => {
-    setDictItems(dictItems.map(item => 
+  const handleSaveItem = useCallback((id: number | string) => {
+    setDictItems(prevItems => prevItems.map(item => 
       item.id === id ? { ...item, isEditing: false, isNew: false } : item
     ));
-  };
+  }, []);
 
-  const handleCancelEdit = (id: number | string) => {
-    setDictItems(dictItems.map(item => {
+  const handleCancelEdit = useCallback((id: number | string) => {
+    setDictItems(prevItems => prevItems.map(item => {
       if (item.id === id) {
         if (item.isNew) {
           return null;
@@ -241,23 +243,23 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       }
       return item;
     }).filter(Boolean) as DictItemFormData[]);
-  };
+  }, []);
 
-  const handleDeleteItem = (id: number | string) => {
-    setDictItems(dictItems.filter(item => item.id !== id));
-  };
+  const handleDeleteItem = useCallback((id: number | string) => {
+    setDictItems(prevItems => prevItems.filter(item => item.id !== id));
+  }, []);
 
-  const handleItemChange = (id: number | string, field: keyof DictItemFormData, value: any) => {
-    setDictItems(dictItems.map(item => 
+  const handleItemChange = useCallback((id: number | string, field: keyof DictItemFormData, value: any) => {
+    setDictItems(prevItems => prevItems.map(item => 
       item.id === id ? { ...item, [field]: value } : item
     ));
-  };
+  }, []);
 
   const isReadOnly = mode === 'view';
   const canEdit = mode === 'create' || mode === 'edit';
 
   // 创建表格数据，包含添加按钮行
-  const getTableDataSource = () => {
+  const tableDataSource = useMemo(() => {
     const dataSource = [...dictItems];
     
     // 如果可以编辑，添加一个特殊的添加按钮行
@@ -275,7 +277,37 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
     }
     
     return dataSource;
-  };
+  }, [dictItems, canEdit]);
+
+  // 优化SortableContext的items属性
+  const sortableItems = useMemo(() => {
+    return tableDataSource.map(item => item.id.toString());
+  }, [tableDataSource]);
+
+  // 优化表格components配置
+  const tableComponents = useMemo(() => ({
+    body: {
+      row: (props: any) => {
+        // 添加按钮行不使用SortableRow
+        if (props['data-row-key'] === 'add-button-row') {
+          return <tr {...props} />;
+        }
+        // 普通数据行使用SortableRow
+        return <SortableRow {...props} />;
+      },
+    },
+  }), []);
+
+  // 优化表格行属性处理
+  const handleTableRowProps = useCallback((record: any) => {
+    // 添加按钮行不需要拖拽功能
+    if (record.isAddButtonRow) {
+      return {} as React.HTMLAttributes<any>;
+    }
+    return {
+      'data-row-key': record.id.toString(),
+    } as React.HTMLAttributes<any>;
+  }, []);
 
   const columns = [
     {
@@ -591,37 +623,18 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             onDragEnd={onDragEnd}
           >
             <SortableContext
-              items={getTableDataSource().map(item => item.id.toString())}
+              items={sortableItems}
               strategy={verticalListSortingStrategy}
             >
               <Table
-                components={{
-                  body: {
-                    row: (props: any) => {
-                      // 添加按钮行不使用SortableRow
-                      if (props['data-row-key'] === 'add-button-row') {
-                        return <tr {...props} />;
-                      }
-                      // 普通数据行使用SortableRow
-                      return <SortableRow {...props} />;
-                    },
-                  },
-                }}
+                components={tableComponents}
                 columns={columns}
-                dataSource={getTableDataSource()}
+                dataSource={tableDataSource}
                 rowKey="id"
                 pagination={false}
                 size="small"
                 bordered
-                onRow={(record) => {
-                  // 添加按钮行不需要拖拽功能
-                  if ((record as any).isAddButtonRow) {
-                    return {};
-                  }
-                  return {
-                    'data-row-key': record.id.toString(),
-                  } as any;
-                }}
+                onRow={handleTableRowProps}
               />
             </SortableContext>
           </DndContext>
