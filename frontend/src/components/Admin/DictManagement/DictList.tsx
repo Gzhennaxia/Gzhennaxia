@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Space, message, Form, Input, DatePicker, Modal, Switch} from 'antd';
+import {Table, Button, Space, message, Form, Input, DatePicker, Modal, Switch, Select} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {
     PlusOutlined,
@@ -272,9 +272,15 @@ const DictList: React.FC = () => {
                     <Input placeholder="请输入字典名称" allowClear/>
                 </Form.Item>
                 <Form.Item name="status" label="状态">
-                    <div style={{height: '32px', display: 'flex', alignItems: 'center'}}>
-                        <Switch checkedChildren="启用" unCheckedChildren="禁用"/>
-                    </div>
+                    <Select
+                        placeholder="请选择状态"
+                        allowClear
+                        style={{ width: 120 }}
+                        options={[
+                            { value: 1, label: '启用' },
+                            { value: 0, label: '禁用' }
+                        ]}
+                    />
                 </Form.Item>
                 <Form.Item
                     name="dateRange"
