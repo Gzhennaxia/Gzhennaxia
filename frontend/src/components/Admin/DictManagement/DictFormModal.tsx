@@ -1,96 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button, Switch, message } from 'antd';
-import { PlusOutlined, CloseOutlined, MenuOutlined } from '@ant-design/icons';
-import { createDict, updateDict, getDictDetail } from '../../../services/dictService';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Modal, Form, Input, Switch, Button, message } from 'antd';
+import { PlusOutlined, DeleteOutlined, DragOutlined } from '@ant-design/icons';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { createDict, updateDict, getDictDetail } from '../../../services/dictService';
+import { Dict, DictItem } from '../../../types/dict';
 
 const { TextArea } = Input;
-
-const SortableItem = ({ id, value, onRemove, onChange }: any) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    display: 'flex',
-    alignItems: 'center',
-    padding: '12px 16px',
-    backgroundColor: isDragging ? '#f0f8ff' : '#fff',
-    opacity: isDragging ? 0.8 : 1,
-  };
-
-  return (
-    <div ref={setNodeRef} style={style} {...attributes}>
-      {/* 拖拽手柄 */}
-      <div 
-        {...listeners}
-        style={{ 
-          width: '40px', 
-          cursor: 'move',
-          display: 'flex',
-          justifyContent: 'center',
-          color: '#999'
-        }}
-      >
-        <MenuOutlined />
-      </div>
-
-      {/* 字典项值 */}
-      <div style={{ flex: 1, marginRight: 16 }}>
-          <Input
-            placeholder="字典项值"
-            value={value.itemCode}
-            onChange={(e) => onChange(id, 'item_code', e.target.value)}
-            variant="borderless"
-            style={{ padding: '4px 0' }}
-          />
-      </div>
-
-      {/* 字典项名称 */}
-      <div style={{ flex: 1, marginRight: 16 }}>
-          <Input
-            placeholder="字典项名称"
-            value={value.itemName}
-            onChange={(e) => onChange(id, 'item_name', e.target.value)}
-            variant="borderless"
-            style={{ padding: '4px 0' }}
-          />
-      </div>
-
-      {/* 状态开关 */}
-      <div style={{ width: '80px', marginRight: 16 }}>
-        <Switch
-          size="small"
-          checkedChildren="启用"
-          unCheckedChildren="禁用"
-          checked={value.status === 1}
-          onChange={(checked) => onChange(id, 'status', checked ? 1 : 0)}
-        />
-      </div>
-
-      {/* 删除按钮 */}
-      <div style={{ width: '60px', display: 'flex', justifyContent: 'center' }}>
-        <Button
-          type="text"
-          danger
-          size="small"
-          icon={<CloseOutlined />}
-          onClick={() => onRemove(id)}
-          style={{ padding: '4px' }}
-        />
-      </div>
-    </div>
-  );
-};
 
 interface DictFormModalProps {
   open: boolean;
@@ -100,6 +19,69 @@ interface DictFormModalProps {
   onSuccess: () => void;
 }
 
+interface DictItemFormData {
+  id: number;
+  itemCode: string;
+  itemName: string;
+  status: number;
+}
+
+interface SortableItemProps {
+  id: number;
+  value: DictItemFormData;
+  onChange: (id: number, field: keyof DictItemFormData, value: any) => void;
+  onRemove: (id: number) => void;
+}
+
+const SortableItem: React.FC<SortableItemProps> = ({ id, value, onChange, onRemove }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, padding: 8, border: '1px solid #d9d9d9', borderRadius: 4 }}>
+        <div {...listeners} style={{ cursor: 'grab' }}>
+          <DragOutlined />
+        </div>
+        <Input
+          placeholder="字典项编码"
+          value={value.itemCode}
+          onChange={(e) => onChange(id, 'itemCode', e.target.value)}
+          style={{ flex: 1 }}
+        />
+        <Input
+          placeholder="字典项名称"
+          value={value.itemName}
+          onChange={(e) => onChange(id, 'itemName', e.target.value)}
+          style={{ flex: 1 }}
+        />
+        <Switch
+          checked={value.status === 1}
+          onChange={(checked) => onChange(id, 'status', checked ? 1 : 0)}
+          checkedChildren="启用"
+          unCheckedChildren="禁用"
+        />
+        <Button
+          type="text"
+          danger
+          icon={<DeleteOutlined />}
+          onClick={() => onRemove(id)}
+        />
+      </div>
+    </div>
+  );
+};
+
 const DictFormModal: React.FC<DictFormModalProps> = ({
   open,
   mode = 'create',
@@ -108,30 +90,41 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
   onSuccess
 }) => {
   const [form] = Form.useForm();
-  const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<DictItemFormData[]>([]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
-    if (open && mode === 'edit' && dictCode) {
-      loadDictData(dictCode);
-    } else if (open && mode === 'create') {
-      form.resetFields();
-      setItems([]);
+    if (open) {
+      if (mode === 'create') {
+        form.resetFields();
+        setItems([]);
+      } else if (mode === 'edit' && dictCode) {
+        loadDictData(dictCode);
+      }
     }
-  }, [open, mode, dictCode]);
+  }, [open, mode, dictCode, form]);
 
   const loadDictData = async (code: string) => {
     try {
       setLoading(true);
       const data = await getDictDetail(code);
       form.setFieldsValue({
-        ...data,
-        status: data.status === 1
+        dictCode: data.dictCode,
+        dictName: data.dictName,
+        status: data.status === 1,
+        remark: data.remark
       });
       setItems(data.items?.map(item => ({
         id: item.id || Date.now(),
-        item_code: item.item_code,
-        item_name: item.item_name,
+        itemCode: item.itemCode,
+        itemName: item.itemName,
         status: item.status
       })) || []);
     } catch (error) {
@@ -151,18 +144,18 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
     }
   };
 
-  const handleAddItem = () => {
-    setItems([...items, { id: Date.now(), item_code: '', item_name: '', status: 1 }]);
+  const handleItemChange = (id: number, field: keyof DictItemFormData, value: any) => {
+    setItems(items.map(item => 
+      item.id === id ? { ...item, [field]: value } : item
+    ));
   };
 
   const handleRemoveItem = (id: number) => {
     setItems(items.filter(item => item.id !== id));
   };
 
-  const handleItemChange = (id: number, field: string, value: any) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, [field]: value } : item
-    ));
+  const handleAddItem = () => {
+    setItems([...items, { id: Date.now(), itemCode: '', itemName: '', status: 1 }]);
   };
 
   const handleSubmit = async () => {
@@ -171,13 +164,19 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
       setLoading(true);
 
       const dictData = {
-        ...values,
+        dictCode: values.dictCode,
+        dictName: values.dictName,
         status: values.status ? 1 : 0,
+        remark: values.remark,
         items: items.map((item, index) => ({
-          item_code: item.item_code,
-          item_name: item.item_name,
+          id: item.id,
+          dictCode: values.dictCode,
+          itemCode: item.itemCode,
+          itemName: item.itemName,
           status: item.status,
-          sort: index
+          sort: index,
+          createdTime: new Date().toISOString(),
+          updatedTime: new Date().toISOString()
         }))
       };
 
@@ -224,13 +223,6 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
           <Input placeholder="请输入字典名称" />
         </Form.Item>
         <Form.Item
-          name="version"
-          label="版本号"
-          initialValue="1"
-        >
-          <Input placeholder="请输入版本号" />
-        </Form.Item>
-        <Form.Item
           name="status"
           label="状态"
           valuePropName="checked"
@@ -242,71 +234,44 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
           name="remark"
           label="备注"
         >
-          <TextArea rows={2} placeholder="请输入备注" />
+          <TextArea rows={3} placeholder="请输入备注" />
         </Form.Item>
-
+        
         <div style={{ marginBottom: 16 }}>
-          <h4>字典项列表</h4>
-        </div>
-
-        <div style={{ 
-          border: '1px solid #d9d9d9', 
-          borderRadius: '6px',
-          overflow: 'hidden'
-        }}>
-          {/* 表头 */}
-          <div style={{
-            display: 'flex',
-            backgroundColor: '#fafafa',
-            padding: '12px 16px',
-            borderBottom: '1px solid #d9d9d9',
-            fontWeight: 500
-          }}>
-            <div style={{ width: '40px' }}></div>
-            <div style={{ flex: 1, marginRight: 16 }}>字典项编码</div>
-            <div style={{ flex: 1, marginRight: 16 }}>字典项名称</div>
-            <div style={{ width: '80px', marginRight: 16 }}>状态</div>
-            <div style={{ width: '60px' }}>操作</div>
-          </div>
-
-          {/* 字典项列表 */}
-          <DndContext onDragEnd={onDragEnd}>
-            <SortableContext
-              items={items}
-              strategy={verticalListSortingStrategy}
-            >
-              {items.map((item, index) => (
-                <div key={item.id} style={{
-                  borderBottom: index < items.length - 1 ? '1px solid #f0f0f0' : 'none'
-                }}>
-                  <SortableItem
-                    id={item.id}
-                    value={item}
-                    onRemove={handleRemoveItem}
-                    onChange={handleItemChange}
-                  />
-                </div>
-              ))}
-            </SortableContext>
-          </DndContext>
-
-          {/* 新增按钮行 */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '12px 16px',
-            borderTop: items.length > 0 ? '1px solid #f0f0f0' : 'none',
-            backgroundColor: '#fafafa'
-          }}>
-            <Button 
-              type="dashed" 
-              onClick={handleAddItem} 
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <h4 style={{ margin: 0 }}>字典项列表</h4>
+            <Button
+              type="dashed"
               icon={<PlusOutlined />}
-              style={{ width: '100%' }}
+              onClick={handleAddItem}
             >
               添加字典项
             </Button>
           </div>
+          
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
+          >
+            <SortableContext items={items.map(item => item.id)} strategy={verticalListSortingStrategy}>
+              {items.map((item) => (
+                <SortableItem
+                  key={item.id}
+                  id={item.id}
+                  value={item}
+                  onChange={handleItemChange}
+                  onRemove={handleRemoveItem}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+          
+          {items.length === 0 && (
+            <div style={{ textAlign: 'center', padding: 20, color: '#999' }}>
+              暂无字典项，点击上方按钮添加
+            </div>
+          )}
         </div>
       </Form>
     </Modal>
