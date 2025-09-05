@@ -252,18 +252,58 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
   const isReadOnly = mode === 'view';
   const canEdit = mode === 'create' || mode === 'edit';
 
+  // 创建表格数据，包含添加按钮行
+  const getTableDataSource = () => {
+    const dataSource = [...items];
+    
+    // 如果可以编辑，添加一个特殊的添加按钮行
+    if (canEdit) {
+      dataSource.push({
+        id: 'add-button-row',
+        itemCode: '',
+        itemName: '',
+        status: 1,
+        sort: items.length,
+        isNew: false,
+        isEditing: false,
+        isAddButtonRow: true,
+      } as DictItemFormData & { isAddButtonRow: boolean });
+    }
+    
+    return dataSource;
+  };
+
   const columns = [
     {
       key: 'sort',
       title: '排序',
       width: 60,
-      render: () => null,
+      render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
+        }
+        return null;
+      },
     },
     {
       title: '字典项编码',
       dataIndex: 'itemCode',
       key: 'itemCode',
-      render: (text: string, record: DictItemFormData) => {
+      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return (
+            <Button
+              type="dashed"
+              icon={<PlusOutlined />}
+              onClick={handleAddItem}
+              size="small"
+              style={{ width: '100%' }}
+            >
+              添加字典项
+            </Button>
+          );
+        }
+        
         if (record.isEditing && canEdit) {
           return (
             <Input
@@ -281,7 +321,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       title: '字典项名称',
       dataIndex: 'itemName',
       key: 'itemName',
-      render: (text: string, record: DictItemFormData) => {
+      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
+        }
+        
         if (record.isEditing && canEdit) {
           return (
             <Input
@@ -300,7 +344,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: number, record: DictItemFormData) => {
+      render: (status: number, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
+        }
+        
         if (record.isEditing && canEdit) {
           return (
             <Switch
@@ -327,7 +375,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       title: '操作',
       key: 'action',
       width: 120,
-      render: (_: any, record: DictItemFormData) => {
+      render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
+        }
+        
         if (record.isEditing) {
           return (
             <Space size="small">
@@ -485,18 +537,8 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
         </Form>
         
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <div style={{ marginBottom: 16 }}>
             <h4 style={{ margin: 0 }}>字典项列表</h4>
-            {canEdit && (
-              <Button
-                type="dashed"
-                icon={<PlusOutlined />}
-                onClick={handleAddItem}
-                size="small"
-              >
-                添加字典项
-              </Button>
-            )}
           </div>
           
           <DndContext
@@ -515,12 +557,16 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
                   },
                 }}
                 columns={columns}
-                dataSource={items}
+                dataSource={getTableDataSource()}
                 rowKey="id"
                 pagination={false}
                 size="small"
                 bordered
                 onRow={(record) => {
+                  // 添加按钮行不需要拖拽功能
+                  if ((record as any).isAddButtonRow) {
+                    return {};
+                  }
                   return {
                     'data-row-key': record.id.toString(),
                   } as any;
