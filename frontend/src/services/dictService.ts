@@ -57,7 +57,7 @@ export const createDict = async (data: Partial<Dict>): Promise<Dict> => {
 
 export const updateDict = async (dictCode: string, data: Partial<Dict>): Promise<void> => {
     try {
-        await apiClient.put(`/api/dict/admin/${dictCode}`, data);
+        await apiClient.put(`/dict/${dictCode}`, data);
         // 更新缓存
         const current = DictCacheManager.getDict(dictCode);
         if (current) {
