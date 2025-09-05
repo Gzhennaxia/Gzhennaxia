@@ -278,24 +278,27 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       key: 'sort',
       title: '排序',
       width: 60,
-      render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+      onCell: (record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
           return {
-            children: (
-              <Button
-                type="dashed"
-                icon={<PlusOutlined />}
-                onClick={handleAddItem}
-                size="small"
-                style={{ width: '100%' }}
-              >
-                添加字典项
-              </Button>
-            ),
-            props: {
-              colSpan: canEdit ? 5 : 4, // 编辑模式5列（排序+编码+名称+状态+操作），查看模式4列（排序+编码+名称+状态）
-            },
+            colSpan: canEdit ? 5 : 4, // 编辑模式5列（排序+编码+名称+状态+操作），查看模式4列（排序+编码+名称+状态）
           };
+        }
+        return {};
+      },
+      render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return (
+            <Button
+              type="dashed"
+              icon={<PlusOutlined />}
+              onClick={handleAddItem}
+              size="small"
+              style={{ width: '100%' }}
+            >
+              添加字典项
+            </Button>
+          );
         }
         return null;
       },
@@ -304,13 +307,17 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       title: '字典项编码',
       dataIndex: 'itemCode',
       key: 'itemCode',
-      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+      onCell: (record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
           return {
-            props: {
-              colSpan: 0, // 被排序列合并
-            },
+            colSpan: 0, // 被排序列合并
           };
+        }
+        return {};
+      },
+      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
         }
         
         if (record.isEditing && canEdit) {
@@ -330,13 +337,17 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       title: '字典项名称',
       dataIndex: 'itemName',
       key: 'itemName',
-      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+      onCell: (record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
           return {
-            props: {
-              colSpan: 0, // 被第一列合并
-            },
+            colSpan: 0, // 被排序列合并
           };
+        }
+        return {};
+      },
+      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
         }
         
         if (record.isEditing && canEdit) {
@@ -357,13 +368,17 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: number, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+      onCell: (record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
           return {
-            props: {
-              colSpan: 0, // 被第一列合并
-            },
+            colSpan: 0, // 被排序列合并
           };
+        }
+        return {};
+      },
+      render: (status: number, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
         }
         
         if (record.isEditing && canEdit) {
@@ -392,13 +407,17 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       title: '操作',
       key: 'action',
       width: 120,
-      render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+      onCell: (record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
           return {
-            props: {
-              colSpan: 0, // 被第一列合并
-            },
+            colSpan: 0, // 被排序列合并
           };
+        }
+        return {};
+      },
+      render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return null;
         }
         
         if (record.isEditing) {
