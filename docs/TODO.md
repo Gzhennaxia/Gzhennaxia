@@ -42,22 +42,22 @@
 
 ---
 
-对 dict_type表做以下操作
+~~对 dict_type表做以下操作~~
 
-1. dict_type表名改为 dict
-2. code 列名改为 dict_code
-3. name 列改为 dict_name
+1. ~~dict_type表名改为 dict~~
+2. ~~code 列名改为 dict_code~~
+3. ~~name 列改为 dict_name~~
 
-需要修改的地方：
+~~需要修改的地方：~~
 
-1. com.personal.management.pojo.entity.Dict
-2. com.personal.management.service.impl.DictServiceImpl
-3. com.personal.management.service.DictService
-4. com.personal.management.controller.DictController
-5.  [DictManagement](..\frontend\src\components\Admin\DictManagement) 
-6.  [dictService.ts](..\frontend\src\services\dictService.ts) 
-7.  [dict.ts](..\frontend\src\types\dict.ts) 
-8. 其他
+1. ~~com.personal.management.pojo.entity.Dict~~
+2. ~~com.personal.management.service.impl.DictServiceImpl~~
+3. ~~com.personal.management.service.DictService~~
+4. ~~com.personal.management.controller.DictController~~
+5.  ~~[DictManagement](..\frontend\src\components\Admin\DictManagement)~~ 
+6.  ~~[dictService.ts](..\frontend\src\services\dictService.ts)~~ 
+7.  ~~[dict.ts](..\frontend\src\types\dict.ts)~~ 
+8. ~~其他~~
 
 ---
 

@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS dict
 (
     id           INTEGER AUTO_INCREMENT PRIMARY KEY,
-    dict_code         TEXT    NOT NULL UNIQUE,    -- 例如 ORDER_STATUS、GENDER
-    dict_name         TEXT    NOT NULL,           -- 展示名称
+    dict_code    TEXT    NOT NULL UNIQUE,    -- 例如 ORDER_STATUS、GENDER
+    dict_name    TEXT    NOT NULL,           -- 展示名称
     version      TEXT    NOT NULL,           -- 例如 2025090101（日期+递增）或 UUID
     status       INTEGER NOT NULL DEFAULT 1, -- 1=启用, 0=禁用
     deleted      INTEGER NOT NULL DEFAULT 0, -- 0=未删除, 1=已删除
