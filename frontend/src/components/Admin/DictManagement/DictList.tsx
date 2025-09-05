@@ -268,21 +268,21 @@ const DictList: React.FC = () => {
                 <Form.Item 
                     name="dictCode" 
                     label="字典编码"
-                    style={{ margin: '5px 0' }}
+                    style={{ margin: '5px 5px 5px 0' }}
                 >
                     <Input placeholder="请输入字典编码" allowClear/>
                 </Form.Item>
                 <Form.Item 
                     name="dictName" 
                     label="字典名称"
-                    style={{ margin: '5px 0' }}
+                    style={{ margin: '5px 5px 5px 0' }}
                 >
                     <Input placeholder="请输入字典名称" allowClear/>
                 </Form.Item>
                 <Form.Item 
                     name="status" 
                     label="状态"
-                    style={{ margin: '5px 0' }}
+                    style={{ margin: '5px 5px 5px 0' }}
                 >
                     <Select
                         placeholder="请选择状态"
@@ -297,11 +297,11 @@ const DictList: React.FC = () => {
                 <Form.Item
                     name="dateRange"
                     label="创建时间"
-                    style={{ margin: '5px 0' }}
+                    style={{ margin: '5px 5px 5px 0' }}
                 >
                     <DatePicker.RangePicker/>
                 </Form.Item>
-                <Form.Item style={{ margin: '5px 0' }}>
+                <Form.Item style={{ margin: '5px 5px 5px 0' }}>
                     <Space>
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined/>}>
                             搜索
