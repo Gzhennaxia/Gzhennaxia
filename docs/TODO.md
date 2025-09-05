@@ -59,8 +59,11 @@ App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下
 7.  [dict.ts](..\frontend\src\types\dict.ts) 
 8. 其他
 
+---
 
-
+1. 新增弹框中，去掉版本号： [DictFormModal.tsx](..\frontend\src\components\Admin\DictManagement\DictFormModal.tsx) 
+2. 详情弹框，主数据用from表单展示，字典项才用table展示，不可编辑  [DictDetailModal.tsx](..\frontend\src\components\Admin\DictManagement\DictDetailModal.tsx) 
+3. 编辑弹框，主数据用from表单展示，字典项才用table展示，并且是可编辑的。  [DictDetailModal.tsx](..\frontend\src\components\Admin\DictManagement\DictDetailModal.tsx) 
 
 
 

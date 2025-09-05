@@ -38,11 +38,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
     @Override
     @Cacheable(cacheNames = "dict", key = "#code", unless = "#result == null")
     public DictDto getDict(String code) {
-        Dict type = baseMapper.selectOne(
-                new LambdaQueryWrapper<Dict>()
-                        .eq(Dict::getDictCode, code)
-                        .eq(Dict::getStatus, 1)
-                        .eq(Dict::getDeleted, false));
+        Dict type = baseMapper.selectOne(new LambdaQueryWrapper<Dict>().eq(Dict::getDictCode, code));
         if (type == null) return null;
 
         List<DictItem> items = dictItemMapper.selectList(
@@ -215,7 +211,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
                 new LambdaQueryWrapper<Dict>()
                         .eq(Dict::getDictCode, dictDto.getDictCode())
                         .eq(Dict::getDeleted, 0));
-        
+
         if (existingDict == null) {
             throw new RuntimeException("字典不存在: " + dictDto.getDictCode());
         }
