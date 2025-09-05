@@ -1,6 +1,7 @@
 package com.personal.management.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.personal.management.base.IBaseServiceImpl;
 import com.personal.management.mapper.DictItemMapper;
 import com.personal.management.mapper.DictMapper;
@@ -11,6 +12,7 @@ import com.personal.management.pojo.dto.DictItemDto;
 import com.personal.management.pojo.entity.Dict;
 import com.personal.management.pojo.entity.DictItem;
 import com.personal.management.service.DictService;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -199,8 +201,14 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
         if (type == null) {
             throw new RuntimeException("字典不存在: " + code);
         }
+        type.setDeleted(NumberUtils.INTEGER_ONE);
         type.setUpdatedTime(LocalDateTime.now().toString());
-        baseMapper.deleteById(type);
+        baseMapper.updateById(type);
+        // 更新字典项的软删除状态
+        dictItemMapper.update(null,
+                new LambdaUpdateWrapper<DictItem>()
+                        .eq(DictItem::getDictCode, code)
+                        .set(DictItem::getDeleted, NumberUtils.INTEGER_ONE));
     }
 
     @Override

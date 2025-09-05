@@ -175,13 +175,8 @@ public class DictController extends IBaseController<Dict> {
      */
     @DeleteMapping("/{code}")
     @Operation(summary = "删除字典", description = "软删除指定的字典，不会物理删除数据")
-    public ResponseEntity<ApiResult<Void>> deleteDict(@PathVariable String code) {
-        try {
-            dictService.softDeleteDict(code);
-            return ResponseEntity.ok(ApiResult.success(null));
-        } catch (Exception e) {
-            return ResponseEntity.ok(ApiResult.error(500, "删除失败: " + e.getMessage()));
-        }
+    public void deleteDict(@PathVariable String code) {
+        dictService.softDeleteDict(code);
     }
 
     /**

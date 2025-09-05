@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS dict_item COMMENT '系统字典项表，存储具体�
     created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     CONSTRAINT uk_item_key UNIQUE (dict_code, item_code, deleted)
-    );
+);
 -- 初始化5条
 INSERT INTO dict_item (dict_code, item_code, item_name)
 VALUES ('ORDER_STATUS', 'PENDING', '待处理'),
