@@ -416,7 +416,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       onCancel={onCancel}
       footer={getFooter()}
       width={900}
-      destroyOnClose
+      destroyOnHidden
     >
       <div style={{ maxHeight: '70vh', overflowY: 'auto' }}>
         <Form
