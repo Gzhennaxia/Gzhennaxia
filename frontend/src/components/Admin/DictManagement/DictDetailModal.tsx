@@ -292,7 +292,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             <Button
               type="dashed"
               icon={<PlusOutlined />}
-              onClick={handleAddDictItem}
+              onClick={handleAddItem}
               size="small"
               style={{ width: '100%' }}
             >
@@ -593,7 +593,14 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
               <Table
                 components={{
                   body: {
-                    row: SortableRow,
+                    row: (props: any) => {
+                      // 添加按钮行不使用SortableRow
+                      if (props['data-row-key'] === 'add-button-row') {
+                        return <tr {...props} />;
+                      }
+                      // 普通数据行使用SortableRow
+                      return <SortableRow {...props} />;
+                    },
                   },
                 }}
                 columns={columns}
@@ -615,7 +622,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             </SortableContext>
           </DndContext>
           
-          {items.length === 0 && (
+          {items.length === 0 && !canEdit && (
             <div style={{ 
               textAlign: 'center', 
               padding: 40, 
@@ -624,7 +631,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
               borderRadius: 6,
               marginTop: 16
             }}>
-              {canEdit ? '暂无字典项，点击上方按钮添加' : '暂无字典项'}
+              暂无字典项
             </div>
           )}
         </div>
