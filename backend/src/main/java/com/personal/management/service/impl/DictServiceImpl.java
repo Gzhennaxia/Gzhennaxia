@@ -205,6 +205,7 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "dict", key = "#dictDto.getDictCode()")
     public DictDto updateDict(DictDto dictDto) {
         // 查找现有字典
         Dict existingDict = baseMapper.selectOne(
@@ -226,9 +227,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
         // 保存字典
         baseMapper.updateById(existingDict);
 
-        // 删除现有的字典项
-        dictItemMapper.delete(new LambdaQueryWrapper<DictItem>()
-                .eq(DictItem::getDictCode, existingDict.getDictCode()));
+        // 物理删除现有字典项，防止第二次修改时的唯一键冲突问题
+        dictItemMapper.physicalDelete(new LambdaQueryWrapper<DictItem>().eq(DictItem::getDictCode, existingDict.getDictCode()));
 
         // 添加新的字典项
         if (dictDto.getDictItems() != null && !dictDto.getDictItems().isEmpty()) {

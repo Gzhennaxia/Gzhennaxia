@@ -92,10 +92,8 @@ public class DictController extends IBaseController<Dict> {
             @PathVariable String code,
             @Parameter(description = "字典修改参数（包含子项）", required = true)
             @Valid @RequestBody DictDto dictDto) {
-        // 获取当前字典的版本号
-        DictDto currentDict = dictService.getDict(code);
-        // 修改时版本号递增
-        dictDto.setVersion(currentDict.getVersion() + 1);
+        // 修改时版本号
+        dictDto.setVersion(DateTimeUtils.nextVersion());
         dictDto.setDictCode(code); // 确保编码一致
         DictDto result = dictService.updateDict(dictDto);
         // 通知客户端字典变更

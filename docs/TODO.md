@@ -65,6 +65,30 @@
 2. 详情弹框，主数据用from表单展示，字典项才用table展示，不可编辑  [DictDetailModal.tsx](..\frontend\src\components\Admin\DictManagement\DictDetailModal.tsx) 
 3. 编辑弹框，主数据用from表单展示，字典项才用table展示，并且是可编辑的。  [DictDetailModal.tsx](..\frontend\src\components\Admin\DictManagement\DictDetailModal.tsx) 
 
+---
+
+调整编辑接口
+
+```
+curl 'http://localhost:3000/api/api/dict/admin/ORDER_STATUS' \
+  -X 'PUT' \
+  -H 'Accept: application/json, text/plain, */*' \
+  -H 'Accept-Language: zh-CN,zh;q=0.9' \
+  -H 'Connection: keep-alive' \
+  -H 'Content-Type: application/json' \
+  -b 'SBID=w69kny6isv9megxpfo8; device.info=eyJpZCI6ImI5NmY5MjVkIiwibWFjIjoiMTY6Q0Q6OTg6QzY6M0I6NzQifQ==' \
+  -H 'Origin: http://localhost:3000' \
+  -H 'Referer: http://localhost:3000/admin/dict' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36' \
+  -H 'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  --data-raw '{"dictCode":"ORDER_STATUS","dictName":"订单状态","status":1,"remark":null,"dictItems":[{"dictCode":"ORDER_STATUS","itemCode":"PENDING","itemName":"待处理","status":1,"sort":0,"createdTime":"2025-09-05T08:05:36.904Z","updatedTime":"2025-09-05T08:05:36.904Z","id":1},{"dictCode":"ORDER_STATUS","itemCode":"DONE","itemName":"已完成1","status":1,"sort":1,"createdTime":"2025-09-05T08:05:36.904Z","updatedTime":"2025-09-05T08:05:36.904Z","id":2}]}'
+```
+
 
 
 
