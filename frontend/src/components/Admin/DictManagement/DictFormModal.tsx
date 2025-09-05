@@ -60,7 +60,7 @@ const SortableItem = ({ id, value, onRemove, onChange }: any) => {
           <Input
             placeholder="字典项名称"
             value={value.itemName}
-            onChange={(e) => onChange(id, 'item_name', e.target.value)}
+            onChange={(e) => onChange(id, 'itemName', e.target.value)}
             variant="borderless"
             style={{ padding: '4px 0' }}
           />
@@ -130,8 +130,8 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
       });
       setItems(data.items?.map(item => ({
         id: item.id || Date.now(),
-        item_code: item.item_code,
-        item_name: item.item_name,
+        itemCode: item.itemCode,
+        itemName: item.itemName,
         status: item.status
       })) || []);
     } catch (error) {
@@ -152,7 +152,7 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
   };
 
   const handleAddItem = () => {
-    setItems([...items, { id: Date.now(), item_code: '', item_name: '', status: 1 }]);
+    setItems([...items, { id: Date.now(), itemCode: '', itemName: '', status: 1 }]);
   };
 
   const handleRemoveItem = (id: number) => {
@@ -174,8 +174,8 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
         ...values,
         status: values.status ? 1 : 0,
         items: items.map((item, index) => ({
-          item_code: item.item_code,
-          item_name: item.item_name,
+          itemCode: item.itemCode,
+          itemName: item.itemName,
           status: item.status,
           sort: index
         }))
@@ -222,13 +222,6 @@ const DictFormModal: React.FC<DictFormModalProps> = ({
           rules={[{ required: true, message: '请输入字典名称' }]}
         >
           <Input placeholder="请输入字典名称" />
-        </Form.Item>
-        <Form.Item
-          name="version"
-          label="版本号"
-          initialValue="1"
-        >
-          <Input placeholder="请输入版本号" />
         </Form.Item>
         <Form.Item
           name="status"
