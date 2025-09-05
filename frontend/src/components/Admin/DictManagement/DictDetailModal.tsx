@@ -280,7 +280,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       width: 60,
       render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
-          return null;
+          return {
+            props: {
+              colSpan: 0, // 被第一列（字典项编码）合并
+            },
+          };
         }
         return null;
       },
@@ -304,7 +308,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
               </Button>
             ),
             props: {
-              colSpan: canEdit ? 4 : 3, // 跨越所有列
+              colSpan: canEdit ? 5 : 4, // 编辑模式5列（排序+编码+名称+状态+操作），查看模式4列（排序+编码+名称+状态）
             },
           };
         }
