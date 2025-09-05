@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, message, Form, Input, DatePicker, Modal, Switch } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EyeOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons';
-import { deleteDict, getDictPage } from '../../../services/dictService';
+import React, {useEffect, useState} from 'react';
+import {Table, Button, Space, message, Form, Input, DatePicker, Modal, Switch} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import {
+    PlusOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    SearchOutlined,
+    EyeOutlined,
+    CheckOutlined,
+    StopOutlined
+} from '@ant-design/icons';
+import {deleteDict, getDictPage} from '../../../services/dictService';
 import DictDetailModal from './DictDetailModal';
 import dayjs from 'dayjs';
 
-import { Dict } from '../../../types/dict';
+import {Dict} from '../../../types/dict';
 
 const DictList: React.FC = () => {
     const [dicts, setDicts] = useState<Dict[]>([]);
@@ -48,7 +56,7 @@ const DictList: React.FC = () => {
                 pageNo: params?.current || pagination.current,
                 pageSize: params?.pageSize || pagination.pageSize,
                 query,
-                sort: { created_time: 'desc' as const }
+                sort: {created_time: 'desc' as const}
             };
 
             const response = await getDictPage(requestParams);
@@ -71,14 +79,14 @@ const DictList: React.FC = () => {
     };
 
     const handleSearch = () => {
-        setPagination(prev => ({ ...prev, current: 1 }));
-        fetchDicts({ current: 1, pageSize: pagination.pageSize });
+        setPagination(prev => ({...prev, current: 1}));
+        fetchDicts({current: 1, pageSize: pagination.pageSize});
     };
 
     const handleReset = () => {
         searchForm.resetFields();
-        setPagination(prev => ({ ...prev, current: 1 }));
-        fetchDicts({ current: 1, pageSize: pagination.pageSize });
+        setPagination(prev => ({...prev, current: 1}));
+        fetchDicts({current: 1, pageSize: pagination.pageSize});
     };
 
     const handleEdit = (record: Dict) => {
@@ -208,7 +216,7 @@ const DictList: React.FC = () => {
                     <Button
                         type="link"
                         size="small"
-                        icon={<EyeOutlined />}
+                        icon={<EyeOutlined/>}
                         onClick={() => handleView(record)}
                     >
                         查看
@@ -216,7 +224,7 @@ const DictList: React.FC = () => {
                     <Button
                         type="link"
                         size="small"
-                        icon={<EditOutlined />}
+                        icon={<EditOutlined/>}
                         onClick={() => handleEdit(record)}
                     >
                         编辑
@@ -224,7 +232,7 @@ const DictList: React.FC = () => {
                     <Button
                         type="link"
                         size="small"
-                        icon={<CheckOutlined />}
+                        icon={<CheckOutlined/>}
                         onClick={() => handleStatusChange(record.dictCode, record.status === 1 ? 0 : 1)}
                     >
                         {record.status === 1 ? '禁用' : '启用'}
@@ -233,7 +241,7 @@ const DictList: React.FC = () => {
                         type="link"
                         size="small"
                         danger
-                        icon={<DeleteOutlined />}
+                        icon={<DeleteOutlined/>}
                         onClick={() => {
                             Modal.confirm({
                                 title: '确认删除',
@@ -250,54 +258,34 @@ const DictList: React.FC = () => {
     ];
 
     return (
-        <div style={{ padding: 24 }}>
+        <div style={{padding: 24}}>
             <Form
                 form={searchForm}
                 layout="inline"
-                style={{ marginBottom: 16 }}
+                style={{marginBottom: 16}}
                 onFinish={handleSearch}
             >
-                <Form.Item 
-                    name="dictCode" 
-                    label="字典编码"
-                    style={{ marginBottom: 0 }}
-                >
-                    <Input 
-                        placeholder="请输入字典编码" 
-                        allowClear 
-                        style={{ height: '32px' }}
-                    />
+                <Form.Item name="dictCode" label="字典编码">
+                    <Input placeholder="请输入字典编码" allowClear/>
                 </Form.Item>
-                <Form.Item 
-                    name="dictName" 
-                    label="字典名称"
-                    style={{ marginBottom: 0 }}
-                >
-                    <Input 
-                        placeholder="请输入字典名称" 
-                        allowClear 
-                        style={{ height: '32px' }}
-                    />
+                <Form.Item name="dictName" label="字典名称">
+                    <Input placeholder="请输入字典名称" allowClear/>
                 </Form.Item>
-                <Form.Item 
-                    name="status" 
-                    label="状态"
-                    style={{ marginBottom: 0 }}
-                >
-                    <div style={{ height: '32px', display: 'flex', alignItems: 'center' }}>
-                        <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+                <Form.Item name="status" label="状态">
+                    <div style={{height: '32px', display: 'flex', alignItems: 'center'}}>
+                        <Switch checkedChildren="启用" unCheckedChildren="禁用"/>
                     </div>
                 </Form.Item>
-                <Form.Item 
-                    name="dateRange" 
+                <Form.Item
+                    name="dateRange"
                     label="创建时间"
-                    style={{ marginBottom: 0 }}
+                    style={{marginBottom: 0}}
                 >
-                    <DatePicker.RangePicker style={{ height: '32px' }} />
+                    <DatePicker.RangePicker/>
                 </Form.Item>
                 <Form.Item>
                     <Space>
-                        <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                        <Button type="primary" htmlType="submit" icon={<SearchOutlined/>}>
                             搜索
                         </Button>
                         <Button onClick={handleReset}>
@@ -305,20 +293,20 @@ const DictList: React.FC = () => {
                         </Button>
                         <Button
                             type="primary"
-                            icon={<PlusOutlined />}
+                            icon={<PlusOutlined/>}
                             onClick={handleCreate}
                         >
                             新增字典
                         </Button>
                         <Button
-                            icon={<CheckOutlined />}
+                            icon={<CheckOutlined/>}
                             onClick={handleBatchEnable}
                             disabled={selectedRowKeys.length === 0}
                         >
                             批量启用
                         </Button>
                         <Button
-                            icon={<StopOutlined />}
+                            icon={<StopOutlined/>}
                             onClick={handleBatchDisable}
                             disabled={selectedRowKeys.length === 0}
                         >
@@ -340,14 +328,14 @@ const DictList: React.FC = () => {
                 }}
             />
             <DictDetailModal
-              open={modalVisible}
-              dictCode={currentDict}
-              mode={modalMode}
-              onCancel={() => setModalVisible(false)}
-              onSuccess={() => {
-                setModalVisible(false);
-                fetchDicts();
-              }}
+                open={modalVisible}
+                dictCode={currentDict}
+                mode={modalMode}
+                onCancel={() => setModalVisible(false)}
+                onSuccess={() => {
+                    setModalVisible(false);
+                    fetchDicts();
+                }}
             />
         </div>
     );
