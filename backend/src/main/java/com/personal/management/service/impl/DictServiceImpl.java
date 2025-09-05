@@ -32,18 +32,18 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
     /**
      * 获取单个字典（带缓存）
      *
-     * @param code 字典编码
+     * @param dictCode 字典编码
      * @return 字典响应数据
      */
     @Override
-    @Cacheable(cacheNames = "dict", key = "#code", unless = "#result == null")
-    public DictDto getDict(String code) {
-        Dict type = baseMapper.selectOne(new LambdaQueryWrapper<Dict>().eq(Dict::getDictCode, code));
+    @Cacheable(cacheNames = "dict", key = "#dictCode", unless = "#result == null")
+    public DictDto getDict(String dictCode) {
+        Dict type = baseMapper.selectOne(new LambdaQueryWrapper<Dict>().eq(Dict::getDictCode, dictCode));
         if (type == null) return null;
 
         List<DictItem> items = dictItemMapper.selectList(
                 new LambdaQueryWrapper<DictItem>()
-                        .eq(DictItem::getDictCode, code)
+                        .eq(DictItem::getDictCode, dictCode)
                         .eq(DictItem::getStatus, 1)
                         .orderByAsc(DictItem::getSort, DictItem::getId));
 

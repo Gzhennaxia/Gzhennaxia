@@ -39,10 +39,6 @@ public class DictControllerTest {
         log.info("测试数据库连接: {}", dataSource.getConnection().getMetaData().getURL());
     }
 
-    /**
-     * 使用Java 17文本块（Text Blocks）定义JSON请求参数
-     * 优势：保留原始JSON格式，无需转义换行符，修改直观
-     */
     @Test
     public void testDictPageWithTextBlock() throws Exception {
         // Java 17文本块语法：用"""包裹，直接保留JSON的换行和缩进
@@ -51,8 +47,64 @@ public class DictControllerTest {
               "pageNo": 1,
               "pageSize": 10,
               "query": {
+
+              },
+              "sort": {
+                "createdTime": "desc"
+              }
+            }
+            """;
+
+
+        // 打印请求参数（便于追踪测试用例）
+        log.info("===== 请求参数 =====");
+        log.info(requestJson);
+
+        // 设置Mock行为
+        //when(dictService.page(any())).thenReturn(null);
+
+        // 执行请求并处理响应
+        MvcResult mvcResult = mockMvc.perform(post("/api/dict/page")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data").exists())
+                // 通过日志打印响应信息
+                .andDo(result -> {
+                    // 响应状态码
+                    log.info("\n===== 响应状态码 =====");
+                    log.info(String.valueOf(result.getResponse().getStatus()));
+
+                    // 响应体
+                    log.info("\n===== 响应体 =====");
+                    log.info(result.getResponse().getContentAsString());
+                })
+                .andReturn();
+
+        // 3. 可选：进一步处理响应（如解析后打印关键字段）
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        log.info("\n===== 分页总条数 =====");
+        // 从响应体中提取total字段（需结合JSON解析工具）
+        // 示例：使用JsonPath提取（需引入com.jayway.jsonpath:json-path依赖）
+        // Object total = JsonPath.read(responseBody, "$.data.total");
+        // log.info(total.toString());
+    }
+
+    /**
+     * 使用Java 17文本块（Text Blocks）定义JSON请求参数
+     * 优势：保留原始JSON格式，无需转义换行符，修改直观
+     */
+    @Test
+    public void testDictPage() throws Exception {
+        // Java 17文本块语法：用"""包裹，直接保留JSON的换行和缩进
+        String requestJson = """
+            {
+              "pageNo": 1,
+              "pageSize": 10,
+              "query": {
                 "id": 123,
-                "code_like": "EAD",
+                "dictCode_like": "EAD",
                 "createdTime_le": "2025-08-28 18:32:26",
                 "createdTime_ge": "2025-08-28 18:32:26"
               },

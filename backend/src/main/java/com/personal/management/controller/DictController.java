@@ -73,12 +73,12 @@ public class DictController extends IBaseController<Dict> {
     /**
      * 获取单个字典
      *
-     * @param code 字典编码
+     * @param dictCode 字典编码
      * @return 字典数据响应实体
      */
-    @GetMapping("/{code}")
-    public DictDto getDict(@PathVariable String code) {
-        return dictService.getDict(code);
+    @GetMapping("/{dictCode}")
+    public DictDto getDict(@PathVariable String dictCode) {
+        return dictService.getDict(dictCode);
     }
 
     /**
