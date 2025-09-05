@@ -292,7 +292,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             <Button
               type="dashed"
               icon={<PlusOutlined />}
-              onClick={handleAddItem}
+              onClick={handleAddDictItem}
               size="small"
               style={{ width: '100%' }}
             >
@@ -587,7 +587,7 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             onDragEnd={onDragEnd}
           >
             <SortableContext
-              items={items.map(item => item.id.toString())}
+              items={getTableDataSource().map(item => item.id.toString())}
               strategy={verticalListSortingStrategy}
             >
               <Table
