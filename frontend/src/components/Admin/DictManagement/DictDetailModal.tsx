@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, Switch, Table, Tag, Spin, Button, Space, message } from 'antd';
-import { EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
-import { getDictDetail, updateDict } from '../../../services/dictService';
+import { Modal, Form, Input, Switch, Table, Button, Space, message, Popconfirm } from 'antd';
+import { PlusOutlined, DeleteOutlined, DragOutlined, SaveOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { getDictDetail, createDict, updateDict } from '../../../services/dictService';
 import { Dict, DictItem } from '../../../types/dict';
 
 const { TextArea } = Input;
@@ -9,42 +14,134 @@ const { TextArea } = Input;
 interface DictDetailModalProps {
   open: boolean;
   dictCode?: string;
-  mode?: 'view' | 'edit';
+  mode: 'create' | 'edit' | 'view';
   onCancel: () => void;
   onSuccess?: () => void;
 }
 
+interface DictItemFormData {
+  id: number | string;
+  itemCode: string;
+  itemName: string;
+  status: number;
+  sort: number;
+  isNew?: boolean;
+  isEditing?: boolean;
+}
+
+interface SortableRowProps {
+  children: React.ReactNode;
+  'data-row-key': string;
+}
+
+const SortableRow: React.FC<SortableRowProps> = ({ children, ...props }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: props['data-row-key'],
+  });
+
+  const style: React.CSSProperties = {
+    ...props.style,
+    transform: CSS.Transform.toString(transform && { ...transform, scaleY: 1 }),
+    transition,
+    ...(isDragging ? { position: 'relative', zIndex: 9999 } : {}),
+  };
+
+  return (
+    <tr {...props} ref={setNodeRef} style={style} {...attributes}>
+      {React.Children.map(children, (child) => {
+        if ((child as React.ReactElement).key === 'sort') {
+          return React.cloneElement(child as React.ReactElement, {
+            children: (
+              <div
+                {...listeners}
+                style={{
+                  cursor: 'grab',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <DragOutlined />
+              </div>
+            ),
+          });
+        }
+        return child;
+      })}
+    </tr>
+  );
+};
+
 const DictDetailModal: React.FC<DictDetailModalProps> = ({
   open,
   dictCode,
-  mode = 'view',
+  mode,
   onCancel,
   onSuccess
 }) => {
   const [dict, setDict] = useState<Dict | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [editingKey, setEditingKey] = useState<string>('');
+  const [items, setItems] = useState<DictItemFormData[]>([]);
   const [form] = Form.useForm();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   useEffect(() => {
-    if (open && dictCode) {
-      loadDictData(dictCode);
+    if (open) {
+      if (mode === 'create') {
+        form.resetFields();
+        form.setFieldsValue({
+          status: true,
+        });
+        setItems([]);
+        setDict(null);
+      } else if ((mode === 'edit' || mode === 'view') && dictCode) {
+        loadDictData(dictCode);
+      }
     }
-  }, [open, dictCode]);
+  }, [open, mode, dictCode, form]);
 
   const loadDictData = async (code: string) => {
     try {
       setLoading(true);
       const data = await getDictDetail(code);
       setDict(data);
-      // 设置表单初始值
       form.setFieldsValue({
         dictCode: data.dictCode,
         dictName: data.dictName,
         status: data.status === 1,
         remark: data.remark
       });
+      
+      const formattedItems = (data.items || []).map((item, index) => ({
+        id: item.id || `item-${index}`,
+        itemCode: item.itemCode,
+        itemName: item.itemName,
+        status: item.status,
+        sort: item.sort || index,
+        isNew: false,
+        isEditing: false,
+      }));
+      
+      setItems(formattedItems);
     } catch (error) {
       console.error('Failed to load dict detail', error);
       message.error('加载字典详情失败');
@@ -58,110 +155,144 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       const values = await form.validateFields();
       setSaving(true);
       
-      const updateData = {
-        ...dict,
+      const validItems = items.filter(item => item.itemCode && item.itemName);
+      
+      const dictData = {
+        dictCode: values.dictCode,
         dictName: values.dictName,
         status: values.status ? 1 : 0,
-        remark: values.remark
+        remark: values.remark,
+        items: validItems.map((item, index) => ({
+          id: typeof item.id === 'string' && item.id.startsWith('temp-') ? undefined : item.id,
+          dictCode: values.dictCode,
+          itemCode: item.itemCode,
+          itemName: item.itemName,
+          status: item.status,
+          sort: index,
+          createdTime: new Date().toISOString(),
+          updatedTime: new Date().toISOString()
+        }))
       };
 
-      await updateDict(dictCode!, updateData);
-      message.success('字典更新成功');
+      if (mode === 'create') {
+        await createDict(dictData);
+        message.success('字典创建成功');
+      } else if (mode === 'edit') {
+        await updateDict(dictCode!, dictData);
+        message.success('字典更新成功');
+      }
+
       onSuccess?.();
       onCancel();
     } catch (error) {
-      console.error('Failed to update dict', error);
-      message.error('更新字典失败');
+      console.error('Failed to save dict', error);
+      message.error(mode === 'create' ? '创建字典失败' : '更新字典失败');
     } finally {
       setSaving(false);
     }
   };
 
-  const isEditing = (record: DictItem) => record.id?.toString() === editingKey;
-
-  const edit = (record: DictItem) => {
-    setEditingKey(record.id?.toString() || '');
+  const onDragEnd = ({ active, over }: DragEndEvent) => {
+    if (active.id !== over?.id) {
+      setItems((items) => {
+        const oldIndex = items.findIndex(item => item.id.toString() === active.id);
+        const newIndex = items.findIndex(item => item.id.toString() === over?.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
   };
 
-  const cancel = () => {
-    setEditingKey('');
+  const handleAddItem = () => {
+    const newItem: DictItemFormData = {
+      id: `temp-${Date.now()}`,
+      itemCode: '',
+      itemName: '',
+      status: 1,
+      sort: items.length,
+      isNew: true,
+      isEditing: true,
+    };
+    setItems([...items, newItem]);
   };
 
-  const save = async (_id: string) => {
-    // 这里可以添加保存字典项的逻辑
-    setEditingKey('');
-    message.success('字典项更新成功');
+  const handleEditItem = (id: number | string) => {
+    setItems(items.map(item => 
+      item.id === id ? { ...item, isEditing: true } : { ...item, isEditing: false }
+    ));
   };
 
-  const viewColumns = [
+  const handleSaveItem = (id: number | string) => {
+    setItems(items.map(item => 
+      item.id === id ? { ...item, isEditing: false, isNew: false } : item
+    ));
+  };
+
+  const handleCancelEdit = (id: number | string) => {
+    setItems(items.map(item => {
+      if (item.id === id) {
+        if (item.isNew) {
+          return null;
+        }
+        return { ...item, isEditing: false };
+      }
+      return item;
+    }).filter(Boolean) as DictItemFormData[]);
+  };
+
+  const handleDeleteItem = (id: number | string) => {
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const handleItemChange = (id: number | string, field: keyof DictItemFormData, value: any) => {
+    setItems(items.map(item => 
+      item.id === id ? { ...item, [field]: value } : item
+    ));
+  };
+
+  const isReadOnly = mode === 'view';
+  const canEdit = mode === 'create' || mode === 'edit';
+
+  const columns = [
     {
-      title: '字典项编码',
-      dataIndex: 'itemCode',
-      key: 'itemCode',
-    },
-    {
-      title: '字典项名称',
-      dataIndex: 'itemName',
-      key: 'itemName',
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
       key: 'sort',
-      width: 80,
+      title: '排序',
+      width: 60,
+      render: () => null,
     },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      width: 80,
-      render: (status: number) => (
-        <Tag color={status === 1 ? 'green' : 'red'}>
-          {status === 1 ? '启用' : '禁用'}
-        </Tag>
-      ),
-    },
-  ];
-
-  const editColumns = [
     {
       title: '字典项编码',
       dataIndex: 'itemCode',
       key: 'itemCode',
-      render: (text: string, record: DictItem) => {
-        const editing = isEditing(record);
-        return editing ? (
-          <Input defaultValue={text} size="small" />
-        ) : (
-          text
-        );
+      render: (text: string, record: DictItemFormData) => {
+        if (record.isEditing && canEdit) {
+          return (
+            <Input
+              value={text}
+              onChange={(e) => handleItemChange(record.id, 'itemCode', e.target.value)}
+              placeholder="请输入字典项编码"
+              size="small"
+            />
+          );
+        }
+        return text;
       },
     },
     {
       title: '字典项名称',
       dataIndex: 'itemName',
       key: 'itemName',
-      render: (text: string, record: DictItem) => {
-        const editing = isEditing(record);
-        return editing ? (
-          <Input defaultValue={text} size="small" />
-        ) : (
-          text
-        );
-      },
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      key: 'sort',
-      width: 80,
-      render: (text: number, record: DictItem) => {
-        const editing = isEditing(record);
-        return editing ? (
-          <Input defaultValue={text} size="small" type="number" />
-        ) : (
-          text
-        );
+      render: (text: string, record: DictItemFormData) => {
+        if (record.isEditing && canEdit) {
+          return (
+            <Input
+              value={text}
+              onChange={(e) => handleItemChange(record.id, 'itemName', e.target.value)}
+              placeholder="请输入字典项名称"
+              size="small"
+            />
+          );
+        }
+        return text;
       },
     },
     {
@@ -169,154 +300,249 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: number, record: DictItem) => {
-        const editing = isEditing(record);
-        return editing ? (
-          <Switch 
+      render: (status: number, record: DictItemFormData) => {
+        if (record.isEditing && canEdit) {
+          return (
+            <Switch
+              size="small"
+              checked={status === 1}
+              onChange={(checked) => handleItemChange(record.id, 'status', checked ? 1 : 0)}
+              checkedChildren="启用"
+              unCheckedChildren="禁用"
+            />
+          );
+        }
+        return (
+          <Switch
             size="small"
             checked={status === 1}
+            disabled
             checkedChildren="启用"
             unCheckedChildren="禁用"
           />
-        ) : (
-          <Tag color={status === 1 ? 'green' : 'red'}>
-            {status === 1 ? '启用' : '禁用'}
-          </Tag>
         );
       },
     },
-    {
+    ...(canEdit ? [{
       title: '操作',
       key: 'action',
       width: 120,
-      render: (_: any, record: DictItem) => {
-        const editing = isEditing(record);
-        return editing ? (
+      render: (_: any, record: DictItemFormData) => {
+        if (record.isEditing) {
+          return (
+            <Space size="small">
+              <Button
+                type="link"
+                size="small"
+                icon={<SaveOutlined />}
+                onClick={() => handleSaveItem(record.id)}
+              >
+                保存
+              </Button>
+              <Button
+                type="link"
+                size="small"
+                icon={<CloseOutlined />}
+                onClick={() => handleCancelEdit(record.id)}
+              >
+                取消
+              </Button>
+            </Space>
+          );
+        }
+        return (
           <Space size="small">
             <Button
               type="link"
               size="small"
-              icon={<SaveOutlined />}
-              onClick={() => save(record.id?.toString() || '')}
+              icon={<EditOutlined />}
+              onClick={() => handleEditItem(record.id)}
             >
-              保存
+              编辑
             </Button>
-            <Button
-              type="link"
-              size="small"
-              icon={<CloseOutlined />}
-              onClick={cancel}
+            <Popconfirm
+              title="确定删除这个字典项吗？"
+              onConfirm={() => handleDeleteItem(record.id)}
+              okText="确定"
+              cancelText="取消"
             >
-              取消
-            </Button>
+              <Button
+                type="link"
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+              >
+                删除
+              </Button>
+            </Popconfirm>
           </Space>
-        ) : (
-          <Button
-            type="link"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => edit(record)}
-            disabled={editingKey !== ''}
-          >
-            编辑
-          </Button>
         );
       },
-    },
+    }] : []),
   ];
 
-  const columns = mode === 'edit' ? editColumns : viewColumns;
+  const getTitle = () => {
+    switch (mode) {
+      case 'create': return '新增字典';
+      case 'edit': return '编辑字典';
+      case 'view': return '字典详情';
+      default: return '字典详情';
+    }
+  };
+
+  const getFooter = () => {
+    if (mode === 'view') {
+      return [
+        <Button key="close" onClick={onCancel}>
+          关闭
+        </Button>
+      ];
+    }
+    
+    return [
+      <Button key="cancel" onClick={onCancel}>
+        取消
+      </Button>,
+      <Button key="save" type="primary" loading={saving} onClick={handleSave}>
+        保存
+      </Button>
+    ];
+  };
 
   return (
     <Modal
-      title={mode === 'edit' ? '编辑字典' : '字典详情'}
+      title={getTitle()}
       open={open}
       onCancel={onCancel}
-      footer={mode === 'edit' ? [
-        <Button key="cancel" onClick={onCancel}>
-          取消
-        </Button>,
-        <Button key="save" type="primary" loading={saving} onClick={handleSave}>
-          保存
-        </Button>
-      ] : null}
-      width={800}
+      footer={getFooter()}
+      width={900}
+      destroyOnClose
     >
-      <Spin spinning={loading}>
-        {dict && (
-          <>
-            {/* 主数据表单 */}
-            <Form
-              form={form}
-              layout="vertical"
-              style={{ marginBottom: 24 }}
+      <div style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+        <Form
+          form={form}
+          layout="vertical"
+          style={{ marginBottom: 24 }}
+        >
+          <div style={{ display: 'flex', gap: 16 }}>
+            <Form.Item
+              name="dictCode"
+              label="字典编码"
+              style={{ flex: 1 }}
+              rules={[{ required: true, message: '请输入字典编码' }]}
             >
-              <div style={{ display: 'flex', gap: 16 }}>
-                <Form.Item
-                  name="dictCode"
-                  label="字典编码"
-                  style={{ flex: 1 }}
-                >
-                  <Input disabled />
-                </Form.Item>
-                <Form.Item
-                  name="dictName"
-                  label="字典名称"
-                  style={{ flex: 1 }}
-                  rules={mode === 'edit' ? [{ required: true, message: '请输入字典名称' }] : []}
-                >
-                  <Input disabled={mode === 'view'} />
-                </Form.Item>
-              </div>
-              
-              <div style={{ display: 'flex', gap: 16 }}>
-                <Form.Item
-                  name="status"
-                  label="状态"
-                  valuePropName="checked"
-                  style={{ flex: 1 }}
-                >
-                  <Switch 
-                    disabled={mode === 'view'}
-                    checkedChildren="启用" 
-                    unCheckedChildren="禁用" 
-                  />
-                </Form.Item>
-                <div style={{ flex: 1 }}>
-                  <div style={{ marginBottom: 8, fontSize: 14, fontWeight: 500 }}>版本号</div>
-                  <div style={{ padding: '4px 11px', backgroundColor: '#f5f5f5', borderRadius: 6 }}>
-                    {dict.version}
-                  </div>
+              <Input 
+                placeholder="请输入字典编码"
+                disabled={isReadOnly || mode === 'edit'} 
+              />
+            </Form.Item>
+            <Form.Item
+              name="dictName"
+              label="字典名称"
+              style={{ flex: 1 }}
+              rules={[{ required: true, message: '请输入字典名称' }]}
+            >
+              <Input 
+                placeholder="请输入字典名称"
+                disabled={isReadOnly} 
+              />
+            </Form.Item>
+          </div>
+          
+          <div style={{ display: 'flex', gap: 16 }}>
+            <Form.Item
+              name="status"
+              label="状态"
+              valuePropName="checked"
+              style={{ flex: 1 }}
+            >
+              <Switch 
+                disabled={isReadOnly}
+                checkedChildren="启用" 
+                unCheckedChildren="禁用" 
+              />
+            </Form.Item>
+            {dict && (
+              <div style={{ flex: 1 }}>
+                <div style={{ marginBottom: 8, fontSize: 14, fontWeight: 500 }}>版本号</div>
+                <div style={{ padding: '4px 11px', backgroundColor: '#f5f5f5', borderRadius: 6 }}>
+                  {dict.version || '1'}
                 </div>
               </div>
-              
-              <Form.Item
-                name="remark"
-                label="备注"
+            )}
+          </div>
+          
+          <Form.Item
+            name="remark"
+            label="备注"
+          >
+            <TextArea 
+              rows={2} 
+              disabled={isReadOnly}
+              placeholder="请输入备注" 
+            />
+          </Form.Item>
+        </Form>
+        
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h4 style={{ margin: 0 }}>字典项列表</h4>
+            {canEdit && (
+              <Button
+                type="dashed"
+                icon={<PlusOutlined />}
+                onClick={handleAddItem}
+                size="small"
               >
-                <TextArea 
-                  rows={2} 
-                  disabled={mode === 'view'}
-                  placeholder="请输入备注" 
-                />
-              </Form.Item>
-            </Form>
-            
-            {/* 字典项表格 */}
-            <div>
-              <h4 style={{ marginBottom: 16 }}>字典项列表</h4>
+                添加字典项
+              </Button>
+            )}
+          </div>
+          
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
+          >
+            <SortableContext
+              items={items.map(item => item.id.toString())}
+              strategy={verticalListSortingStrategy}
+            >
               <Table
+                components={{
+                  body: {
+                    row: SortableRow,
+                  },
+                }}
                 columns={columns}
-                dataSource={dict.items || []}
+                dataSource={items}
                 rowKey="id"
                 pagination={false}
                 size="small"
                 bordered
+                onRow={(record) => {
+                  return {
+                    'data-row-key': record.id.toString(),
+                  } as any;
+                }}
               />
+            </SortableContext>
+          </DndContext>
+          
+          {items.length === 0 && (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: 40, 
+              color: '#999',
+              border: '1px dashed #d9d9d9',
+              borderRadius: 6,
+              marginTop: 16
+            }}>
+              {canEdit ? '暂无字典项，点击上方按钮添加' : '暂无字典项'}
             </div>
-          </>
-        )}
-      </Spin>
+          )}
+        </div>
+      </div>
     </Modal>
   );
 };
