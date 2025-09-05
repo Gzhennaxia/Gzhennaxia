@@ -291,17 +291,22 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       key: 'itemCode',
       render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
-          return (
-            <Button
-              type="dashed"
-              icon={<PlusOutlined />}
-              onClick={handleAddItem}
-              size="small"
-              style={{ width: '100%' }}
-            >
-              添加字典项
-            </Button>
-          );
+          return {
+            children: (
+              <Button
+                type="dashed"
+                icon={<PlusOutlined />}
+                onClick={handleAddItem}
+                size="small"
+                style={{ width: '100%' }}
+              >
+                添加字典项
+              </Button>
+            ),
+            props: {
+              colSpan: canEdit ? 4 : 3, // 跨越所有列
+            },
+          };
         }
         
         if (record.isEditing && canEdit) {
@@ -323,7 +328,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       key: 'itemName',
       render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
-          return null;
+          return {
+            props: {
+              colSpan: 0, // 被第一列合并
+            },
+          };
         }
         
         if (record.isEditing && canEdit) {
@@ -346,7 +355,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       width: 100,
       render: (status: number, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
-          return null;
+          return {
+            props: {
+              colSpan: 0, // 被第一列合并
+            },
+          };
         }
         
         if (record.isEditing && canEdit) {
@@ -377,7 +390,11 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       width: 120,
       render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
-          return null;
+          return {
+            props: {
+              colSpan: 0, // 被第一列合并
+            },
+          };
         }
         
         if (record.isEditing) {
