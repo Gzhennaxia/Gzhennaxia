@@ -264,7 +264,9 @@ const DictList: React.FC = () => {
                     <Input placeholder="请输入字典名称" allowClear />
                 </Form.Item>
                 <Form.Item name="status" label="状态">
-                    <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+                    <div style={{ height: '32px', display: 'flex', alignItems: 'center' }}>
+                        <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+                    </div>
                 </Form.Item>
                 <Form.Item name="dateRange" label="创建时间">
                     <DatePicker.RangePicker />
