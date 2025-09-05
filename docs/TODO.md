@@ -10,34 +10,34 @@
 
 1. ~~字典列表操作列，增加启用禁用按钮，列表顶部也增加相应操作按钮~~
 2. ~~字典列表操作列中的编辑按钮点击无反应，实现 handleEdit 方法~~
-3. DictController 中实现字典删除接口，符合restful，软删除
+3. ~~DictController 中实现字典删除接口，符合restful，软删除~~
 
 ---
 
-对文件列表及其内容做一个汇总，
+对文件目录及其内容说明做一个汇总，
 
 增加一个产品说明书的文档，对功能进行说明
 
 ---
 
-App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下
+~~App.tsx 前端布局，将管理后台抽离出来，不要放在全局layout下~~
 
 ---
 
 1.  [DictList.tsx](..\frontend\src\components\Admin\DictManagement\DictList.tsx)  新增字典弹框，去掉版本号
 2. 新增、修改接口，增加修改版本号逻辑
-3. 列表头部增加批量启用按钮
+3. ~~列表头部增加批量启用按钮~~
 
 ---
 
 1.  [DictFormModal.tsx](..\frontend\src\components\Admin\DictManagement\DictFormModal.tsx) 新增字典弹框，去掉版本号
-2.  修改dict_item表的字段名
-    1. type_code 改为 dict_code
-    2. item_key 改为 item_code
-    3. item_value 改为 item_name
-3.  需要修改的地方
-    1.   [DictItem.java](..\backend\src\main\java\com\personal\management\pojo\entity\DictItem.java) 
-    2.   [DictManagement](..\frontend\src\components\Admin\DictManagement) 
+2.  ~~修改dict_item表的字段名~~
+    1. ~~type_code 改为 dict_code~~
+    2. ~~item_key 改为 item_code~~
+    3. ~~item_value 改为 item_name~~
+3.  ~~需要修改的地方~~
+    1.   ~~[DictItem.java](..\backend\src\main\java\com\personal\management\pojo\entity\DictItem.java)~~ 
+    2.   ~~[DictManagement](..\frontend\src\components\Admin\DictManagement)~~ 
 
 
 ---
