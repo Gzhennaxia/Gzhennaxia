@@ -281,21 +281,6 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
       render: (_: any, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
         if (record.isAddButtonRow) {
           return {
-            props: {
-              colSpan: 0, // 被第一列（字典项编码）合并
-            },
-          };
-        }
-        return null;
-      },
-    },
-    {
-      title: '字典项编码',
-      dataIndex: 'itemCode',
-      key: 'itemCode',
-      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
-        if (record.isAddButtonRow) {
-          return {
             children: (
               <Button
                 type="dashed"
@@ -309,6 +294,21 @@ const DictDetailModal: React.FC<DictDetailModalProps> = ({
             ),
             props: {
               colSpan: canEdit ? 5 : 4, // 编辑模式5列（排序+编码+名称+状态+操作），查看模式4列（排序+编码+名称+状态）
+            },
+          };
+        }
+        return null;
+      },
+    },
+    {
+      title: '字典项编码',
+      dataIndex: 'itemCode',
+      key: 'itemCode',
+      render: (text: string, record: DictItemFormData & { isAddButtonRow?: boolean }) => {
+        if (record.isAddButtonRow) {
+          return {
+            props: {
+              colSpan: 0, // 被排序列合并
             },
           };
         }
