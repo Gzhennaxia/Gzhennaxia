@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class DictItemDto {
     private Long id;
-    private String typeCode;
-    private String itemKey;
-    private String itemValue;
+    private String dictCode;
+    private String itemCode;
+    private String itemName;
     private Integer status;
     private Integer sort;
     private String remark;

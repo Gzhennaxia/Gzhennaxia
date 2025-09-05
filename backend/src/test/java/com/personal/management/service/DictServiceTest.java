@@ -28,14 +28,14 @@ public class DictServiceTest {
 
         // 准备字典项
         DictItemDto item1 = new DictItemDto();
-        item1.setItemKey("10");
-        item1.setItemValue("test1");
+        item1.setItemCode("10");
+        item1.setItemName("test1");
         item1.setStatus(1);
         item1.setSort(0);
 
         DictItemDto item2 = new DictItemDto();
-        item2.setItemKey("20");
-        item2.setItemValue("test2");
+        item2.setItemCode("20");
+        item2.setItemName("test2");
         item2.setStatus(1);
         item2.setSort(1);
 

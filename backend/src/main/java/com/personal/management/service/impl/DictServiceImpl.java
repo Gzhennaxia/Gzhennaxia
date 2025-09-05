@@ -131,8 +131,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
                 DictItemDto itemDto = dictDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
                 dictItem.setDictCode(dictDto.getDictCode());
-                dictItem.setItemCode(itemDto.getItemKey());
-                dictItem.setItemName(itemDto.getItemValue());
+                dictItem.setItemCode(itemDto.getItemCode());
+                dictItem.setItemName(itemDto.getItemName());
                 dictItem.setStatus(itemDto.getStatus() != null ? itemDto.getStatus() : 1);
                 dictItem.setSort(itemDto.getSort() != null ? itemDto.getSort() : i);
                 dictItem.setCreatedTime(LocalDateTime.now().toString());
@@ -236,8 +236,8 @@ public class DictServiceImpl extends IBaseServiceImpl<DictMapper, Dict> implemen
                 var itemDto = dictDto.getDictItems().get(i);
                 DictItem dictItem = new DictItem();
                 dictItem.setDictCode(existingDict.getDictCode());
-                dictItem.setItemCode(itemDto.getItemKey());
-                dictItem.setItemName(itemDto.getItemValue());
+                dictItem.setItemCode(itemDto.getItemCode());
+                dictItem.setItemName(itemDto.getItemName());
                 dictItem.setStatus(itemDto.getStatus());
                 dictItem.setSort(i);
                 dictItem.setCreatedTime(LocalDateTime.now().toString());
