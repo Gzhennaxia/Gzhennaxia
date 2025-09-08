@@ -1,6 +1,5 @@
 package com.personal.management.controller;
 
-import com.personal.management.common.ApiResult;
 import com.personal.management.dto.TaskCreateRequest;
 import com.personal.management.dto.TaskDTO;
 import com.personal.management.service.TaskService;
@@ -9,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,85 +27,74 @@ public class TaskController {
 
     @PostMapping
     @Operation(summary = "创建任务", description = "创建一个新的任务")
-    public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskCreateRequest request) {
-        TaskDTO task = taskService.createTask(request);
-        return ResponseEntity.ok(task);
+    public TaskDTO createTask(@Valid @RequestBody TaskCreateRequest request) {
+        return taskService.createTask(request);
     }
 
     @GetMapping("/date/{date}")
     @Operation(summary = "获取指定日期的任务", description = "获取某一天的所有任务")
-    public ResponseEntity<List<TaskDTO>> getTasksByDate(
+    public List<TaskDTO> getTasksByDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        List<TaskDTO> tasks = taskService.getTasksByDate(date);
-        return ResponseEntity.ok(tasks);
+        return taskService.getTasksByDate(date);
     }
 
     @GetMapping("/week/{weekStart}")
     @Operation(summary = "获取周视图任务", description = "获取一周内的所有任务")
-    public ResponseEntity<List<TaskDTO>> getWeekTasks(
+    public List<TaskDTO> getWeekTasks(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime weekStart) {
-        List<TaskDTO> tasks = taskService.getWeekTasks(weekStart);
-        return ResponseEntity.ok(tasks);
+        return taskService.getWeekTasks(weekStart);
     }
 
     @GetMapping("/month/{monthStart}")
     @Operation(summary = "获取月视图任务", description = "获取一个月内的所有任务")
-    public ResponseEntity<List<TaskDTO>> getMonthTasks(
+    public List<TaskDTO> getMonthTasks(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime monthStart) {
-        List<TaskDTO> tasks = taskService.getMonthTasks(monthStart);
-        return ResponseEntity.ok(tasks);
+        return taskService.getMonthTasks(monthStart);
     }
 
     @GetMapping("/range")
     @Operation(summary = "获取时间范围内的任务", description = "获取指定时间范围内的所有任务")
-    public ResponseEntity<List<TaskDTO>> getTasksByRange(
+    public List<TaskDTO> getTasksByRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        List<TaskDTO> tasks = taskService.getTasksByDateRange(startDate, endDate);
-        return ResponseEntity.ok(tasks);
+        return taskService.getTasksByDateRange(startDate, endDate);
     }
 
     @PutMapping("/{taskId}/status")
     @Operation(summary = "更新任务状态", description = "更新任务的完成状态")
-    public ResponseEntity<TaskDTO> updateTaskStatus(
+    public TaskDTO updateTaskStatus(
             @PathVariable Long taskId,
             @RequestParam Integer status) {
-        TaskDTO task = taskService.updateTaskStatus(taskId, status);
-        return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
+        return taskService.updateTaskStatus(taskId, status);
     }
 
     @GetMapping
     @Operation(summary = "获取所有任务", description = "获取所有任务列表")
-    public ResponseEntity<ApiResult<List<TaskDTO>>> getAllTasks() {
-        List<TaskDTO> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(ApiResult.success("获取任务列表成功", tasks));
+    public List<TaskDTO> getAllTasks() {
+        return taskService.getAllTasks();
     }
 
     @GetMapping("/stats")
     @Operation(summary = "获取任务统计", description = "获取任务数量统计信息")
-    public ResponseEntity<ApiResult<Map<String, Integer>>> getTaskStats() {
-        Map<String, Integer> stats = taskService.getTaskStats();
-        return ResponseEntity.ok(ApiResult.success("获取任务统计成功", stats));
+    public Map<String, Integer> getTaskStats() {
+        return taskService.getTaskStats();
     }
 
     @GetMapping("/{taskId}")
     @Operation(summary = "获取任务详情", description = "根据ID获取任务详细信息")
-    public ResponseEntity<TaskDTO> getTask(@PathVariable Long taskId) {
-        TaskDTO task = taskService.convertToDTO(taskService.getById(taskId));
-        return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
+    public TaskDTO getTask(@PathVariable Long taskId) {
+        return taskService.convertToDTO(taskService.getById(taskId));
     }
 
     @PutMapping("/{taskId}")
     @Operation(summary = "更新任务", description = "更新指定的任务")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long taskId, @Valid @RequestBody TaskCreateRequest request) {
-        TaskDTO task = taskService.updateTask(taskId, request);
-        return task != null ? ResponseEntity.ok(task) : ResponseEntity.notFound().build();
+    public TaskDTO updateTask(@PathVariable Long taskId, @Valid @RequestBody TaskCreateRequest request) {
+        return taskService.updateTask(taskId, request);
     }
 
     @DeleteMapping("/{taskId}")
     @Operation(summary = "删除任务", description = "删除指定的任务")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
-        boolean deleted = taskService.removeById(taskId);
-        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    public void deleteTask(@PathVariable Long taskId) {
+        taskService.removeById(taskId);
     }
 }

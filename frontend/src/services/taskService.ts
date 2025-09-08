@@ -1,7 +1,7 @@
 import apiClient from '../utils/apiClient';
 import { Task, TaskFormData } from '../types/Task';
 
-const API_BASE_URL = '/tasks';
+const API_BASE_URL = '/task';
 
 export const taskService = {
   // 获取所有任务
