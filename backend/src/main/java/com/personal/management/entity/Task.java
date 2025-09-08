@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("tasks")
+@TableName("task")
 public class Task {
     
     @TableId(value = "id", type = IdType.AUTO)
