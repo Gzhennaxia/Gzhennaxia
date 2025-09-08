@@ -4,7 +4,6 @@ import com.personal.management.dto.InboxTaskCreateRequest;
 import com.personal.management.dto.InboxTaskDTO;
 import com.personal.management.service.InboxTaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,32 +17,27 @@ public class InboxTaskController {
     private final InboxTaskService inboxTaskService;
 
     @GetMapping
-    public ResponseEntity<List<InboxTaskDTO>> getAllInboxTasks() {
-        List<InboxTaskDTO> inboxTasks = inboxTaskService.getAllInboxTasks();
-        return ResponseEntity.ok(inboxTasks);
+    public List<InboxTaskDTO> getAllInboxTasks() {
+        return inboxTaskService.getAllInboxTasks();
     }
 
     @PostMapping
-    public ResponseEntity<InboxTaskDTO> createInboxTask(@RequestBody InboxTaskCreateRequest request) {
-        InboxTaskDTO inboxTask = inboxTaskService.createInboxTask(request);
-        return ResponseEntity.ok(inboxTask);
+    public InboxTaskDTO createInboxTask(@RequestBody InboxTaskCreateRequest request) {
+        return inboxTaskService.createInboxTask(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InboxTaskDTO> updateInboxTask(@PathVariable Long id, @RequestBody InboxTaskCreateRequest request) {
-        InboxTaskDTO inboxTask = inboxTaskService.updateInboxTask(id, request);
-        return ResponseEntity.ok(inboxTask);
+    public InboxTaskDTO updateInboxTask(@PathVariable Long id, @RequestBody InboxTaskCreateRequest request) {
+        return inboxTaskService.updateInboxTask(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInboxTask(@PathVariable Long id) {
+    public void deleteInboxTask(@PathVariable Long id) {
         inboxTaskService.deleteInboxTask(id);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Long> getInboxTaskCount() {
-        long count = inboxTaskService.getInboxTaskCount();
-        return ResponseEntity.ok(count);
+    public Long getInboxTaskCount() {
+        return inboxTaskService.getInboxTaskCount();
     }
 }
