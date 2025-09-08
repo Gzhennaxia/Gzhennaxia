@@ -23,6 +23,8 @@ public class MybatisConfig {
     public static class CustomLocalDateTimeTypeHandler extends LocalDateTimeTypeHandler {
         
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        private static final DateTimeFormatter FORMATTER_WITH_MICROS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        private static final DateTimeFormatter FORMATTER_WITH_MILLIS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         
         @Override
@@ -32,20 +34,31 @@ public class MybatisConfig {
                 return null;
             }
             
+            return parseLocalDateTime(value);
+        }
+        
+        private LocalDateTime parseLocalDateTime(String value) throws SQLException {
             try {
                 // 尝试解析ISO格式 (2025-08-29T00:06)
                 if (value.contains("T")) {
                     return LocalDateTime.parse(value, ISO_FORMATTER);
                 }
+                
+                // 尝试解析带微秒的格式 (2025-08-29 00:06:00.123456)
+                if (value.matches(".*\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}.*")) {
+                    return LocalDateTime.parse(value, FORMATTER_WITH_MICROS);
+                }
+                
+                // 尝试解析带毫秒的格式 (2025-08-29 00:06:00.123)
+                if (value.matches(".*\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}.*")) {
+                    return LocalDateTime.parse(value, FORMATTER_WITH_MILLIS);
+                }
+                
                 // 尝试解析标准格式 (2025-08-29 00:06:00)
                 return LocalDateTime.parse(value, FORMATTER);
+                
             } catch (Exception e) {
-                // 如果都失败了，尝试其他格式
-                try {
-                    return LocalDateTime.parse(value + ":00", FORMATTER);
-                } catch (Exception ex) {
-                    throw new SQLException("Cannot parse LocalDateTime: " + value, ex);
-                }
+                throw new SQLException("Cannot parse LocalDateTime: " + value, e);
             }
         }
         
@@ -56,18 +69,7 @@ public class MybatisConfig {
                 return null;
             }
             
-            try {
-                if (value.contains("T")) {
-                    return LocalDateTime.parse(value, ISO_FORMATTER);
-                }
-                return LocalDateTime.parse(value, FORMATTER);
-            } catch (Exception e) {
-                try {
-                    return LocalDateTime.parse(value + ":00", FORMATTER);
-                } catch (Exception ex) {
-                    throw new SQLException("Cannot parse LocalDateTime: " + value, ex);
-                }
-            }
+            return parseLocalDateTime(value);
         }
         
         @Override
@@ -77,18 +79,7 @@ public class MybatisConfig {
                 return null;
             }
             
-            try {
-                if (value.contains("T")) {
-                    return LocalDateTime.parse(value, ISO_FORMATTER);
-                }
-                return LocalDateTime.parse(value, FORMATTER);
-            } catch (Exception e) {
-                try {
-                    return LocalDateTime.parse(value + ":00", FORMATTER);
-                } catch (Exception ex) {
-                    throw new SQLException("Cannot parse LocalDateTime: " + value, ex);
-                }
-            }
+            return parseLocalDateTime(value);
         }
         
         @Override
