@@ -150,7 +150,7 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
         List<Task> allTasks = list();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime todayStart = now.toLocalDate().atStartOfDay();
-        LocalDateTime todayEnd = todayStart.plusDays(1);
+        LocalDateTime todayEnd = todayStart.plusDays(1).minusNanos(1); // 今天23:59:59.999999999
         
         Map<String, Integer> stats = new HashMap<>();
         
@@ -159,15 +159,37 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> {
         int completedCount = 0;
         
         for (Task task : allTasks) {
-            if (task.getStatus() == 1) { // 已完成
+            Integer status = task.getStatus();
+            if (status == null) continue;
+            
+            if (status == 2) { // 2=已完成
                 completedCount++;
-            } else if (task.getStatus() == 0) { // 待办
+            } else if (status == 0 || status == 1) { // 0=待办, 1=进行中
+                LocalDateTime startTime = task.getStartTime();
                 LocalDateTime endTime = task.getEndTime();
-                if (endTime != null) {
-                    if (endTime.isBefore(todayStart)) {
-                        overdueCount++; // 已过期
-                    } else if (endTime.isAfter(todayStart) && endTime.isBefore(todayEnd)) {
-                        todayCount++; // 今天
+                
+                // 判断是否为今天的任务（与前端逻辑保持一致）
+                boolean isTaskForToday = false;
+                
+                if (startTime != null && endTime != null) {
+                    // 条件1：任务开始时间在今天内
+                    boolean startInToday = (startTime.isAfter(todayStart) || startTime.isEqual(todayStart)) && 
+                                         (startTime.isBefore(todayEnd) || startTime.isEqual(todayEnd));
+                    
+                    // 条件2：任务结束时间在今天内  
+                    boolean endInToday = (endTime.isAfter(todayStart) || endTime.isEqual(todayStart)) && 
+                                       (endTime.isBefore(todayEnd) || endTime.isEqual(todayEnd));
+                    
+                    // 条件3：任务覆盖今天（开始时间 < 今天00:00 且 结束时间 > 今天23:59）
+                    boolean coverToday = startTime.isBefore(todayStart) && endTime.isAfter(todayEnd);
+                    
+                    isTaskForToday = startInToday || endInToday || coverToday;
+                    
+                    // 判断是否过期（结束时间在今天之前且不是今天的任务）
+                    if (!isTaskForToday && endTime.isBefore(todayStart)) {
+                        overdueCount++;
+                    } else if (isTaskForToday) {
+                        todayCount++;
                     }
                 }
             }
