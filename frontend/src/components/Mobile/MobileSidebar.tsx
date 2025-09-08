@@ -64,13 +64,6 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
       color: '#ff7a00'
     },
     {
-      key: 'records',
-      icon: <FolderOutlined style={{ color: '#52c41a' }} />,
-      title: '记录',
-      count: taskStats.completed,
-      color: '#52c41a'
-    },
-    {
       key: 'trash',
       icon: <DeleteOutlined style={{ color: '#999' }} />,
       title: '已放弃',
