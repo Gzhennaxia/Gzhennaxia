@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/task")
 @RequiredArgsConstructor
 @Tag(name = "任务管理", description = "任务相关的API接口")
 @CrossOrigin(origins = "*")
