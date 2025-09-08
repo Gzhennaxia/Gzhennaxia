@@ -35,8 +35,6 @@ CREATE INDEX idx_tasks_category ON task (category);
 -- 索引：优化按创建时间排序和筛选的性能（如"最近创建的任务"）
 CREATE INDEX idx_tasks_created_time ON task (created_time);
 
-COMMIT;
-
 
 -- 插入初始任务记录（省略自动填充的时间字段）
 INSERT INTO task (
@@ -70,4 +68,34 @@ INSERT INTO task (
  '["测试","系统"]', NULL, 1, 'none', NULL,
  1, '重点测试用户登录和权限模块');
 
-COMMIT;
+
+
+-- 收集箱任务表：存储临时收集的任务信息
+CREATE TABLE inbox_task
+(
+    -- 任务唯一标识，自增主键
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '任务ID',
+    -- 任务标题，必填项
+    title        VARCHAR(255) NOT NULL COMMENT '任务标题',
+    -- 任务详细描述，可选
+    description  TEXT COMMENT '任务描述',
+    -- 任务优先级
+    priority     VARCHAR(20) COMMENT '任务优先级',
+    -- 任务创建时间
+    created_at   DATETIME COMMENT '创建时间',
+    -- 任务更新时间
+    updated_at   DATETIME COMMENT '更新时间',
+
+    -- === 标准字段（必须包含） ===
+    status       INTEGER      NOT NULL DEFAULT 1 COMMENT '记录状态(1=启用,0=禁用)',
+    deleted      INTEGER      NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=未删,1=已删)',
+    remark       TEXT COMMENT '备注信息',
+    created_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收集箱任务表';
+
+-- 索引：优化按创建时间排序和筛选的性能
+CREATE INDEX idx_inbox_task_created_time ON inbox_task (created_time);
+
+-- 索引：优化按优先级筛选的查询性能
+CREATE INDEX idx_inbox_task_priority ON inbox_task (priority);

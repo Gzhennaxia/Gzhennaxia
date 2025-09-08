@@ -27,8 +27,8 @@ public class InboxTaskService extends ServiceImpl<InboxTaskMapper, InboxTask> {
     public InboxTaskDTO createInboxTask(InboxTaskCreateRequest request) {
         InboxTask inboxTask = new InboxTask();
         BeanUtils.copyProperties(request, inboxTask);
-        inboxTask.setCreatedAt(LocalDateTime.now());
-        inboxTask.setUpdatedAt(LocalDateTime.now());
+        inboxTask.setCreatedTime(LocalDateTime.now());
+        inboxTask.setUpdatedTime(LocalDateTime.now());
         
         save(inboxTask);
         return convertToDTO(inboxTask);
@@ -41,7 +41,7 @@ public class InboxTaskService extends ServiceImpl<InboxTaskMapper, InboxTask> {
         }
         
         BeanUtils.copyProperties(request, inboxTask);
-        inboxTask.setUpdatedAt(LocalDateTime.now());
+        inboxTask.setUpdatedTime(LocalDateTime.now());
         
         updateById(inboxTask);
         return convertToDTO(inboxTask);

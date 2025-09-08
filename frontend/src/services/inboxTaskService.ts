@@ -1,7 +1,7 @@
 import apiClient from '../utils/apiClient';
 import { InboxTask, InboxTaskFormData } from '../types/InboxTask';
 
-const API_BASE_URL = '/inbox-tasks';
+const API_BASE_URL = '/inboxTask';
 
 export const inboxTaskService = {
   // 获取所有收集箱任务
