@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Button, message, Modal, Input } from 'antd';
+import { Button, message, Modal, Input, Form } from 'antd';
 import { 
   PlusOutlined, 
   MenuOutlined,
@@ -12,6 +12,7 @@ import { taskService } from '../../services/taskService';
 import { Task } from '../../types/Task';
 import MobileSidebar from './MobileSidebar';
 import InboxView from './InboxView';
+import MobileDateTimePicker from './MobileDateTimePicker';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './TickTickMobile.css';
 
@@ -23,6 +24,14 @@ const TickTickMobile: React.FC = () => {
   const mountedRef = useRef(false);
   const [taskModalVisible, setTaskModalVisible] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [newTaskStartTime, setNewTaskStartTime] = useState<dayjs.Dayjs | null>(dayjs());
+  const [newTaskEndTime, setNewTaskEndTime] = useState<dayjs.Dayjs | null>(dayjs().add(1, 'hour'));
+  const [form] = Form.useForm();
+  
+  // 移动端日期时间选择器状态
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [datePickerType, setDatePickerType] = useState<'start' | 'end'>('start');
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [currentView, setCurrentView] = useState('today');
   const [sectionExpanded, setSectionExpanded] = useState({
@@ -114,29 +123,62 @@ const TickTickMobile: React.FC = () => {
 
   // 添加新任务
   const handleAddTask = async () => {
-    if (!newTaskTitle.trim()) {
-      message.warning('请输入任务标题');
-      return;
-    }
-
     try {
+      // 验证表单
+      const values = await form.validateFields();
+      
       const newTask = {
-        title: newTaskTitle,
-        description: '',
-        startTime: dayjs().toISOString(),
-        endTime: dayjs().add(1, 'day').toISOString(),
+        title: values.title,
+        description: values.description || '',
+        startTime: newTaskStartTime ? newTaskStartTime.toISOString() : dayjs().toISOString(),
+        endTime: newTaskEndTime ? newTaskEndTime.toISOString() : dayjs().add(1, 'hour').toISOString(),
         priority: 2
       };
 
       await taskService.createTask(newTask);
+      
+      // 重置表单和状态
+      form.resetFields();
       setNewTaskTitle('');
+      setNewTaskDescription('');
+      setNewTaskStartTime(dayjs());
+      setNewTaskEndTime(dayjs().add(1, 'hour'));
       setTaskModalVisible(false);
+      
       await loadTasks(true); // 强制刷新
       message.success('任务添加成功');
     } catch (error) {
-      console.error('添加任务失败:', error);
-      message.error('添加任务失败');
+      if (error.errorFields) {
+        // 表单验证错误
+        message.warning('请完善任务信息');
+      } else {
+        console.error('添加任务失败:', error);
+        message.error('添加任务失败');
+      }
     }
+  };
+
+  // 打开移动端日期时间选择器
+  const openDatePicker = (type: 'start' | 'end') => {
+    setDatePickerType(type);
+    setDatePickerVisible(true);
+  };
+
+  // 处理日期时间选择确认
+  const handleDateTimeConfirm = (date: dayjs.Dayjs) => {
+    if (datePickerType === 'start') {
+      setNewTaskStartTime(date);
+      form.setFieldsValue({ startTime: date });
+    } else {
+      setNewTaskEndTime(date);
+      form.setFieldsValue({ endTime: date });
+    }
+    setDatePickerVisible(false);
+  };
+
+  // 处理日期时间选择取消
+  const handleDateTimeCancel = () => {
+    setDatePickerVisible(false);
   };
 
   // 格式化时间显示
@@ -360,18 +402,108 @@ const TickTickMobile: React.FC = () => {
         open={taskModalVisible}
         onOk={handleAddTask}
         onCancel={() => {
-          setTaskModalVisible(false);
+          form.resetFields();
           setNewTaskTitle('');
+          setNewTaskDescription('');
+          setNewTaskStartTime(dayjs());
+          setNewTaskEndTime(dayjs().add(1, 'hour'));
+          setTaskModalVisible(false);
         }}
         okText="添加"
         cancelText="取消"
+        width={350}
       >
-        <Input
-          placeholder="输入任务标题"
-          value={newTaskTitle}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.target.value)}
-          onPressEnter={handleAddTask}
-        />
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={{
+            title: '',
+            description: '',
+            startTime: dayjs(),
+            endTime: dayjs().add(1, 'hour')
+          }}
+        >
+          <Form.Item
+            name="title"
+            label="任务标题"
+            rules={[{ required: true, message: '请输入任务标题' }]}
+          >
+            <Input
+              placeholder="输入任务标题"
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            label="任务描述"
+          >
+            <Input.TextArea
+              placeholder="输入任务描述（可选）"
+              rows={3}
+              value={newTaskDescription}
+              onChange={(e) => setNewTaskDescription(e.target.value)}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="startTime"
+            label="开始时间"
+            rules={[{ required: true, message: '请选择开始时间' }]}
+          >
+            <div 
+              className="mobile-datetime-input"
+              onClick={() => openDatePicker('start')}
+            >
+              <Input
+                placeholder="选择开始时间"
+                value={newTaskStartTime ? newTaskStartTime.format('MM-DD HH:mm') : ''}
+                readOnly
+                style={{ 
+                  cursor: 'pointer',
+                  backgroundColor: '#fff'
+                }}
+                suffix={<span style={{ color: '#999' }}>📅</span>}
+              />
+            </div>
+          </Form.Item>
+
+          <Form.Item
+            name="endTime"
+            label="结束时间"
+            rules={[
+              { required: true, message: '请选择结束时间' },
+              () => ({
+                validator() {
+                  if (!newTaskStartTime || !newTaskEndTime) {
+                    return Promise.resolve();
+                  }
+                  if (newTaskEndTime.isAfter(newTaskStartTime)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('结束时间必须晚于开始时间'));
+                },
+              }),
+            ]}
+          >
+            <div 
+              className="mobile-datetime-input"
+              onClick={() => openDatePicker('end')}
+            >
+              <Input
+                placeholder="选择结束时间"
+                value={newTaskEndTime ? newTaskEndTime.format('MM-DD HH:mm') : ''}
+                readOnly
+                style={{ 
+                  cursor: 'pointer',
+                  backgroundColor: '#fff'
+                }}
+                suffix={<span style={{ color: '#999' }}>📅</span>}
+              />
+            </div>
+          </Form.Item>
+        </Form>
       </Modal>
 
       {/* 侧边栏 */}
@@ -379,6 +511,16 @@ const TickTickMobile: React.FC = () => {
         visible={sidebarVisible}
         onClose={() => setSidebarVisible(false)}
         onMenuSelect={(key) => setCurrentView(key)}
+      />
+
+      {/* 移动端日期时间选择器 */}
+      <MobileDateTimePicker
+        visible={datePickerVisible}
+        value={datePickerType === 'start' ? newTaskStartTime : newTaskEndTime}
+        onConfirm={handleDateTimeConfirm}
+        onCancel={handleDateTimeCancel}
+        title={datePickerType === 'start' ? '选择开始时间' : '选择结束时间'}
+        showTime={true}
       />
     </div>
   );

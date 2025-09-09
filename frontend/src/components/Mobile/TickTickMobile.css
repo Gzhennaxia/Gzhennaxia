@@ -9,6 +9,94 @@
   overflow: hidden;
 }
 
+/* 移动端日期时间选择器优化 */
+.ticktick-mobile .ant-picker {
+  border-radius: 8px !important;
+  border: 1px solid #d9d9d9 !important;
+  font-size: 16px !important;
+  height: 44px !important;
+  padding: 8px 12px !important;
+}
+
+.ticktick-mobile .ant-picker:focus,
+.ticktick-mobile .ant-picker-focused {
+  border-color: #1890ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+.ticktick-mobile .ant-picker-input > input {
+  font-size: 16px !important;
+  cursor: pointer !important;
+}
+
+/* 移动端弹出层优化 */
+.ant-picker-dropdown {
+  font-size: 16px !important;
+}
+
+.ant-picker-dropdown .ant-picker-panel {
+  border-radius: 12px !important;
+  box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.ant-picker-dropdown .ant-picker-cell {
+  padding: 8px !important;
+  font-size: 16px !important;
+}
+
+.ant-picker-dropdown .ant-picker-time-panel-column > li {
+  padding: 8px 0 !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+
+/* 表单项优化 */
+.ticktick-mobile .ant-form-item-label > label {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+.ticktick-mobile .ant-input,
+.ticktick-mobile .ant-input.ant-input-lg {
+  font-size: 16px !important;
+  border-radius: 8px !important;
+  border: 1px solid #d9d9d9 !important;
+  padding: 8px 12px !important;
+  height: 44px !important;
+}
+
+.ticktick-mobile .ant-input:focus,
+.ticktick-mobile .ant-input-focused {
+  border-color: #1890ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+/* 移动端日期时间输入框样式 */
+.mobile-datetime-input {
+  width: 100%;
+}
+
+.mobile-datetime-input .ant-input {
+  cursor: pointer !important;
+  user-select: none;
+}
+
+.mobile-datetime-input .ant-input:focus {
+  cursor: pointer !important;
+}
+
+/* 防止移动端缩放 */
+@media screen and (max-width: 768px) {
+  .ticktick-mobile input,
+  .ticktick-mobile textarea,
+  .ticktick-mobile select {
+    font-size: 16px !important;
+    transform-origin: left top;
+    transform: scale(1);
+  }
+}
+
 
 /* 顶部标题栏 */
 .mobile-header {
