@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { PlusOutlined, HomeOutlined, CheckSquareOutlined, CalendarOutlined, SettingOutlined, MenuOutlined } from '@ant-design/icons';
+import { PlusOutlined, HomeOutlined, CheckSquareOutlined, CalendarOutlined, SettingOutlined, MenuOutlined, BookOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
 import TaskFormModal from '../TaskForm/TaskFormModal';
 import './Layout.css';
 
@@ -10,6 +11,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   const [taskModalVisible, setTaskModalVisible] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleAddTask = () => {
     setTaskModalVisible(true);
@@ -29,6 +32,32 @@ const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
           <div className="logo">G</div>
           <span>个人管理</span>
         </div>
+        
+        {/* 导航菜单 */}
+        <nav className="nav-menu">
+          <button 
+            className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}
+            onClick={() => navigate('/')}
+          >
+            <HomeOutlined />
+            <span>任务管理</span>
+          </button>
+          <button 
+            className={`nav-item ${location.pathname === '/calendar' ? 'active' : ''}`}
+            onClick={() => navigate('/calendar')}
+          >
+            <CalendarOutlined />
+            <span>日历</span>
+          </button>
+          <button 
+            className={`nav-item ${location.pathname.startsWith('/question-bank') ? 'active' : ''}`}
+            onClick={() => navigate('/question-bank')}
+          >
+            <BookOutlined />
+            <span>题库</span>
+          </button>
+        </nav>
+        
         <div className="nav-actions">
           <button className="btn btn-primary" onClick={handleAddTask}>
             <PlusOutlined />

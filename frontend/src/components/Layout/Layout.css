@@ -41,6 +41,37 @@
   font-size: 16px;
 }
 
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
 .nav-actions {
   display: flex;
   align-items: center;
@@ -142,6 +173,10 @@
     width: 32px;
     height: 32px;
     font-size: 14px;
+  }
+  
+  .nav-menu {
+    display: none; /* 移动端隐藏导航菜单 */
   }
   
   .btn-text {
