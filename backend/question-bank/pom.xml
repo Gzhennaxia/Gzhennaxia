@@ -6,14 +6,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
-        <relativePath/>
+        <groupId>com.personal</groupId>
+        <artifactId>management-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
 
-    <groupId>com.questionbank</groupId>
-    <artifactId>question-bank-backend</artifactId>
+    <artifactId>question-bank</artifactId>
     <version>1.0.0</version>
     <name>question-bank-backend</name>
     <description>题库系统后端 - 支持PDF解析和图片提取</description>
@@ -26,35 +24,6 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Starters -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!-- 数据库 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- PDF处理 -->
         <dependency>
@@ -62,7 +31,7 @@
             <artifactId>pdfbox</artifactId>
             <version>3.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox-tools</artifactId>
@@ -70,11 +39,11 @@
         </dependency>
 
         <!-- 图片处理 -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox-imageio</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.pdfbox</groupId>-->
+        <!--            <artifactId>pdfbox-imageio</artifactId>-->
+        <!--            <version>3.0.1</version>-->
+        <!--        </dependency>-->
 
         <!-- 文件上传 -->
         <dependency>
@@ -82,7 +51,7 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -101,18 +70,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- 测试 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

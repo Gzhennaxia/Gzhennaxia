@@ -5,12 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.personal</groupId>
-    <artifactId>management</artifactId>
+    <artifactId>management-parent</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>Personal Management</name>
     <description>管理系统</description>
+
+    <modules>
+        <module>todo-list</module>
+        <module>question-bank</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

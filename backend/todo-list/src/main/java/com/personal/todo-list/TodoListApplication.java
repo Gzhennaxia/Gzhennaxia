@@ -7,9 +7,9 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
-@MapperScan(basePackages = "com.personal.management.mapper")
-public class PersonalManagementApplication {
+@MapperScan(basePackages = "com.personal.todo.list.mapper")
+public class TodoListApplication {
     public static void main(String[] args) {
-        SpringApplication.run(PersonalManagementApplication.class, args);
+        SpringApplication.run(TodoListApplication.class, args);
     }
 }
