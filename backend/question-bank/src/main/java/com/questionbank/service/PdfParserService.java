@@ -2,6 +2,7 @@ package com.questionbank.service;
 
 import com.questionbank.dto.PdfParseResult;
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -91,8 +92,9 @@ public class PdfParserService {
             PDResources resources = page.getResources();
             
             if (resources != null) {
-                for (String name : resources.getXObjectNames()) {
-                    PDXObject xObject = resources.getXObject(name);
+                for (COSName cosName : resources.getXObjectNames()) {
+                    String name = cosName.getName();
+                    PDXObject xObject = resources.getXObject(cosName);
                     
                     if (xObject instanceof PDImageXObject) {
                         PDImageXObject image = (PDImageXObject) xObject;
@@ -127,8 +129,9 @@ public class PdfParserService {
                                      String pdfFileName, int pageIndex, int imageIndex) throws IOException {
         PDResources resources = form.getResources();
         if (resources != null) {
-            for (String name : resources.getXObjectNames()) {
-                PDXObject xObject = resources.getXObject(name);
+            for (COSName cosName : resources.getXObjectNames()) {
+                String name = cosName.getName();
+                PDXObject xObject = resources.getXObject(cosName);
                 if (xObject instanceof PDImageXObject) {
                     PDImageXObject image = (PDImageXObject) xObject;
                     
