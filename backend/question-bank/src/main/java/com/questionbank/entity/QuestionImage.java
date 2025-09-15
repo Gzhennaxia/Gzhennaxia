@@ -1,51 +1,49 @@
 package com.questionbank.entity;
 
-import jakarta.persistence.*;
+import com.baomidou.mybatisplus.annotation.*;
 import java.time.LocalDateTime;
 
 /**
  * 题目图片实体类
  */
-@Entity
-@Table(name = "question_images")
+@TableName("question_images")
 public class QuestionImage {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @TableField("question_id")
+    private Long questionId; // 改为直接存储 questionId，而不是 Question 对象
     
-    @Column(name = "image_path", nullable = false)
+    @TableField("image_path")
     private String imagePath;
     
-    @Column(name = "image_name")
+    @TableField("image_name")
     private String imageName;
     
-    @Column(name = "image_size")
+    @TableField("image_size")
     private Long imageSize;
     
-    @Column(name = "image_type")
+    @TableField("image_type")
     private String imageType;
     
-    @Column(name = "position_in_question")
+    @TableField("position_in_question")
     private Integer positionInQuestion;
     
-    @Column(name = "created_at")
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
     
     // 构造函数
     public QuestionImage() {}
     
     public QuestionImage(Question question, String imagePath, String imageName) {
-        this.question = question;
+        this.questionId = question.getId();
+        this.imagePath = imagePath;
+        this.imageName = imageName;
+    }
+    
+    public QuestionImage(Long questionId, String imagePath, String imageName) {
+        this.questionId = questionId;
         this.imagePath = imagePath;
         this.imageName = imageName;
     }
@@ -54,8 +52,8 @@ public class QuestionImage {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
-    public Question getQuestion() { return question; }
-    public void setQuestion(Question question) { this.question = question; }
+    public Long getQuestionId() { return questionId; }
+    public void setQuestionId(Long questionId) { this.questionId = questionId; }
     
     public String getImagePath() { return imagePath; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }

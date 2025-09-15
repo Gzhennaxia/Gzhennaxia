@@ -115,7 +115,7 @@ public class QuestionService {
     public QuestionImage addImageToQuestion(Long questionId, String imagePath, String imageName) {
         Question question = questionMapper.selectById(questionId);
         if (question != null) {
-            QuestionImage questionImage = new QuestionImage(question, imagePath, imageName);
+            QuestionImage questionImage = new QuestionImage(questionId, imagePath, imageName);
             questionImageMapper.insert(questionImage);
             return questionImage;
         }

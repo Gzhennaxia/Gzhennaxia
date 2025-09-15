@@ -1,6 +1,6 @@
 package com.questionbank.entity;
 
-import jakarta.persistence.*;
+import com.baomidou.mybatisplus.annotation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -9,61 +9,42 @@ import java.util.List;
 /**
  * 题目实体类
  */
-@Entity
-@Table(name = "questions")
+@TableName("questions")
 public class Question {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long id;
     
     @NotBlank(message = "题目内容不能为空")
-    @Column(columnDefinition = "TEXT")
     private String content;
     
     @NotNull(message = "题目类型不能为空")
-    @Enumerated(EnumType.STRING)
     private QuestionType type;
     
-    @Column(name = "correct_answer")
+    @TableField("correct_answer")
     private String correctAnswer;
     
-    @ElementCollection
-    @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "option_text")
-    private List<String> options;
+    // 注意：MyBatis Plus 不直接支持 List<String>，需要使用 TypeHandler 或者改为 JSON 字符串
+    private String options; // 改为 JSON 字符串存储
     
-    @Column(name = "difficulty_level")
+    @TableField("difficulty_level")
     private Integer difficultyLevel;
     
-    @Column(name = "subject")
     private String subject;
     
-    @Column(name = "chapter")
     private String chapter;
     
-    @Column(name = "source_file")
+    @TableField("source_file")
     private String sourceFile;
     
-    @Column(name = "page_number")
+    @TableField("page_number")
     private Integer pageNumber;
     
-    @Column(name = "created_at")
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
     
-    @Column(name = "updated_at")
+    @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
     
     // 构造函数
     public Question() {}
@@ -86,8 +67,26 @@ public class Question {
     public String getCorrectAnswer() { return correctAnswer; }
     public void setCorrectAnswer(String correctAnswer) { this.correctAnswer = correctAnswer; }
     
-    public List<String> getOptions() { return options; }
-    public void setOptions(List<String> options) { this.options = options; }
+    public String getOptions() { return options; }
+    public void setOptions(String options) { this.options = options; }
+    
+    // 辅助方法：将 List<String> 转换为 JSON 字符串
+    public void setOptionsList(List<String> optionsList) {
+        if (optionsList != null && !optionsList.isEmpty()) {
+            // 简单的 JSON 格式，实际项目中建议使用 Jackson 或 Gson
+            this.options = String.join(",", optionsList);
+        } else {
+            this.options = null;
+        }
+    }
+    
+    // 辅助方法：将 JSON 字符串转换为 List<String>
+    public List<String> getOptionsList() {
+        if (options != null && !options.trim().isEmpty()) {
+            return List.of(options.split(","));
+        }
+        return List.of();
+    }
     
     public Integer getDifficultyLevel() { return difficultyLevel; }
     public void setDifficultyLevel(Integer difficultyLevel) { this.difficultyLevel = difficultyLevel; }
