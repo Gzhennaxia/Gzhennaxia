@@ -1,18 +1,16 @@
 package com.questionbank.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.questionbank.entity.Question;
 import com.questionbank.entity.QuestionImage;
 import com.questionbank.entity.QuestionType;
-import com.questionbank.repository.QuestionRepository;
-import com.questionbank.repository.QuestionImageRepository;
+import com.questionbank.mapper.QuestionMapper;
+import com.questionbank.mapper.QuestionImageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 题目服务类
@@ -22,67 +20,67 @@ import java.util.Optional;
 public class QuestionService {
     
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuestionMapper questionMapper;
     
     @Autowired
-    private QuestionImageRepository questionImageRepository;
+    private QuestionImageMapper questionImageMapper;
     
     /**
      * 创建题目
      */
     public Question createQuestion(Question question) {
-        return questionRepository.save(question);
+        questionMapper.insert(question);
+        return question;
     }
     
     /**
      * 根据ID获取题目
      */
-    public Optional<Question> getQuestionById(Long id) {
-        return questionRepository.findById(id);
+    public Question getQuestionById(Long id) {
+        return questionMapper.selectById(id);
     }
     
     /**
      * 获取所有题目（分页）
      */
-    public Page<Question> getAllQuestions(Pageable pageable) {
-        return questionRepository.findAll(pageable);
+    public Page<Question> getAllQuestions(Page<Question> page) {
+        return questionMapper.selectPage(page, null);
     }
     
     /**
      * 根据类型获取题目
      */
     public List<Question> getQuestionsByType(QuestionType type) {
-        return questionRepository.findByType(type);
+        return questionMapper.findByType(type);
     }
     
     /**
      * 根据科目获取题目
      */
     public List<Question> getQuestionsBySubject(String subject) {
-        return questionRepository.findBySubject(subject);
+        return questionMapper.findBySubject(subject);
     }
     
     /**
      * 根据难度等级获取题目
      */
     public List<Question> getQuestionsByDifficulty(Integer difficultyLevel) {
-        return questionRepository.findByDifficultyLevel(difficultyLevel);
+        return questionMapper.findByDifficultyLevel(difficultyLevel);
     }
     
     /**
      * 搜索题目（根据内容）
      */
     public List<Question> searchQuestions(String keyword) {
-        return questionRepository.findByContentContainingIgnoreCase(keyword);
+        return questionMapper.findByContentContainingIgnoreCase(keyword);
     }
     
     /**
      * 更新题目
      */
     public Question updateQuestion(Long id, Question questionDetails) {
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
-        if (optionalQuestion.isPresent()) {
-            Question question = optionalQuestion.get();
+        Question question = questionMapper.selectById(id);
+        if (question != null) {
             question.setContent(questionDetails.getContent());
             question.setType(questionDetails.getType());
             question.setCorrectAnswer(questionDetails.getCorrectAnswer());
@@ -90,7 +88,8 @@ public class QuestionService {
             question.setDifficultyLevel(questionDetails.getDifficultyLevel());
             question.setSubject(questionDetails.getSubject());
             question.setChapter(questionDetails.getChapter());
-            return questionRepository.save(question);
+            questionMapper.updateById(question);
+            return question;
         }
         return null;
     }
@@ -99,11 +98,12 @@ public class QuestionService {
      * 删除题目
      */
     public boolean deleteQuestion(Long id) {
-        if (questionRepository.existsById(id)) {
+        Question question = questionMapper.selectById(id);
+        if (question != null) {
             // 先删除相关的图片记录
-            questionImageRepository.deleteByQuestionId(id);
+            questionImageMapper.deleteByQuestionId(id);
             // 再删除题目
-            questionRepository.deleteById(id);
+            questionMapper.deleteById(id);
             return true;
         }
         return false;
@@ -113,11 +113,11 @@ public class QuestionService {
      * 为题目添加图片
      */
     public QuestionImage addImageToQuestion(Long questionId, String imagePath, String imageName) {
-        Optional<Question> optionalQuestion = questionRepository.findById(questionId);
-        if (optionalQuestion.isPresent()) {
-            Question question = optionalQuestion.get();
+        Question question = questionMapper.selectById(questionId);
+        if (question != null) {
             QuestionImage questionImage = new QuestionImage(question, imagePath, imageName);
-            return questionImageRepository.save(questionImage);
+            questionImageMapper.insert(questionImage);
+            return questionImage;
         }
         return null;
     }
@@ -126,34 +126,37 @@ public class QuestionService {
      * 获取题目的所有图片
      */
     public List<QuestionImage> getQuestionImages(Long questionId) {
-        return questionImageRepository.findByQuestionId(questionId);
+        return questionImageMapper.findByQuestionId(questionId);
     }
     
     /**
      * 批量创建题目
      */
     public List<Question> createQuestions(List<Question> questions) {
-        return questionRepository.saveAll(questions);
+        for (Question question : questions) {
+            questionMapper.insert(question);
+        }
+        return questions;
     }
     
     /**
      * 根据源文件获取题目
      */
     public List<Question> getQuestionsBySourceFile(String sourceFile) {
-        return questionRepository.findBySourceFile(sourceFile);
+        return questionMapper.findBySourceFile(sourceFile);
     }
     
     /**
      * 统计题目数量
      */
     public long countQuestions() {
-        return questionRepository.count();
+        return questionMapper.selectCount(null);
     }
     
     /**
      * 根据类型统计题目数量
      */
     public long countQuestionsByType(QuestionType type) {
-        return questionRepository.countByType(type);
+        return questionMapper.countByType(type);
     }
 }

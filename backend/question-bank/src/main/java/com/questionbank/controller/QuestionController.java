@@ -50,9 +50,11 @@ public class QuestionController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable Long id) {
-        Optional<Question> question = questionService.getQuestionById(id);
-        return question.map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
+        Question question = questionService.getQuestionById(id);
+        if (question != null) {
+            return ResponseEntity.ok(question);
+        }
+        return ResponseEntity.notFound().build();
     }
     
     /**
