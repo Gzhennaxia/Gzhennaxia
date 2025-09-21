@@ -50,10 +50,10 @@
 
 ~~需要修改的地方：~~
 
-1. ~~com.personal.management.pojo.entity.Dict~~
-2. ~~com.personal.management.service.impl.DictServiceImpl~~
-3. ~~com.personal.management.service.DictService~~
-4. ~~com.personal.management.controller.DictController~~
+1. ~~Dict~~
+2. ~~DictServiceImpl~~
+3. ~~DictService~~
+4. ~~DictController~~
 5.  ~~[DictManagement](..\frontend\src\components\Admin\DictManagement)~~ 
 6.  ~~[dictService.ts](..\frontend\src\services\dictService.ts)~~ 
 7.  ~~[dict.ts](..\frontend\src\types\dict.ts)~~ 

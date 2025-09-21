@@ -4,25 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- 父项目信息 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.9</version> <!-- 3.2系列的最新补丁版本 -->
+        <relativePath/><!-- 从仓库查找父POM -->
+    </parent>
+
     <groupId>com.gzhennaxia</groupId>
     <artifactId>management-parent</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-
     <name>Personal Management</name>
-    <description>管理系统</description>
+    <description>Gzhennaxia 管理系统</description>
 
     <modules>
-        <module>todo-list</module>
+        <module>common</module>
+        <module>todo-service</module>
         <module>question-bank</module>
     </modules>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
-        <relativePath/>
-    </parent>
 
     <dependencyManagement>
         <dependencies>
@@ -154,7 +156,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
