@@ -12,9 +12,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
- * 全局响应体拦截器：自动将所有正常响应封装为 ApiResponse 格式
+ * 全局响应体拦截器，用于统一封装控制器返回值为 {@link ApiResult} 格式。
+ * <p>
+ * 该拦截器仅对指定包下的控制器生效，避免影响第三方接口或不需要封装的响应。
+ * 支持自动跳过已封装的 {@link ApiResult} 类型，防止重复封装。
+ * 特别处理了 String 类型返回值以兼容 Spring 的消息转换机制。
+ *
+ * @author YourName
+ * @since 2025-04-05
  */
-@RestControllerAdvice(basePackages = "com.personal.management.controller") // 只拦截指定包下的控制器（避免拦截第三方接口）
+@RestControllerAdvice(basePackages = "com.gzhennaxia") // 只拦截指定包下的控制器（避免拦截第三方接口）
 public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
 
     /**
@@ -22,8 +29,9 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
      */
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        // 排除本身就是 ApiResponse 的情况（避免重复封装）
-        return !returnType.getParameterType().isAssignableFrom(ApiResult.class);
+        Class<?> clazz = returnType.getParameterType();
+        // 直接判断类型是否为 ApiResult
+        return !ApiResult.class.isAssignableFrom(clazz);
     }
 
     /**
