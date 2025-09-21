@@ -22,9 +22,8 @@
     <modules>
         <module>common</module>
         <module>todo-service</module>
-        <module>question-bank</module>
+        <module>question-bank-service</module>
     </modules>
-
 
     <dependencyManagement>
         <dependencies>
