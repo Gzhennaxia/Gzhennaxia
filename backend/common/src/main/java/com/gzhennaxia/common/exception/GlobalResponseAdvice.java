@@ -2,7 +2,7 @@ package com.gzhennaxia.common.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gzhennaxia.todo.common.ApiResult;
+import com.gzhennaxia.common.pojo.vo.ApiResult;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;

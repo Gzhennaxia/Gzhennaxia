@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @RestController
 @RequestMapping("/api/dict")
-@Tag(name = "字典管理", description = "字典的查询、新增、修改、删除接口") // 类级别分组
+@Tag(name = "字典管理", description = "字典的查询、新增、修改、删除接口")
 public class DictController extends IBaseController<Dict> {
 
     @Autowired

@@ -127,31 +127,71 @@ CREATE TABLE tasks (
     deleted INTEGER DEFAULT 0
 );
 ```
-
 ## 项目结构
 
 ```
-Gzhennaxia/
-├── backend/                 # Spring Boot 后端
-│   ├── src/main/java/
-│   │   └── com/personal/timemanager/
-│   │       ├── controller/  # 控制器层
-│   │       ├── service/     # 服务层
-│   │       ├── mapper/      # 数据访问层
-│   │       ├── entity/      # 实体类
-│   │       └── config/      # 配置类
-│   └── src/main/resources/
-│       ├── application.yml  # 应用配置
-│       └── schema.sql       # 数据库脚本
+personal-manager/
+├── backend/                 # 后端服务
+│   ├── common/              # 公共模块
+│   │   ├── src/main/java/com/gzhennaxia/common/
+│   │   │   ├── controller/  # 公共控制器
+│   │   │   ├── enums/       # 枚举类
+│   │   │   ├── exception/   # 异常处理
+│   │   │   ├── mapper/      # 公共数据访问层
+│   │   │   ├── pojo/        # 数据传输对象
+│   │   │   │   ├── converter/  # 数据转换器
+│   │   │   │   ├── dto/        # DTO对象
+│   │   │   │   ├── entity/     # 实体类
+│   │   │   │   ├── request/    # 请求对象
+│   │   │   │   └── vo/         # 视图对象
+│   │   │   ├── service/     # 公共服务层
+│   │   │   │   └── impl/    # 服务实现
+│   │   │   └── utils/       # 工具类
+│   │   └── src/test/java/com/gzhennaxia/common/
+│   │       ├── controller/  # 控制器测试
+│   │       └── service/     # 服务测试
+│   ├── question-bank-service/  # 题库服务
+│   │   ├── src/main/java/com/gzhennaxia/question/bank/
+│   │   │   ├── config/      # 配置类
+│   │   │   ├── controller/  # 控制器层
+│   │   │   ├── dto/         # 数据传输对象
+│   │   │   ├── entity/      # 实体类
+│   │   │   ├── mapper/      # 数据访问层
+│   │   │   └── service/     # 服务层
+│   │   └── src/main/resources/
+│   │       ├── application.yml  # 应用配置
+│   │       └── data.sql         # 初始化数据
+│   ├── todo-service/        # 任务清单服务
+│   │   ├── src/main/java/com/gzhennaxia/todo/
+│   │   │   ├── config/      # 配置类
+│   │   │   ├── controller/  # 控制器层
+│   │   │   ├── dto/         # 数据传输对象
+│   │   │   ├── entity/      # 实体类
+│   │   │   ├── mapper/      # 数据访问层
+│   │   │   ├── service/     # 服务层
+│   │   │   └── vo/          # 视图对象
+│   │   └── src/main/resources/
+│   │       └── mapper/      # MyBatis映射文件
+│   ├── web/                 # Web入口模块
+│   │   ├── src/main/java/com/gzhennaxia/web/
+│   │   │   ├── controller/  # 控制器层
+│   │   │   │   ├── question/  # 题库相关控制器
+│   │   │   │   └── todo/      # 任务相关控制器
+│   │   │   └── WebApplication.java  # 应用启动类
+│   │   └── src/main/resources/
+│   │       ├── application.yml      # 主配置文件
+│   │       ├── application-prod.yml # 生产环境配置
+│   │       └── application-test.yml # 测试环境配置
+│   └── pom.xml              # 父级Maven配置
 ├── frontend/                # React 前端
 │   ├── src/
 │   │   ├── components/      # React 组件
 │   │   ├── services/        # API 服务
-│   │   ├── types/          # TypeScript 类型
-│   │   └── utils/          # 工具函数
-│   └── public/             # 静态资源
-├── docker-compose.yml      # Docker 编排
-└── README.md              # 项目文档
+│   │   ├── types/           # TypeScript 类型
+│   │   └── utils/           # 工具函数
+│   └── public/              # 静态资源
+├── docker-compose.yml       # Docker 编排
+└── README.md                # 项目文档
 ```
 
 ## 开发计划
