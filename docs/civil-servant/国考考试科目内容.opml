@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>国考考试科目内容</title>
+  </head>
+  <body>
+    <outline text="行测（客观选择题）">
+      <outline text="考试时长：120分钟，题量：135/130题，满分：100分"/>
+      <outline text="言语理解与表达">
+        <outline text="考查能力：对语言文字的理解和运用能力"/>
+        <outline text="题型：选词填空、片段阅读、语句表达等"/>
+        <outline text="示例：给出一段文字，选择最恰当的词语填入空缺处，或理解主旨、意图等"/>
+        <outline text="题量：40题"/>
+      </outline>
+      <outline text="数量关系">
+        <outline text="考查能力：数学运算能力"/>
+        <outline text="题型：数字推理和数学运算"/>
+        <outline text="示例：工程问题、行程问题、利润问题等，运用数学知识计算和推理"/>
+        <outline text="题量：15/10题"/>
+      </outline>
+      <outline text="判断推理">
+        <outline text="题型：图形推理、定义判断、类比推理、逻辑判断"/>
+        <outline text="图形推理：根据给出的图形找规律"/>
+        <outline text="定义判断：对给定概念进行分析判断"/>
+        <outline text="类比推理：考查词语间的逻辑关系"/>
+        <outline text="逻辑判断：涉及各种逻辑推理，如加强论证、削弱论证等"/>
+        <outline text="题量：40题"/>
+      </outline>
+      <outline text="资料分析">
+        <outline text="考查要求：对统计资料进行数据的分析、计算和比较"/>
+        <outline text="示例：根据给定的表格、图形等资料，计算增长率、比重等指标"/>
+        <outline text="题量：20题"/>
+      </outline>
+      <outline text="常识判断">
+        <outline text="涵盖范围：政治、经济、法律、历史、文化、地理、自然、科技等方面的知识"/>
+        <outline text="题型：单项选择题、多项选择题"/>
+        <outline text="题量：20题"/>
+      </outline>
+      <outline text="政治理论（今年新增）"/>
+    </outline>
+    <outline text="申论（主观写作题）">
+      <outline text="考试时长：180分钟，题量：5题，满分：100分"/>
+      <outline text="归纳概括题">
+        <outline text="要求：根据给定材料，概括主要内容、问题、原因等"/>
+        <outline text="示例：概括某一社会现象的表现、存在的问题等"/>
+        <outline text="题量：1/2题"/>
+      </outline>
+      <outline text="综合分析题">
+        <outline text="要求：对给定材料中的观点、现象进行分析，包括解释分析、评论分析等"/>
+        <outline text="示例：分析某一政策的意义、影响等"/>
+        <outline text="题量：1/0题"/>
+      </outline>
+      <outline text="提出对策题">
+        <outline text="要求：根据材料中反映的问题，提出相应的解决措施和建议"/>
+        <outline text="示例：结合实际情况，提出具有可行性的对策"/>
+        <outline text="题量：1题"/>
+      </outline>
+      <outline text="贯彻执行题（公文写作题）">
+        <outline text="要求：根据给定的场景和要求，撰写公文，如通知、报告、倡议书等"/>
+        <outline text="考查：对公文格式和语言表达的掌握程度"/>
+        <outline text="题量：1题"/>
+      </outline>
+      <outline text="文章写作题（大作文）">
+        <outline text="要求：围绕给定的主题，结合材料内容，进行深入思考和论述"/>
+        <outline text="要求：文章观点明确、结构合理、论证充分"/>
+        <outline text="题量：1题"/>
+      </outline>
+    </outline>
+  </body>
+</opml>

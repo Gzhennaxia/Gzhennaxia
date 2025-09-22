@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>考公分类</title>
+  </head>
+  <body>
+    <outline text="考公分类">
+    <outline text="国考">
+          <outline text="招录机关: 中央机关及其直属机构；中央国家行政机关派驻机构、垂直管理系统所属机构"/>
+          <outline text="招考对象: 应届毕业生岗位比例较高，往届生也有岗位；大专及以上学历，18至35周岁"/>
+          <outline text="考试时间: 一般在每年11月底至12月初"/>
+          <outline text="考试内容: 公共科目为行测和申论，部分岗位有专业科目考试"/>
+          <outline text="工作地点: 全国各地，包括中央"/>
+          <outline text="竞争程度: 竞争较为激烈，报录比高"/>
+        </outline>
+        <outline text="省考">
+          <outline text="招录机关: 地方各级党政机关、社团等"/>
+          <outline text="招考对象: 大专及以上学历，应往届均有岗位（各省情况不同，应届评判标准有差异）"/>
+          <outline text="考试时间: 单独组织考试的省份时间不定（如北京、上海、江苏等）；联考一般在每年3月左右（可能有变动）"/>
+          <outline text="考试内容: 基本与国考一致，也是行测和申论，部分省份有特殊题型"/>
+          <outline text="工作地点: 本省范围内"/>
+          <outline text="竞争程度: 竞争程度因地区和岗位而异，部分热门岗位竞争激烈"/>
+        </outline>
+        <outline text="选调">
+          <outline text="招录机关: 各省党委组织部门"/>
+          <outline text="招考对象: 大学本科及以上应届毕业生，大部分要求学生干部经验、党员或预备党员等；定向选调有特定高校名单"/>
+          <outline text="考试时间: 各省份自行组织，时间不固定"/>
+          <outline text="考试内容: 行测、申论等，部分地区有特殊考核环节"/>
+          <outline text="工作地点: 根据组织安排，可能在基层或其他指定地区"/>
+          <outline text="竞争程度: 符合条件的人数相对较少，但岗位也较少，竞争也较激烈"/>
+        </outline>
+        <outline text="事业编">
+          <outline text="招录机关: 国家机关举办或其他组织利用国有资产举办的社会服务组织"/>
+          <outline text="招考对象: 大专及以上学历，应往届均有岗位，条件要求相对较少"/>
+          <outline text="考试时间: 时间不固定，各地区、各单位自行组织招聘考试"/>
+          <outline text="考试内容: 各地考试内容差异较大，一般有公共基础知识、职业能力测试、综合应用能力等科目，部分岗位有专业测试"/>
+          <outline text="工作地点: 各地区的事业单位"/>
+          <outline text="竞争程度: 竞争程度因地区、单位和岗位而异"/>
+        </outline>
+    </outline>
+  </body>
+</opml>
