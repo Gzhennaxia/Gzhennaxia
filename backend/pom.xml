@@ -23,6 +23,7 @@
         <module>common</module>
         <module>todo-service</module>
         <module>question-bank-service</module>
+        <module>civil-servant-service</module>
     </modules>
 
     <dependencyManagement>
@@ -134,6 +135,33 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>1.5.5.Final</version>
             <scope>provided</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.xmind</groupId>-->
+<!--            <artifactId>xmind-core</artifactId>-->
+<!--            <version>3.6.50</version>-->
+<!--        </dependency>-->
+
+        <!-- JBehave 核心库 -->
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>4.8.3</version> <!-- 推荐使用 4.x 版本，与 xmindjbehaveplugin 0.8 兼容 -->
+        </dependency>
+
+<!--        &lt;!&ndash; xmindjbehaveplugin 插件 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.eljah</groupId>-->
+<!--            <artifactId>xmindjbehaveplugin</artifactId>-->
+<!--            <version>0.8</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/io.gitee.xiaoyudeguang/framework-common-xmind -->
+        <dependency>
+            <groupId>io.gitee.xiaoyudeguang</groupId>
+            <artifactId>framework-common-xmind</artifactId>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 
