@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>归因论证知识体系</title>
+  </head>
+  <body>
+    <outline text="归因论证知识体系">
+      <outline text="归因论证类型">
+        <outline text="实验对比"/>
+        <outline text="时间对比"/>
+        <outline text="一般归因"/>
+        <outline text="直接/根本原因（特殊题型）"/>
+      </outline>
+      <outline text="质疑方式">
+        <outline text="另有他因">
+          <outline text="回归实验 → 真他因"/>
+          <outline text="不回归实验 → 伪他因"/>
+          <outline text="利用分组找另有他因">
+            <outline text="分组不同 → 错误"/>
+            <outline text="分组相同 → 另有他因"/>
+          </outline>
+        </outline>
+        <outline text="因果倒置"/>
+        <outline text="否定此因"/>
+      </outline>
+      <outline text="支持方式">
+        <outline text="排除他因（控制变量）">
+          <outline text="只是把水搅混，可能就是这个原因"/>
+        </outline>
+        <outline text="解释说明"/>
+      </outline>
+      <outline text="常见错误选项">
+        <outline text="伪他因（没有回归实验的常见考法）"/>
+        <outline text="实验瑕疵"/>
+      </outline>
+    </outline>
+  </body>
+</opml>
