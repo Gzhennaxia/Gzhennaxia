@@ -48,8 +48,11 @@
 | analysis | TEXT | 解析内容 | 可空 |
 | difficulty | VARCHAR(10) | 难度（easy/medium/hard） | 非空 |
 | source | VARCHAR(50) | 试题来源（如 "真题""模拟题"） | 可空 |
-| create_time | DATETIME | 创建时间 | 非空，默认当前时间 |
-| update_time | DATETIME | 更新时间 | 非空，默认当前时间 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| deleted | INTEGER | 删除标记：0=未删除，1=已删除 | 非空，默认0 |
+| remark | TEXT | 备注信息 | 可空 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
 
 ### 3.2 知识点标签表（knowledge_tag）
 
@@ -57,7 +60,11 @@
 |--------|----------|------|------|
 | id | BIGINT | 标签唯一标识 | 主键，自增 |
 | tag_name | VARCHAR(50) | 标签名称（如 "数学 - 函数""逻辑 - 削弱论证"） | 非空，唯一 |
-| create_time | DATETIME | 创建时间 | 非空，默认当前时间 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| deleted | INTEGER | 删除标记：0=未删除，1=已删除 | 非空，默认0 |
+| remark | TEXT | 备注信息 | 可空 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
 
 ### 3.3 试题 - 标签关联表（question_tag_rel）
 
@@ -68,7 +75,11 @@
 | id | BIGINT | 关联记录唯一标识 | 主键，自增 |
 | question_id | BIGINT | 试题 ID | 非空，外键关联 question.id |
 | tag_id | BIGINT | 标签 ID | 非空，外键关联 knowledge_tag.id |
-| create_time | DATETIME | 创建时间 | 非空，默认当前时间 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| deleted | INTEGER | 删除标记：0=未删除，1=已删除 | 非空，默认0 |
+| remark | TEXT | 备注信息 | 可空 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
 
 ### 3.4 答题记录表（answer_record）
 
@@ -83,6 +94,11 @@
 | answer_time | DATETIME | 答题时间 | 非空，默认当前时间 |
 | is_wrong_book | BOOLEAN | 是否加入错题本（true/false） | 非空，默认 false |
 | wrong_count | INT | 错误次数（同一试题多次答错时累加） | 非空，默认 0 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| deleted | INTEGER | 删除标记：0=未删除，1=已删除 | 非空，默认0 |
+| remark | TEXT | 备注信息 | 可空 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
 
 ### 3.5 试卷表（exam_paper）
 
@@ -94,9 +110,13 @@
 | paper_name | VARCHAR(100) | 试卷名称（如 "2024-10-01 模拟测试卷"） | 非空 |
 | question_ids | JSON | 试卷包含的试题 ID 列表（如 [1001,1002,...]) | 非空 |
 | total_question | INT | 总题数 | 非空 |
-| create_time | DATETIME | 生成时间 | 非空，默认当前时间 |
 | finish_time | DATETIME | 完成时间 | 可空（未完成时为 null） |
 | used_time | INT | 用时（单位：秒） | 可空（未完成时为 null） |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| deleted | INTEGER | 删除标记：0=未删除，1=已删除 | 非空，默认0 |
+| remark | TEXT | 备注信息 | 可空 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
 
 ### 3.6 数据库建表SQL
 
@@ -105,57 +125,77 @@
 ```sql
 -- 试题表
 CREATE TABLE question (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    question_type VARCHAR(20) NOT NULL,
-    content TEXT NOT NULL,
-    options JSON,
-    answer VARCHAR(255) NOT NULL,
-    analysis TEXT,
-    difficulty VARCHAR(10) NOT NULL,
-    source VARCHAR(50),
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '试题唯一标识',
+    question_type VARCHAR(20) NOT NULL COMMENT '题型（single_choice/multiple_choice/judge/fill/essay）',
+    content TEXT NOT NULL COMMENT '题干内容',
+    options JSON COMMENT '选项（选择题专用，存储选项列表，如 ["A.xxx","B.xxx"]）',
+    answer VARCHAR(255) NOT NULL COMMENT '答案（选择题用 A/B/C/D，填空题用具体文本，判断题用 true/false）',
+    analysis TEXT COMMENT '解析内容',
+    difficulty VARCHAR(10) NOT NULL COMMENT '难度（easy/medium/hard）',
+    source VARCHAR(50) COMMENT '试题来源（如 "真题""模拟题"）',
+    status INTEGER NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=禁用',
+    deleted INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
+    remark TEXT COMMENT '备注信息',
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
+) COMMENT '试题信息表';
 
 -- 知识点标签表
 CREATE TABLE knowledge_tag (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tag_name VARCHAR(50) NOT NULL UNIQUE,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '标签唯一标识',
+    tag_name VARCHAR(50) NOT NULL UNIQUE COMMENT '标签名称（如 "数学 - 函数""逻辑 - 削弱论证"）',
+    status INTEGER NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=禁用',
+    deleted INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
+    remark TEXT COMMENT '备注信息',
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
+) COMMENT '知识点标签信息表';
 
 -- 试题-标签关联表
 CREATE TABLE question_tag_rel (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    question_id BIGINT NOT NULL,
-    tag_id BIGINT NOT NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '关联记录唯一标识',
+    question_id BIGINT NOT NULL COMMENT '试题ID',
+    tag_id BIGINT NOT NULL COMMENT '标签ID',
+    status INTEGER NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=禁用',
+    deleted INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
+    remark TEXT COMMENT '备注信息',
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     FOREIGN KEY (question_id) REFERENCES question(id),
     FOREIGN KEY (tag_id) REFERENCES knowledge_tag(id)
-);
+) COMMENT '试题与知识点标签多对多关联表';
 
 -- 答题记录表
 CREATE TABLE answer_record (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    question_id BIGINT NOT NULL,
-    user_answer VARCHAR(255) NOT NULL,
-    is_correct BOOLEAN NOT NULL,
-    answer_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    is_wrong_book BOOLEAN NOT NULL DEFAULT FALSE,
-    wrong_count INT NOT NULL DEFAULT 0,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '记录唯一标识',
+    question_id BIGINT NOT NULL COMMENT '试题ID',
+    user_answer VARCHAR(255) NOT NULL COMMENT '个人答题答案',
+    is_correct BOOLEAN NOT NULL COMMENT '是否答对（true/false）',
+    answer_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '答题时间',
+    is_wrong_book BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否加入错题本（true/false）',
+    wrong_count INT NOT NULL DEFAULT 0 COMMENT '错误次数（同一试题多次答错时累加）',
+    status INTEGER NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=禁用',
+    deleted INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
+    remark TEXT COMMENT '备注信息',
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     FOREIGN KEY (question_id) REFERENCES question(id)
-);
+) COMMENT '个人答题记录表';
 
 -- 试卷表
 CREATE TABLE exam_paper (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    paper_name VARCHAR(100) NOT NULL,
-    question_ids JSON NOT NULL,
-    total_question INT NOT NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    finish_time DATETIME,
-    used_time INT
-);
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '试卷唯一标识',
+    paper_name VARCHAR(100) NOT NULL COMMENT '试卷名称（如 "2024-10-01 模拟测试卷"）',
+    question_ids JSON NOT NULL COMMENT '试卷包含的试题ID列表（如 [1001,1002,...])',
+    total_question INT NOT NULL COMMENT '总题数',
+    finish_time DATETIME COMMENT '完成时间',
+    used_time INT COMMENT '用时（单位：秒）',
+    status INTEGER NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=禁用',
+    deleted INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
+    remark TEXT COMMENT '备注信息',
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
+) COMMENT '随机组卷生成的临时试卷表';
 ```
 
 ## 四、核心模块实现
