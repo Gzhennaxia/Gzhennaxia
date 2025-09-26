@@ -160,7 +160,7 @@ personal-manager/
 │   │   │   └── service/     # 服务层
 │   │   └── src/main/resources/
 │   │       ├── application.yml  # 应用配置
-│   │       └── data.sql         # 初始化数据
+│   │       └── init.sql         # 初始化数据
 │   ├── todo-service/        # 任务清单服务
 │   │   ├── src/main/java/com/gzhennaxia/todo/
 │   │   │   ├── config/      # 配置类
