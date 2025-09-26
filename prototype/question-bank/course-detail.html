@@ -10,6 +10,19 @@
 <body class="bg-gray-50">
 <!-- 引入导航栏 -->
 <div id="navbar"></div>
+<script>
+    // 加载导航栏
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('navbar').innerHTML = html;
+            // 从加载的内容中提取并执行脚本
+            const scripts = document.getElementById('navbar').getElementsByTagName('script');
+            for (let script of scripts) {
+                eval(script.innerHTML);
+            }
+        });
+</script>
 <!-- 课程详情内容 -->
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 课程基本信息 -->
@@ -27,13 +40,32 @@
                     本课程全面讲解公务员行测考试中的各类题型和解题技巧，包括言语理解、数量关系、判断推理和资料分析等内容。
                 </p>
                 <div class="flex gap-3">
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                    <button id="editCourseBtn" class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 active:bg-blue-700 transition-colors transform hover:scale-105 active:scale-95">
                         <i class="fa fa-edit mr-1"></i>编辑课程
                     </button>
-                    <button class="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-colors">
+                    <button id="addLessonBtn" class="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600 active:bg-green-700 transition-colors transform hover:scale-105 active:scale-95">
                         <i class="fa fa-plus mr-1"></i>添加课时
                     </button>
                 </div>
+                <script>
+                    // 编辑课程按钮点击事件
+                    document.getElementById('editCourseBtn').addEventListener('click', function() {
+                        this.classList.add('animate-pulse');
+                        setTimeout(() => {
+                            this.classList.remove('animate-pulse');
+                            window.location.href = 'course-edit.html';
+                        }, 300);
+                    });
+
+                    // 添加课时按钮点击事件
+                    document.getElementById('addLessonBtn').addEventListener('click', function() {
+                        this.classList.add('animate-pulse');
+                        setTimeout(() => {
+                            this.classList.remove('animate-pulse');
+                            window.location.href = 'lesson-add.html';
+                        }, 300);
+                    });
+                </script>
             </div>
         </div>
     </div>
@@ -80,10 +112,10 @@
                         <a href="lesson-detail.html" class="text-blue-500 hover:text-blue-700 mr-3">
                             <i class="fa fa-eye mr-1"></i>查看
                         </a>
-                        <a href="#" class="text-blue-500 hover:text-blue-700 mr-3">
+                        <a href="#" class="text-blue-500 hover:text-blue-700 mr-3 edit-lesson-btn">
                             <i class="fa fa-edit mr-1"></i>编辑
                         </a>
-                        <a href="#" class="text-red-500 hover:text-red-700">
+                        <a href="#" class="text-red-500 hover:text-red-700 delete-lesson-btn">
                             <i class="fa fa-trash mr-1"></i>删除
                         </a>
                     </td>
@@ -119,5 +151,29 @@
         </div>
     </div>
 </main>
+
+<script>
+    // 课时操作按钮交互
+    document.querySelectorAll('.edit-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lessonName = this.closest('tr').querySelector('td:first-child').textContent.trim();
+            alert(`即将编辑课时: ${lessonName}`);
+        });
+    });
+
+    document.querySelectorAll('.delete-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lessonName = this.closest('tr').querySelector('td:first-child').textContent.trim();
+            if (confirm(`确定要删除课时 "${lessonName}" 吗？此操作不可撤销！`)) {
+                this.closest('tr').classList.add('opacity-50', 'bg-red-50');
+                setTimeout(() => {
+                    alert(`课时 "${lessonName}" 已删除`);
+                }, 500);
+            }
+        });
+    });
+</script>
 </body>
 </html>
