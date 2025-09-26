@@ -47,25 +47,6 @@
                         <i class="fa fa-plus mr-1"></i>添加课时
                     </button>
                 </div>
-                <script>
-                    // 编辑课程按钮点击事件
-                    document.getElementById('editCourseBtn').addEventListener('click', function() {
-                        this.classList.add('animate-pulse');
-                        setTimeout(() => {
-                            this.classList.remove('animate-pulse');
-                            window.location.href = 'course-edit.html';
-                        }, 300);
-                    });
-
-                    // 添加课时按钮点击事件
-                    document.getElementById('addLessonBtn').addEventListener('click', function() {
-                        this.classList.add('animate-pulse');
-                        setTimeout(() => {
-                            this.classList.remove('animate-pulse');
-                            window.location.href = 'lesson-add.html';
-                        }, 300);
-                    });
-                </script>
             </div>
         </div>
     </div>
@@ -153,6 +134,24 @@
 </main>
 
 <script>
+    // 编辑课程按钮点击事件
+    document.getElementById('editCourseBtn').addEventListener('click', function() {
+        this.classList.add('animate-pulse');
+        setTimeout(() => {
+            this.classList.remove('animate-pulse');
+            window.location.href = 'course-edit.html';
+        }, 300);
+    });
+
+    // 添加课时按钮点击事件
+    document.getElementById('addLessonBtn').addEventListener('click', function() {
+        this.classList.add('animate-pulse');
+        setTimeout(() => {
+            this.classList.remove('animate-pulse');
+            window.location.href = 'lesson-add.html';
+        }, 300);
+    });
+
     // 课时操作按钮交互
     document.querySelectorAll('.edit-lesson-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
