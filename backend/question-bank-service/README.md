@@ -36,6 +36,70 @@
 
 基于系统功能需求，设计以下核心数据模型，采用 H2 数据库存储，通过 MyBatis-Plus 实现 ORM 映射。
 
+### 3.6 课程管理相关表
+
+#### 课程表(course)
+| 字段名 | 数据类型 | 说明 | 约束 |
+|--------|----------|------|------|
+| id | BIGINT | 课程唯一标识 | 主键，自增 |
+| course_name | VARCHAR(100) | 课程名称 | 非空 |
+| teacher_name | VARCHAR(50) | 讲师姓名 | 可空 |
+| description | TEXT | 课程描述 | 可空 |
+| cover_url | VARCHAR(255) | 封面图片URL | 可空 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
+
+#### 课时表(lesson)
+| 字段名 | 数据类型 | 说明 | 约束 |
+|--------|----------|------|------|
+| id | BIGINT | 课时唯一标识 | 主键，自增 |
+| course_id | BIGINT | 所属课程ID | 非空，外键 |
+| lesson_name | VARCHAR(100) | 课时名称 | 非空 |
+| lesson_order | INTEGER | 课时顺序 | 非空 |
+| video_id | BIGINT | 关联视频ID | 可空 |
+| handout_id | BIGINT | 关联讲义ID | 可空 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
+
+#### 视频资源表(video_resource)
+| 字段名 | 数据类型 | 说明 | 约束 |
+|--------|----------|------|------|
+| id | BIGINT | 视频唯一标识 | 主键，自增 |
+| file_name | VARCHAR(100) | 视频文件名 | 非空 |
+| file_path | VARCHAR(255) | 视频文件路径 | 非空 |
+| duration | INT | 视频时长(秒) | 可空 |
+| file_size | BIGINT | 文件大小(字节) | 可空 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
+
+#### 讲义表(handout)
+| 字段名 | 数据类型 | 说明 | 约束 |
+|--------|----------|------|------|
+| id | BIGINT | 讲义唯一标识 | 主键，自增 |
+| title | VARCHAR(100) | 讲义标题 | 非空 |
+| content | TEXT | 讲义内容(HTML格式) | 可空 |
+| file_path | VARCHAR(255) | 讲义文件路径 | 可空 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
+
+#### 视频时间标记表(video_marker)
+| 字段名 | 数据类型 | 说明 | 约束 |
+|--------|----------|------|------|
+| id | BIGINT | 标记唯一标识 | 主键，自增 |
+| video_id | BIGINT | 视频ID | 非空，外键 |
+| lesson_id | BIGINT | 所属课时ID | 非空，外键 |
+| marker_time | INT | 标记时间(秒) | 非空 |
+| title | VARCHAR(100) | 标记标题 | 非空 |
+| description | TEXT | 标记描述 | 可空 |
+| question_id | BIGINT | 关联试题ID | 可空，外键 |
+| status | INTEGER | 状态：1=启用，0=禁用 | 非空，默认1 |
+| created_time | DATETIME | 创建时间 | 默认当前时间 |
+| updated_time | DATETIME | 更新时间 | 默认当前时间 |
+
 ### 3.1 试题表（question）
 
 | 字段名 | 数据类型 | 说明 | 约束 |
@@ -248,6 +312,20 @@ backend/question-bank-service/src/main/java/com/questionbank
 
 #### 4.1.2 核心接口设计（RESTful API）
 
+##### 课程管理相关接口
+
+| 接口路径 | 请求方法 | 功能描述 | 请求参数（示例） | 响应结果（示例） |
+|----------|----------|----------|-----------------|-----------------|
+| /api/course/add | POST | 添加课程 | {"courseName":"公务员行测基础","teacherName":"李老师","description":"...","coverUrl":"..."} | {"code":200,"msg":"添加成功","data":{"id":1}} |
+| /api/course/list | GET | 查询课程列表 | pageNum=1&pageSize=10 | {"code":200,"data":{"total":5,"list":[{"id":1,"courseName":"..."}]}} |
+| /api/lesson/add | POST | 添加课时 | {"courseId":1,"lessonName":"第一讲 逻辑判断","lessonOrder":1} | {"code":200,"msg":"添加成功","data":{"id":101}} |
+| /api/lesson/list | GET | 查询课时列表 | courseId=1 | {"code":200,"data":[{"id":101,"lessonName":"...","videoId":1001,"handoutId":2001}]} |
+| /api/video/upload | POST | 上传视频 | FormData(file:视频文件, lessonId:101) | {"code":200,"msg":"上传成功","data":{"id":1001,"filePath":"..."}} |
+| /api/handout/upload | POST | 上传讲义 | FormData(file:PDF文件, lessonId:101) | {"code":200,"msg":"上传成功","data":{"id":2001,"filePath":"..."}} |
+| /api/marker/add | POST | 添加视频时间标记 | {"videoId":1001,"lessonId":101,"markerTime":120,"title":"例题1","questionId":1001} | {"code":200,"msg":"标记添加成功"} |
+
+##### 原有题库管理接口
+
 | 接口路径 | 请求方法 | 功能描述 | 请求参数（示例） | 响应结果（示例） |
 |----------|----------|----------|-----------------|-----------------|
 | /api/question/add | POST | 手动添加试题 | {"questionType":"single_choice","content":"下列属于断点拆桥的是？","options":["A. 否定论据","B. 切断联系"],"answer":"B","analysis":"...","difficulty":"medium","source":"模拟题","tagIds":[1,2]} | {"code":200,"msg":"添加成功","data":{"id":1001}} |
@@ -314,6 +392,30 @@ frontend/src/
 ```
 
 #### 4.2.2 核心页面实现
+
+**课程管理页（CourseManage.tsx）：**
+- 顶部：课程筛选和搜索功能
+- 主体：课程列表（卡片式布局，展示课程封面、名称、讲师、课时数）
+- 操作按钮："添加课程"、"导入课程"、"导出课程"
+- 点击课程卡片进入课程详情页
+
+**课程详情页（CourseDetail.tsx）：**
+- 顶部：课程基本信息（名称、讲师、描述）
+- 中部：课时列表（表格展示课时名称、顺序、关联资源）
+- 底部："添加课时"、"上传视频"、"上传讲义"按钮
+- 点击课时进入课时详情页
+
+**课时详情页（LessonDetail.tsx）：**
+- 左侧：视频播放器（支持时间标记跳转）
+- 右侧：讲义内容展示区（可查看PDF或HTML格式讲义）
+- 底部：时间标记列表（展示标记时间、标题，点击可跳转视频对应位置）
+- 功能按钮："添加标记"、"关联试题"、"编辑讲义"
+
+**视频标记组件（VideoMarker.tsx）：**
+- 视频播放控制条上显示标记点
+- 右键点击时间轴可添加新标记
+- 点击标记点可跳转到对应视频位置
+- 标记点支持关联已有试题或创建新试题
 
 **题库管理页（QuestionManage.tsx）：**
 - 左侧：知识点标签树、难度筛选、题型筛选；

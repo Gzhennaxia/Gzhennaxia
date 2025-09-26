@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人题库系统 - 错题本</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+<!-- 引入导航栏 -->
+<div id="navbar"></div>
+
+<!-- 错题本内容 -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 顶部操作栏 -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex items-center gap-2">
+            <h3 class="text-lg font-medium text-gray-800">错题本</h3>
+            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">共 23 道错题</span>
+        </div>
+        <div class="flex gap-3">
+            <!-- 重做错题按钮 -->
+            <button id="redoBtn" class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                <i class="fa fa-refresh mr-1"></i>重做错题
+            </button>
+            <!-- 清空错题本按钮 -->
+            <button id="clearBtn" class="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors">
+                <i class="fa fa-trash mr-1"></i>清空错题本
+            </button>
+        </div>
+    </div>
+
+    <!-- 筛选栏 -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- 题型筛选 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">题型</label>
+                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">全部题型</option>
+                    <option value="single_choice">单选题</option>
+                    <option value="multiple_choice">多选题</option>
+                    <option value="judge">判断题</option>
+                    <option value="fill">填空题</option>
+                </select>
+            </div>
+            <!-- 错误次数筛选 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">错误次数</label>
+                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">全部</option>
+                    <option value="1">1次</option>
+                    <option value="2">2次</option>
+                    <option value="3+">3次及以上</option>
+                </select>
+            </div>
+            <!-- 知识点筛选 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">知识点</label>
+                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">全部知识点</option>
+                    <option value="logic_weak">逻辑-削弱论证</option>
+                    <option value="math_function">数学-函数</option>
+                    <option value="java_basic">Java-基础语法</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors mr-2">
+                <i class="fa fa-refresh mr-1"></i>重置
+            </button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                <i class="fa fa-search mr-1"></i>筛选
+            </button>
+        </div>
+    </div>
+
+    <!-- 错题列表 -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        试题ID
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        题干内容
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        题型
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        错误次数
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <!-- 错题1 -->
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1001</td>
+                    <td class="px-6 py-4 max-w-xs whitespace-normal text-sm text-gray-800">
+                        下列选项中，属于"断点拆桥"削弱论证的核心逻辑是？
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        单选题
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            3次
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-blue-500 hover:text-blue-700 mr-3">
+                            <i class="fa fa-pencil mr-1"></i>查看
+                        </button>
+                        <button class="text-green-500 hover:text-green-700">
+                            <i class="fa fa-check mr-1"></i>已掌握
+                        </button>
+                    </td>
+                </tr>
+                <!-- 错题2 -->
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1005</td>
+                    <td class="px-6 py-4 max-w-xs whitespace-normal text-sm text-gray-800">
+                        在Java中，ArrayList与LinkedList的区别包括（多选）：
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        多选题
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            2次
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-blue-500 hover:text-blue-700 mr-3">
+                            <i class="fa fa-pencil mr-1"></i>查看
+                        </button>
+                        <button class="text-green-500 hover:text-green-700">
+                            <i class="fa fa-check mr-1"></i>已掌握
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页 -->
+        <div class="px-6 py-3 flex items-center justify-between border-t border-gray-200">
+            <div class="flex-1 flex justify-between sm:hidden">
+                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    上一页
+                </a>
+                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    下一页
+                </a>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        显示第 <span class="font-medium">1</span> 至 <span class="font-medium">2</span> 条，共 <span class="font-medium">23</span> 条结果
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">上一页</span>
+                            <i class="fa fa-chevron-left text-xs"></i>
+                        </a>
+                        <a href="#" aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            1
+                        </a>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            2
+                        </a>
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                            ...
+                        </span>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            5
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">下一页</span>
+                            <i class="fa fa-chevron-right text-xs"></i>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // 加载导航栏
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => document.getElementById('navbar').innerHTML = data);
+
+    // 设置当前导航项激活状态
+    document.getElementById('nav-wrong').classList.add('nav-active');
+    document.getElementById('nav-wrong').classList.remove('text-gray-600', 'hover:text-blue-500');
+</script>
+</body>
+</html>

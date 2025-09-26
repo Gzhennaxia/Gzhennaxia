@@ -12,7 +12,6 @@
 <div id="navbar"></div>
 
 <!-- 首页内容 -->
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- 数据概览卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- 试题总数 -->
@@ -20,14 +19,14 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">试题总数</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">128</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">356</h3>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
                     <i class="fa fa-file-text-o text-xl"></i>
                 </div>
             </div>
             <div class="mt-4 text-sm text-green-500">
-                <i class="fa fa-arrow-up mr-1"></i>较上周增加 12 道
+                <i class="fa fa-arrow-up mr-1"></i>较上周增加 42 道
             </div>
         </div>
         <!-- 今日刷题 -->
@@ -35,32 +34,17 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">今日刷题</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">15</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">18</h3>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-500">
                     <i class="fa fa-pencil text-xl"></i>
                 </div>
             </div>
             <div class="mt-4 text-sm text-green-500">
-                <i class="fa fa-arrow-up mr-1"></i>完成今日目标的 75%
+                <i class="fa fa-arrow-up mr-1"></i>完成今日目标的 90%
             </div>
         </div>
-        <!-- 错题数量 -->
-        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm">错题数量</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">23</h3>
-                </div>
-                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500">
-                    <i class="fa fa-exclamation-circle text-xl"></i>
-                </div>
-            </div>
-            <div class="mt-4 text-sm text-red-500">
-                <i class="fa fa-arrow-down mr-1"></i>较上周减少 5 道
-            </div>
-        </div>
-        <!-- 正确率 -->
+        <!-- 总正确率 -->
         <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
                 <div>
@@ -72,7 +56,22 @@
                 </div>
             </div>
             <div class="mt-4 text-sm text-green-500">
-                <i class="fa fa-arrow-up mr-1"></i>较上周提升 3%
+                <i class="fa fa-arrow-up mr-1"></i>较上周提升 5%
+            </div>
+        </div>
+        <!-- 错题重做正确率 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">错题重做正确率</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">65%</h3>
+                </div>
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500">
+                    <i class="fa fa-refresh text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>较上周提升 8%
             </div>
         </div>
     </div>
@@ -104,6 +103,33 @@
             <div>
                 <h4 class="text-lg font-medium text-gray-800">错题重做</h4>
                 <p class="text-gray-500 text-sm mt-1">集中复习易错试题</p>
+            </div>
+        </a>
+        <a href="statistic.html" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center">
+            <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center text-purple-500 mr-4">
+                <i class="fa fa-bar-chart text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium text-gray-800">数据统计</h4>
+                <p class="text-gray-500 text-sm mt-1">查看学习进度与正确率</p>
+            </div>
+        </a>
+        <a href="#" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center">
+            <div class="w-14 h-14 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-500 mr-4">
+                <i class="fa fa-random text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium text-gray-800">随机组卷</h4>
+                <p class="text-gray-500 text-sm mt-1">模拟真实考试环境</p>
+            </div>
+        </a>
+        <a href="#" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center">
+            <div class="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-500 mr-4">
+                <i class="fa fa-cloud-upload text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium text-gray-800">数据备份</h4>
+                <p class="text-gray-500 text-sm mt-1">导出/导入学习数据</p>
             </div>
         </a>
     </div>

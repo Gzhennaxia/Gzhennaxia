@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人题库系统 - 数据统计</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body class="bg-gray-50">
+<!-- 引入导航栏 -->
+<div id="navbar"></div>
+
+<!-- 数据统计内容 -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 数据概览卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- 刷题总数 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">刷题总数</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">356</h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
+                    <i class="fa fa-file-text-o text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>较上周增加 42 道
+            </div>
+        </div>
+        <!-- 今日刷题 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">今日刷题</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">18</h3>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-500">
+                    <i class="fa fa-pencil text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>完成今日目标的 90%
+            </div>
+        </div>
+        <!-- 总正确率 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">总正确率</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">78%</h3>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
+                    <i class="fa fa-bar-chart text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>较上周提升 5%
+            </div>
+        </div>
+        <!-- 错题重做正确率 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">错题重做正确率</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">65%</h3>
+                </div>
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500">
+                    <i class="fa fa-refresh text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>较上周提升 8%
+            </div>
+        </div>
+    </div>
+
+    <!-- 知识点正确率图表 -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-medium text-gray-800">各知识点正确率</h4>
+            <div class="flex gap-2">
+                <button class="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors">
+                    近7天
+                </button>
+                <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                    全部
+                </button>
+            </div>
+        </div>
+        <div id="knowledgeRateChart" style="width: 100%; height: 400px;"></div>
+    </div>
+
+    <!-- 正确率趋势图表 -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-medium text-gray-800">正确率趋势</h4>
+            <div class="flex gap-2">
+                <button class="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors">
+                    近7天
+                </button>
+                <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                    近30天
+                </button>
+            </div>
+        </div>
+        <div id="trendChart" style="width: 100%; height: 400px;"></div>
+    </div>
+</main>
+
+<script>
+    // 加载导航栏
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => document.getElementById('navbar').innerHTML = data);
+
+    // 设置当前导航项激活状态
+    document.getElementById('nav-stat').classList.add('nav-active');
+    document.getElementById('nav-stat').classList.remove('text-gray-600', 'hover:text-blue-500');
+
+    // 初始化知识点正确率图表
+    const knowledgeRateChart = echarts.init(document.getElementById('knowledgeRateChart'));
+    knowledgeRateChart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        xAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value}%'
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: ['逻辑-削弱论证', '数学-函数', 'Java-基础语法', 'SQL-查询语句', '数据结构-链表']
+        },
+        series: [{
+            name: '正确率',
+            type: 'bar',
+            data: [85, 72, 68, 79, 65],
+            itemStyle: {
+                color: function(params) {
+                    const value = params.value;
+                    if (value >= 80) {
+                        return '#10B981'; // 绿色
+                    } else if (value >= 60) {
+                        return '#F59E0B'; // 黄色
+                    } else {
+                        return '#EF4444'; // 红色
+                    }
+                }
+            },
+            label: {
+                show: true,
+                position: 'right',
+                formatter: '{c}%'
+            }
+        }]
+    });
+
+    // 初始化正确率趋势图表
+    const trendChart = echarts.init(document.getElementById('trendChart'));
+    trendChart.setOption({
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['总正确率', '错题重做正确率']
+        },
+        xAxis: {
+            type: 'category',
+            data: ['9/20', '9/21', '9/22', '9/23', '9/24', '9/25', '9/26']
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value}%'
+            }
+        },
+        series: [
+            {
+                name: '总正确率',
+                type: 'line',
+                data: [72, 75, 73, 76, 77, 78, 80],
+                smooth: true,
+                lineStyle: {
+                    color: '#3B82F6',
+                    width: 3
+                },
+                itemStyle: {
+                    color: '#3B82F6'
+                }
+            },
+            {
+                name: '错题重做正确率',
+                type: 'line',
+                data: [58, 60, 62, 63, 64, 65, 67],
+                smooth: true,
+                lineStyle: {
+                    color: '#10B981',
+                    width: 3
+                },
+                itemStyle: {
+                    color: '#10B981'
+                }
+            }
+        ]
+    });
+
+    // 响应式调整图表大小
+    window.addEventListener('resize', function() {
+        knowledgeRateChart.resize();
+        trendChart.resize();
+    });
+</script>
+</body>
+</html>
