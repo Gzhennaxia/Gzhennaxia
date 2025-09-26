@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人题库系统 - 题库管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+<!-- 引入导航栏 -->
+<div id="navbar"></div>
+<!-- 题库管理内容 -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 顶部操作栏 -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex items-center gap-2">
+            <h3 class="text-lg font-medium text-gray-800">题库管理</h3>
+            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">共 128 道试题</span>
+        </div>
+        <div class="flex gap-3">
+            <!-- 批量导入按钮 -->
+            <label class="relative bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
+                <i class="fa fa-upload mr-1"></i>批量导入
+                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" accept=".xlsx,.xls">
+            </label>
+            <!-- 手动添加按钮 -->
+            <button id="addQuestionBtn" class="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-colors">
+                <i class="fa fa-plus mr-1"></i>手动添加
+            </button>
+        </div>
+    </div>
+    <!-- 筛选栏 -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- 题型筛选 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">题型</label>
+                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">全部题型</option>
+                    <option value="single_choice">单选题</option>
+                    <option value="multiple_choice">多选题</option>
+                    <option value="judge">判断题</option>
+                    <option value="fill">填空题</option>
+                    <option value="essay">简答题</option>
+                </select>
+            </div>
+            <!-- 难度筛选 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">难度</label>
+                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">全部难度</option>
+                    <option value="easy">简单</option>
+                    <option value="medium">中等</option>
+                    <option value="hard">困难</option>
+                </select>
+            </div>
+            <!-- 知识点筛选 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">知识点</label>
+                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">全部知识点</option>
+                    <option value="logic_weak">逻辑-削弱论证</option>
+                    <option value="math_function">数学-函数</option>
+                    <option value="java_basic">Java-基础语法</option>
+                    <option value="sql_query">SQL-查询语句</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors mr-2">
+                <i class="fa fa-refresh mr-1"></i>重置
+            </button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                <i class="fa fa-search mr-1"></i>筛选
+            </button>
+        </div>
+    </div>
+    <!-- 试题列表 -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        试题ID
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        题干内容
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        题型
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        难度
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        知识点
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        状态
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <!-- 试题1 -->
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1001</td>
+                    <td class="px-6 py-4 max-w-xs whitespace-normal text-sm text-gray-800">
+                        下列选项中，属于“断点拆桥”削弱论证的核心逻辑是？
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        单选题
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    中等
+                                </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        逻辑-削弱论证
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    启用
+                                </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-blue-500 hover:text-blue-700 mr-3">
+                            <i class="fa fa-pencil mr-1"></i>编辑
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 mr-3">
+                            <i class="fa fa-trash mr-1"></i>删除
+                        </button>
+                        <button class="text-purple-500 hover:text-purple-700">
+                            <i class="fa fa-exclamation-circle mr-1"></i>加入错题本
+                        </button>
+                    </td>
+                </tr>
+                <!-- 试题2 -->
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1002</td>
+                    <td class="px-6 py-4 max-w-xs whitespace-normal text-sm text-gray-800">
+                        在Java中，ArrayList与LinkedList的区别包括（多选）：
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        多选题
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    困难
+                                </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        Java-集合框架
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    启用
+                                </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-blue-500 hover:text-blue-700 mr-3">
+                            <i class="fa fa-pencil mr-1"></i>编辑
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 mr-3">
+                            <i class="fa fa-trash mr-1"></i>删除
+                        </button>
+                        <button class="text-purple-500 hover:text-purple-700">
+                            <i class="fa fa-exclamation-circle mr-1"></i>加入错题本
+                        </button>
+                    </td>
+                </tr>
+                <!-- 试题3 -->
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1003</td>
+                    <td class="px-6 py-4 max-w-xs whitespace-normal text-sm text-gray-800">
+                        判断：SQL的GROUP BY子句必须配合HAVING子句使用。
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        判断题
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    简单
+                                </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        SQL-查询语句
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    禁用
+                                </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-blue-500 hover:text-blue-700 mr-3">
+                            <i class="fa fa-pencil mr-1"></i>编辑
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 mr-3">
+                            <i class="fa fa-trash mr-1"></i>删除
+                        </button>
+                        <button class="text-purple-500 hover:text-purple-700">
+                            <i class="fa fa-exclamation-circle mr-1"></i>加入错题本
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页 -->
+        <div class="px-6 py-3 flex items-center justify-between border-t border-gray-200">
+            <div class="flex-1 flex justify-between sm:hidden">
+                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    上一页
+                </a>
+                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    下一页
+                </a>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        显示第 <span class="font-medium">1</span> 至 <span class="font-medium">3</span> 条，共 <span class="font-medium">128</span> 条结果
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">上一页</span>
+                            <i class="fa fa-chevron-left text-xs"></i>
+                        </a>
+                        <a href="#" aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            1
+                        </a>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            2
+                        </a>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            3
+                        </a>
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                ...
+                            </span>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            43
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">下一页</span>
+                            <i class="fa fa-chevron-right text-xs"></i>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 手动添加试题弹窗（默认隐藏） -->
+    <div id="addQuestionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-medium text-gray-900">添加试题</h3>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="px-6 py-4">
+                <form>
+                    <!-- 题型选择 -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">题型 <span class="text-red-500">*</span></label>
+                        <select id="questionType" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                            <option value="single_choice">单选题</option>
+                            <option value="multiple_choice">多选题</option>
+                            <option value="judge">判断题</option>
+                            <option value="fill">填空题</option>
+                            <option value="essay">简答题</option>
+                        </select>
+                    </div>
+                    <!-- 题干输入 -->
+                    <div class="mb-4">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>

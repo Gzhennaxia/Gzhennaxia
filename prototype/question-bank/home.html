@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人题库系统 - 首页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+<!-- 引入导航栏 -->
+<div id="navbar"></div>
+
+<!-- 首页内容 -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 数据概览卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- 试题总数 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">试题总数</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">128</h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
+                    <i class="fa fa-file-text-o text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>较上周增加 12 道
+            </div>
+        </div>
+        <!-- 今日刷题 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">今日刷题</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">15</h3>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-500">
+                    <i class="fa fa-pencil text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>完成今日目标的 75%
+            </div>
+        </div>
+        <!-- 错题数量 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">错题数量</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">23</h3>
+                </div>
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500">
+                    <i class="fa fa-exclamation-circle text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-red-500">
+                <i class="fa fa-arrow-down mr-1"></i>较上周减少 5 道
+            </div>
+        </div>
+        <!-- 正确率 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">总正确率</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">78%</h3>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
+                    <i class="fa fa-bar-chart text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-green-500">
+                <i class="fa fa-arrow-up mr-1"></i>较上周提升 3%
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速功能入口 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <a href="question-manage.html" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center">
+            <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center text-blue-500 mr-4">
+                <i class="fa fa-list-alt text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium text-gray-800">题库管理</h4>
+                <p class="text-gray-500 text-sm mt-1">添加、编辑、导入试题</p>
+            </div>
+        </a>
+        <a href="brush-practice.html" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center">
+            <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center text-green-500 mr-4">
+                <i class="fa fa-book text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium text-gray-800">刷题练习</h4>
+                <p class="text-gray-500 text-sm mt-1">按知识点/难度筛选刷题</p>
+            </div>
+        </a>
+        <a href="wrong-book.html" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center">
+            <div class="w-14 h-14 bg-red-100 rounded-lg flex items-center justify-center text-red-500 mr-4">
+                <i class="fa fa-refresh text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium text-gray-800">错题重做</h4>
+                <p class="text-gray-500 text-sm mt-1">集中复习易错试题</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- 最近学习记录 -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-medium text-gray-800">最近学习记录</h4>
+            <a href="#" class="text-blue-500 text-sm hover:underline">查看全部</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">内容</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">结果</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">刷题</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">下列属于断点拆桥的是？</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">单选题</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">今天 14:30</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-green-500">正确</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">添加试题</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">归因论证的支持方式有哪些？</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">简答题</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">今天 10:15</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-green-500">成功</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">刷题</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">实验对比属于哪种归因类型？</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">单选题</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">昨天 20:45</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-red-500">错误</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script>
+    // 加载导航栏
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => document.getElementById('navbar').innerHTML = data);
+</script>
+</body>
+</html>
