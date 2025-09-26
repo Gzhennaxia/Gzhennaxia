@@ -38,9 +38,7 @@ CREATE TABLE question_tag_rel
     deleted      INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
     remark       TEXT COMMENT '备注信息',
     created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-    FOREIGN KEY (question_id) REFERENCES question (id),
-    FOREIGN KEY (tag_id) REFERENCES knowledge_tag (id)
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 ) COMMENT '试题与知识点标签多对多关联表';
 
 -- 答题记录表
@@ -57,8 +55,7 @@ CREATE TABLE answer_record
     deleted       INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
     remark        TEXT COMMENT '备注信息',
     created_time  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_time  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-    FOREIGN KEY (question_id) REFERENCES question (id)
+    updated_time  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 ) COMMENT '个人答题记录表';
 
 -- 试卷表
