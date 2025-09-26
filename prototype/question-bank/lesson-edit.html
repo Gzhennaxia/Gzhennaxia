@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人题库系统 - 编辑课时</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+<!-- 引入导航栏 -->
+<div id="navbar"></div>
+<script>
+    // 加载导航栏
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('navbar').innerHTML = html;
+            // 从加载的内容中提取并执行脚本
+            const scripts = document.getElementById('navbar').getElementsByTagName('script');
+            for (let script of scripts) {
+                eval(script.innerHTML);
+            }
+        });
+</script>
+<!-- 编辑课时内容 -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">编辑课时信息</h1>
+
+        <form id="editLessonForm">
+            <!-- 课时基本信息 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">课时名称</label>
+                <input type="text" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2"
+                       value="第一讲 逻辑判断" required>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">课时顺序</label>
+                <input type="number" min="1" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2"
+                       value="1" required>
+            </div>
+
+            <!-- 视频资源 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">视频资源</label>
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-600">当前视频: lecture_01.mp4 (45:23)</p>
+                    </div>
+                    <label class="relative bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
+                        <i class="fa fa-upload mr-1"></i>更换视频
+                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" accept="video/*">
+                    </label>
+                </div>
+            </div>
+
+            <!-- 讲义内容 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">讲义内容</label>
+                <textarea rows="8" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2">
+第一讲 逻辑判断
+
+本讲重点讲解逻辑判断中的削弱与加强题型：
+
+• 削弱论证的常见方式
+• 加强论证的核心方法
+• 典型例题解析
+
+例题1 (02:15)
+下列选项中，属于"断点拆桥"削弱论证的核心逻辑是？
+
+解析：断点拆桥的核心是否定论据与结论间的联系。
+
+例题2 (15:42)
+如何通过补充论据来加强论证？
+                </textarea>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex justify-end gap-3 mt-8">
+                <button type="button" id="cancelEditBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors">
+                    取消
+                </button>
+                <button type="submit" id="saveLessonBtn" class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                    <i class="fa fa-save mr-1"></i>保存更改
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    // 表单提交处理
+    document.getElementById('editLessonForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const saveBtn = document.getElementById('saveLessonBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> 保存中...';
+
+        // 模拟异步保存
+        setTimeout(() => {
+            saveBtn.innerHTML = '<i class="fa fa-check mr-1"></i> 保存成功';
+            saveBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            saveBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+
+            // 2秒后返回课时详情页
+            setTimeout(() => {
+                window.location.href = 'lesson-detail.html';
+            }, 2000);
+        }, 1500);
+    });
+
+    // 取消按钮
+    document.getElementById('cancelEditBtn').addEventListener('click', function() {
+        if(confirm('确定要取消编辑吗？所有未保存的更改将丢失。')) {
+            window.location.href = 'lesson-detail.html';
+        }
+    });
+</script>
+</body>
+</html>

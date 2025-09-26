@@ -64,12 +64,12 @@
                                 <span class="ml-2">例题1: 削弱论证</span>
                             </div>
                             <div>
-                                <a href="#" class="text-blue-500 hover:text-blue-700 mr-2">
-                                    <i class="fa fa-link"></i> 关联试题
-                                </a>
-                                <a href="#" class="text-red-500 hover:text-red-700">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                        <a href="#" class="text-blue-500 hover:text-blue-700 mr-2 edit-marker-btn">
+                            <i class="fa fa-edit mr-1"></i> 编辑
+                        </a>
+                        <a href="#" class="text-red-500 hover:text-red-700 delete-marker-btn">
+                            <i class="fa fa-trash"></i>
+                        </a>
                             </div>
                         </div>
                         <div class="mt-1 text-sm text-gray-500">
@@ -121,10 +121,20 @@
                     <p>如何通过补充论据来加强论证？</p>
                 </div>
                 <div class="mt-4">
-                    <button class="w-full bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                    <button id="editHandoutBtn" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 active:bg-blue-700 transition-colors transform hover:scale-105 active:scale-95">
                         <i class="fa fa-edit mr-1"></i>编辑讲义
                     </button>
                 </div>
+                <script>
+                    // 编辑讲义按钮点击事件
+                    document.getElementById('editHandoutBtn').addEventListener('click', function() {
+                        this.classList.add('animate-pulse');
+                        setTimeout(() => {
+                            this.classList.remove('animate-pulse');
+                            window.location.href = 'lesson-edit.html';
+                        }, 300);
+                    });
+                </script>
             </div>
         </div>
     </div>
@@ -178,6 +188,28 @@
 
     document.getElementById('cancelMarkerBtn').addEventListener('click', function() {
         document.getElementById('markerModal').classList.add('hidden');
+    });
+
+    // 标记操作按钮交互
+    document.querySelectorAll('.edit-marker-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const markerTitle = this.closest('div').querySelector('span:nth-child(2)').textContent.trim();
+            alert(`即将编辑标记: ${markerTitle}`);
+        });
+    });
+
+    document.querySelectorAll('.delete-marker-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const markerTitle = this.closest('div').querySelector('span:nth-child(2)').textContent.trim();
+            if (confirm(`确定要删除标记 "${markerTitle}" 吗？`)) {
+                this.closest('.p-3').classList.add('opacity-50', 'bg-red-50');
+                setTimeout(() => {
+                    alert(`标记 "${markerTitle}" 已删除`);
+                }, 500);
+            }
+        });
     });
 </script>
 </body>
