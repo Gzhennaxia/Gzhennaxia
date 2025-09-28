@@ -214,11 +214,14 @@ public class VideoService {
 //                    5
 //            );
             List<File> screenshots = util.captureScreenshots(
-                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P10]章晓铭逻辑22杀：第10杀-推出关系思维.mp4",
+                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P12]章晓铭逻辑22杀：第12杀-矛盾等价思维.mp4",
                     "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\screenshots",
-                    60
+                    30
             );
 
+            //总结为MD文档
+            //1. 保留完整的题干和选项
+            //2. 保留完整的知识点
             System.out.println("截图完成，共生成 " + screenshots.size() + " 张图片");
         } catch (Exception e) {
             e.printStackTrace();
