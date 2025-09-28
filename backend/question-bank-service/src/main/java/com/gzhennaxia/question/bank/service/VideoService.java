@@ -1,5 +1,7 @@
 package com.gzhennaxia.question.bank.service;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +60,12 @@ public class VideoService {
      */
     public List<File> captureScreenshots(String videoPath, String outputDir, int intervalSeconds)
             throws IOException, InterruptedException {
+
+        // videoPath 是 [P1]、[P2]、[P10] 等开头的， 从 videoPath 提取出 “P1”、 “P2”、 “P10”
+        String pName = videoPath.substring(videoPath.indexOf("[") + 1, videoPath.indexOf("]"));
+        if (StringUtils.isNotEmpty(pName)) {
+            outputDir += File.separator + pName;
+        }
 
         // 创建输出目录
         File outputDirectory = new File(outputDir);
