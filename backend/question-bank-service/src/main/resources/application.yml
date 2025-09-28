@@ -6,14 +6,14 @@ server:
 spring:
   application:
     name: question-bank-backend
-  
+
   # 数据库配置
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     username: sa
     password: password
-  
+
   # JPA配置
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -23,20 +23,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  
+
   # H2控制台配置
   h2:
     console:
       enabled: true
       path: /h2-console
-  
+
   # 文件上传配置
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
       enabled: true
-  
+
   # JSON配置
   jackson:
     default-property-inclusion: non_null
@@ -62,3 +62,5 @@ app:
     path: uploads/images/
   pdf:
     path: uploads/pdfs/
+  ffmpeg:
+    path: D:/SOFTERWARE/ffmpeg-7.1.1-full_build/bin
