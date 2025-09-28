@@ -4,31 +4,57 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VideoService {
 
-    // FFmpeg可执行文件路径
-    private String ffmpegPath;
+    // FFmpeg工具所在目录（如 D:\SOFTERWARE\ffmpeg-7.1.1-full_build\bin）
+    private final String ffmpegDir;
 
-    public VideoService(String ffmpegPath) {
-        this.ffmpegPath = ffmpegPath;
-        // 验证FFmpeg是否存在
-        File ffmpegFile = new File(ffmpegPath);
-        if (!ffmpegFile.exists() || !ffmpegFile.canExecute()) {
-            throw new RuntimeException("FFmpeg不存在或不可执行: " + ffmpegPath);
+    // 各工具的完整路径（自动从目录推导）
+    private final String ffmpegPath;
+    private final String ffprobePath;
+    private final String ffplayPath;
+
+    /**
+     * 构造方法：传入FFmpeg工具所在目录
+     *
+     * @param ffmpegDir FFmpeg的bin目录（包含ffmpeg.exe、ffprobe.exe等）
+     */
+    public VideoService(String ffmpegDir) {
+        this.ffmpegDir = ffmpegDir;
+
+        // 自动拼接各工具的完整路径
+        this.ffmpegPath = getToolPath("ffmpeg.exe");
+        this.ffprobePath = getToolPath("ffprobe.exe");
+        this.ffplayPath = getToolPath("ffplay.exe"); // 可选，如需播放功能
+
+        // 验证核心工具是否存在
+        validateTool(ffmpegPath, "ffmpeg");
+        validateTool(ffprobePath, "ffprobe");
+    }
+
+    /**
+     * 拼接工具的完整路径
+     */
+    private String getToolPath(String toolName) {
+        return ffmpegDir + File.separator + toolName;
+    }
+
+    /**
+     * 验证工具是否存在且可执行
+     */
+    private void validateTool(String toolPath, String toolName) {
+        File toolFile = new File(toolPath);
+        if (!toolFile.exists() || !toolFile.canExecute()) {
+            throw new RuntimeException(toolName + "不存在或不可执行: " + toolPath);
         }
     }
 
     /**
      * 对视频每隔指定时间截图一次
-     * @param videoPath 视频文件路径
-     * @param outputDir 截图输出目录
-     * @param intervalSeconds 截图时间间隔(秒)
-     * @return 生成的图片文件列表
-     * @throws IOException 执行过程中的IO异常
-     * @throws InterruptedException 进程中断异常
      */
     public List<File> captureScreenshots(String videoPath, String outputDir, int intervalSeconds)
             throws IOException, InterruptedException {
@@ -39,8 +65,8 @@ public class VideoService {
             outputDirectory.mkdirs();
         }
 
-        // 获取视频总时长(秒)
-        int duration = getVideoDuration(videoPath);
+        // 获取视频总时长(秒) - 使用ffprobe
+        int duration = getVideoDurationByFFprobe(videoPath);
         if (duration <= 0) {
             throw new RuntimeException("无法获取视频时长或视频时长为0");
         }
@@ -52,7 +78,7 @@ public class VideoService {
             String outputFilePath = outputDir + File.separator + "screenshot_" + time + "s.jpg";
             File screenshotFile = new File(outputFilePath);
 
-            // 执行截图命令
+            // 执行截图命令（使用ffmpeg）
             boolean success = captureSingleFrame(videoPath, outputFilePath, time);
             if (success) {
                 screenshotFiles.add(screenshotFile);
@@ -64,98 +90,71 @@ public class VideoService {
     }
 
     /**
-     * 获取视频总时长(秒)
+     * 使用ffprobe获取视频时长
      */
-//    private int getVideoDuration(String videoPath) throws IOException, InterruptedException {
-//        // 使用FFprobe获取视频信息(也可直接用ffmpeg)
-//        List<String> command = new ArrayList<>();
-//        command.add(ffmpegPath);
-//        command.add("-i");
-//        command.add(videoPath);
-//        command.add("-show_entries");
-//        command.add("format=duration");
-//        command.add("-v");
-//        command.add("quiet");
-//        command.add("-of");
-//        command.add("csv=p=0");
-//
-//        ProcessBuilder processBuilder = new ProcessBuilder(command);
-//        processBuilder.redirectErrorStream(true);
-//        Process process = processBuilder.start();
-//
-//        // 读取输出获取时长
-//        try (BufferedReader reader = new BufferedReader(
-//                new InputStreamReader(process.getInputStream()))) {
-//
-//            String durationStr = reader.readLine();
-//            process.waitFor();
-//
-//            if (durationStr != null && !durationStr.isEmpty()) {
-//                return (int) Math.ceil(Double.parseDouble(durationStr));
-//            }
-//        }
-//
-//        return 0;
-//    }
-
-    private int getVideoDuration(String videoPath) throws IOException, InterruptedException {
-        // 验证视频文件是否存在
+    private int getVideoDurationByFFprobe(String videoPath) throws IOException, InterruptedException {
+        // 验证视频文件
         File videoFile = new File(videoPath);
         if (!videoFile.exists() || !videoFile.canRead()) {
             throw new IOException("视频文件不存在或无法读取: " + videoPath);
         }
 
+        // 构建ffprobe命令（复用验证通过的参数）
         List<String> command = new ArrayList<>();
-        command.add(ffmpegPath);
+        command.add(ffprobePath);
         command.add("-i");
         command.add(videoPath);
         command.add("-show_entries");
-        command.add("format=duration"); // 只输出时长信息
+        command.add("format=duration");
         command.add("-v");
-        command.add("quiet"); // 屏蔽冗余日志
+        command.add("quiet");
         command.add("-of");
-        command.add("default=noprint_wrappers=1:nokey=1"); // 仅输出时长数值
+        command.add("csv=p=0");
 
+        // 打印命令，方便终端验证
+        System.out.println("执行FFprobe命令: " + String.join(" ", command));
+
+        // 执行命令
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        processBuilder.redirectErrorStream(true); // 合并错误流到输出流（关键：避免遗漏错误信息）
+        processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
 
-        // 读取 FFmpeg 输出（包含时长或错误信息）
+        // 读取输出
         StringBuilder output = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(process.getInputStream()))) {
+                new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
         }
 
+        // 检查执行结果
         int exitCode = process.waitFor();
         if (exitCode != 0) {
-            // 输出错误信息，便于排查（如格式不支持、文件损坏）
-            throw new RuntimeException("FFmpeg 执行失败，错误信息:\n" + output.toString());
+            throw new RuntimeException("FFprobe执行失败，错误信息:\n" + output.toString());
         }
 
-        // 解析时长（可能包含小数，如 60.5 秒 → 向上取整为 61 秒）
+        // 解析时长
         String durationStr = output.toString().trim();
         if (durationStr.isEmpty()) {
-            throw new RuntimeException("未获取到视频时长，输出为空");
+            throw new RuntimeException("FFprobe未输出时长，输出为空");
         }
         try {
             double duration = Double.parseDouble(durationStr);
-            return (int) Math.ceil(duration); // 向上取整，确保最后一帧被截取
+            return (int) Math.ceil(duration);
         } catch (NumberFormatException e) {
-            throw new RuntimeException("解析时长失败，输出: " + durationStr, e);
+            throw new RuntimeException("解析时长失败，FFprobe输出: " + durationStr, e);
         }
     }
 
     /**
-     * 截取视频指定时间点的一帧
+     * 使用ffmpeg截取视频指定时间点的一帧
      */
     private boolean captureSingleFrame(String videoPath, String outputPath, int timeSeconds)
             throws IOException, InterruptedException {
 
-        // FFmpeg截图命令
+        // 构建ffmpeg截图命令
         List<String> command = new ArrayList<>();
         command.add(ffmpegPath);
         command.add("-ss"); // 指定开始时间
@@ -169,21 +168,25 @@ public class VideoService {
         command.add("-y"); // 覆盖已有文件
         command.add(outputPath);
 
+        // 打印命令，方便终端验证
+        System.out.println("执行FFmpeg命令: " + String.join(" ", command));
+
+        // 执行命令
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
 
-        // 读取输出流(防止进程阻塞)
+        // 读取输出流（防止进程阻塞）
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(process.getInputStream()))) {
+                new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // 可根据需要记录日志
-                // System.out.println(line);
+                // 可选：打印详细输出
+                // System.out.println("FFmpeg输出: " + line);
             }
         }
 
-        // 等待进程执行完成
+        // 等待执行完成
         int exitCode = process.waitFor();
         return exitCode == 0;
     }
@@ -191,25 +194,27 @@ public class VideoService {
     // 示例用法
     public static void main(String[] args) {
         try {
-            // 替换为你的FFmpeg路径
-            String ffmpegPath = "D:\\SOFTERWARE\\ShadowBot\\shadowbot-5.29.24\\ffmpeg.exe"; // Windows示例
-            // String ffmpegPath = "/usr/local/bin/ffmpeg"; // Linux/Mac示例
+            // 传入FFmpeg的bin目录（包含所有工具）
+            String ffmpegDir = "D:\\SOFTERWARE\\ffmpeg-7.1.1-full_build\\bin";
 
-            VideoService util = new VideoService(ffmpegPath);
+            VideoService util = new VideoService(ffmpegDir);
 
             // 视频路径、输出目录、截图间隔(5秒)
+//            List<File> screenshots = util.captureScreenshots(
+//                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\p1.mp4",
+//                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\screenshots",
+//                    5
+//            );
             List<File> screenshots = util.captureScreenshots(
-                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P1]章晓铭逻辑22杀：第1杀—选项提示思维.mp4",
+                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P2]章晓铭逻辑22杀：第2杀—极限思维.mp4",
                     "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\screenshots",
-                    5
+                    60
             );
 
             System.out.println("截图完成，共生成 " + screenshots.size() + " 张图片");
-            for (File file : screenshots) {
-                System.out.println("图片路径: " + file.getAbsolutePath());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

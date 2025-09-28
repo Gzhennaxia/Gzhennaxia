@@ -16,4 +16,11 @@
     <name>question-bank-service</name>
     <description>题库系统后端 - 支持PDF解析和图片提取</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.gzhennaxia</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
