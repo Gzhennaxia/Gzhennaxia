@@ -1,4 +1,4 @@
-package com.gzhennaxia.question.bank;
+package com.gzhennaxia.questionbank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
