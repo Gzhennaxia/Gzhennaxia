@@ -1,7 +1,6 @@
 package com.gzhennaxia.question.bank.service;
 
 import com.gzhennaxia.question.bank.dto.PdfParseResult;
-import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -52,22 +51,22 @@ public class PdfParserService {
         PdfParseResult result = new PdfParseResult();
         result.setFileName(file.getOriginalFilename());
         result.setFilePath(pdfPath.toString());
-        
-        try (PDDocument document = Loader.loadPDF(pdfPath.toFile())) {
-            // 提取文本
-            String text = extractText(document);
-            result.setText(text);
-            
-            // 提取图片
-            List<String> imagePaths = extractImages(document, fileName);
-            result.setImagePaths(imagePaths);
-            
-            // 设置页数
-            result.setPageCount(document.getNumberOfPages());
-            
-        } catch (Exception e) {
-            throw new IOException("PDF解析失败: " + e.getMessage(), e);
-        }
+
+//        try (PDDocument document = Loader.loadPDF(pdfPath.toFile())) {
+//            // 提取文本
+//            String text = extractText(document);
+//            result.setText(text);
+//
+//            // 提取图片
+//            List<String> imagePaths = extractImages(document, fileName);
+//            result.setImagePaths(imagePaths);
+//
+//            // 设置页数
+//            result.setPageCount(document.getNumberOfPages());
+//
+//        } catch (Exception e) {
+//            throw new IOException("PDF解析失败: " + e.getMessage(), e);
+//        }
         
         return result;
     }
@@ -201,16 +200,16 @@ public class PdfParserService {
         Path pdfPath = Paths.get(UPLOAD_DIR + fileName);
         Files.copy(file.getInputStream(), pdfPath);
         
-        try (PDDocument document = Loader.loadPDF(pdfPath.toFile())) {
-            PDFTextStripper stripper = new PDFTextStripper();
-            
-            for (int i = 1; i <= document.getNumberOfPages(); i++) {
-                stripper.setStartPage(i);
-                stripper.setEndPage(i);
-                String pageText = stripper.getText(document);
-                pageTexts.add(pageText);
-            }
-        }
+//        try (PDDocument document = Loader.loadPDF(pdfPath.toFile())) {
+//            PDFTextStripper stripper = new PDFTextStripper();
+//
+//            for (int i = 1; i <= document.getNumberOfPages(); i++) {
+//                stripper.setStartPage(i);
+//                stripper.setEndPage(i);
+//                String pageText = stripper.getText(document);
+//                pageTexts.add(pageText);
+//            }
+//        }
         
         return pageTexts;
     }
