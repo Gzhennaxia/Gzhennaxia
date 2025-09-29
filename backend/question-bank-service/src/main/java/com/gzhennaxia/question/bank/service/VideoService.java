@@ -208,13 +208,8 @@ public class VideoService {
             VideoService util = new VideoService(ffmpegDir);
 
             // 视频路径、输出目录、截图间隔(5秒)
-//            List<File> screenshots = util.captureScreenshots(
-//                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\p1.mp4",
-//                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\screenshots",
-//                    5
-//            );
             List<File> screenshots = util.captureScreenshots(
-                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P22]章晓铭逻辑22杀：第22杀-调查统计思维.mp4",
+                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P1]章晓铭逻辑22杀：第1杀—选项提示思维.mp4",
                     "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\screenshots",
                     30
             );
