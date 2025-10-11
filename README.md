@@ -234,3 +234,18 @@ personal-manager/
 ---
 
 **享受高效的时间管理！** ⏰✨
+
+## Windows 终端 访问 GitHub 问题
+
+### 测试 443 端口连通性
+
+```bash
+Test-NetConnection github.com -Port 443
+```
+
+### Clash for Windows 设置终端代理
+
+```bash
+set http_proxy=http://127.0.0.1:7890
+set https_proxy=http://127.0.0.1:7890
+```
