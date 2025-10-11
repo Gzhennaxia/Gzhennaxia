@@ -249,3 +249,9 @@ Test-NetConnection github.com -Port 443
 set http_proxy=http://127.0.0.1:7890
 set https_proxy=http://127.0.0.1:7890
 ```
+
+### 清除 DNS 缓存
+
+```bash
+ipconfig /flushdns
+```
