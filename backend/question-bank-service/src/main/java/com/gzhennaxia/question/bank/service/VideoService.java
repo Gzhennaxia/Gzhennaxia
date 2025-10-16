@@ -209,8 +209,8 @@ public class VideoService {
 
             // 视频路径、输出目录、截图间隔(5秒)
             List<File> screenshots = util.captureScreenshots(
-                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\[P8]章晓铭逻辑22杀：第8杀-二难推理思维.mp4",
-                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\章晓铭逻辑22杀（2026全新，逻辑判断，适合公务员考试、事业编、选调、三支一扶；国考、省考、适合0基础和老手）\\screenshots",
+                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P1]01 逻辑判断-形式逻辑1-假言命题1.mp4",
+                    "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\screenshots",
                     30
             );
 
