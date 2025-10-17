@@ -24,6 +24,7 @@
         <module>todo-service</module>
         <module>question-bank-service</module>
         <module>civil-servant-service</module>
+        <module>financial-service</module>
     </modules>
 
     <dependencyManagement>
