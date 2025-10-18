@@ -205,7 +205,7 @@ public class VideoService {
             // 传入FFmpeg的bin目录（包含所有工具）
             String ffmpegDir = "D:\\SOFTERWARE\\ffmpeg-7.1.1-full_build\\bin";
             // 视频路径
-            String videoPath = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P2]02 逻辑判断-形式逻辑2-假言命题2.mp4";
+            String videoPath = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P5]05加课：混合命题否命题分析.mp4";
             // 输出目录
             String outputDir = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\screenshots";
             // 截图间隔
