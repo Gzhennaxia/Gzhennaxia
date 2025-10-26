@@ -202,19 +202,19 @@ public class VideoService {
     // 示例用法
     public static void main(String[] args) {
         try {
-//            // 传入FFmpeg的bin目录（包含所有工具）
-//            String ffmpegDir = "D:\\SOFTERWARE\\ffmpeg-7.1.1-full_build\\bin";
-//            // 视频路径
-//            String videoPath = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P12]12 类比推理2-对应关系、语义语法关系.mp4";
-//            // 输出目录
-//            String outputDir = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\screenshots";
+            // 传入FFmpeg的bin目录（包含所有工具）
+            String ffmpegDir = "D:\\SOFTERWARE\\ffmpeg-7.1.1-full_build\\bin";
+            // 视频路径
+            String videoPath = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P18]18- 图形推理3：样式、属性规律.mp4";
+            // 输出目录
+            String outputDir = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\screenshots";
 
             // 传入FFmpeg的bin目录（包含所有工具）
-            String ffmpegDir = "C:\\Software\\ffmpeg-7.1.1-full_build\\bin";
-            // 视频路径
-            String videoPath = "C:\\Software\\BBDown_1.6.3_20240814_win-x64\\判断推理《行测》系统理论课程（全国通用）【讲义私信up或评论区置顶】（全国通用）章晓铭    适用：2025国考、省考 2025公考  公考上岸村\\[P13]13 图形推理1：概述、位置规律1.mp4";
-            // 输出目录
-            String outputDir = "C:\\Software\\BBDown_1.6.3_20240814_win-x64\\判断推理《行测》系统理论课程（全国通用）【讲义私信up或评论区置顶】（全国通用）章晓铭    适用：2025国考、省考 2025公考  公考上岸村\\screenshots";
+//            String ffmpegDir = "C:\\Software\\ffmpeg-7.1.1-full_build\\bin";
+//            // 视频路径
+//            String videoPath = "C:\\Software\\BBDown_1.6.3_20240814_win-x64\\判断推理《行测》系统理论课程（全国通用）【讲义私信up或评论区置顶】（全国通用）章晓铭    适用：2025国考、省考 2025公考  公考上岸村\\[P18]18- 图形推理3：样式、属性规律.mp4";
+//            // 输出目录
+//            String outputDir = "C:\\Software\\BBDown_1.6.3_20240814_win-x64\\判断推理《行测》系统理论课程（全国通用）【讲义私信up或评论区置顶】（全国通用）章晓铭    适用：2025国考、省考 2025公考  公考上岸村\\screenshots";
             // 截图间隔
             int intervalSeconds = 20;
 

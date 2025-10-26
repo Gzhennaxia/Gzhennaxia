@@ -39,6 +39,8 @@ public class PdfToMarkdownConverter {
     public static void convert(String pdfPath, int startPage, int endPage, String mdOutputPath) throws Exception {
         // 1. 提取指定页文字
         String pageText = extractPageText(pdfPath, startPage, endPage);
+        System.out.println("提取文字完成，开始处理图片...");
+        System.out.println("提取文字完成：" + pageText);
         // 2. 提取指定页图片并替换文字中的图片占位符
         String textWithImageMarkers = extractAndMarkImages(pdfPath, startPage, endPage, pageText, mdOutputPath);
         // 3. 结构化处理文字为Markdown格式
