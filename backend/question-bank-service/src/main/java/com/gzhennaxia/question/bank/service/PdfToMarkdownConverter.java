@@ -154,9 +154,14 @@ public class PdfToMarkdownConverter {
     // 测试示例
     public static void main(String[] args) {
         try {
-            String pdfPath = "C:\\FIRE\\CODE\\Gzhennaxia\\docs\\civil-servant\\02-判断推理\\章晓铭-判断推理系统理论课程\\【B站】章晓铭·判断推理理论课讲义.pdf"; // 输入PDF路径
-            String mdPath = "C:\\FIRE\\CODE\\Gzhennaxia\\docs\\civil-servant\\02-判断推理\\章晓铭-判断推理系统理论课程\\【B站】章晓铭·判断推理理论课讲义.md";  // 输出Markdown路径
-            convert(pdfPath, 52, 53, mdPath); // 转换第1-2页
+//            String pdfPath = "C:\\FIRE\\CODE\\Gzhennaxia\\docs\\civil-servant\\02-判断推理\\章晓铭-判断推理系统理论课程\\【B站】章晓铭·判断推理理论课讲义.pdf"; // 输入PDF路径
+//            String mdPath = "C:\\FIRE\\CODE\\Gzhennaxia\\docs\\civil-servant\\02-判断推理\\章晓铭-判断推理系统理论课程\\【B站】章晓铭·判断推理理论课讲义.md";  // 输出Markdown路径
+            String pdfPath = "E:\\CODE\\Gzhennaxia\\docs\\civil-servant\\02-判断推理\\章晓铭-判断推理系统理论课程\\【B站】章晓铭·判断推理理论课讲义.pdf"; // 输入PDF路径
+            String mdPath = "E:\\CODE\\Gzhennaxia\\docs\\civil-servant\\02-判断推理\\章晓铭-判断推理系统理论课程\\【B站】章晓铭·判断推理理论课讲义.md";  // 输出Markdown路径
+            int skipPage = 4;
+            int startPage = 53;
+            int endPage = 59;
+            convert(pdfPath, skipPage + startPage, skipPage + endPage, mdPath); // 转换第1-2页
         } catch (Exception e) {
             e.printStackTrace();
         }
