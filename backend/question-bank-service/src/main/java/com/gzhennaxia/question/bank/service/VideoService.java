@@ -62,10 +62,12 @@ public class VideoService {
             throws IOException, InterruptedException {
 
         // videoPath 是 [P1]、[P2]、[P10] 等开头的， 从 videoPath 提取出 “P1”、 “P2”、 “P10”
-        String pName = videoPath.substring(videoPath.indexOf("[") + 1, videoPath.indexOf("]"));
-        if (StringUtils.isNotEmpty(pName)) {
-            outputDir += File.separator + pName;
-        }
+        // String pName = videoPath.substring(videoPath.indexOf("[") + 1, videoPath.indexOf("]"));
+        // videoPath 是 01、01、P10 等开头的， 从 videoPath 提取出 “P1”、 “P2”、 “P10”
+//        String pName = "P" + videoPath.substring(0, 2);
+//        if (StringUtils.isNotEmpty(pName)) {
+//            outputDir += File.separator + pName;
+//        }
 
         // 创建输出目录
         File outputDirectory = new File(outputDir);
@@ -202,19 +204,19 @@ public class VideoService {
     // 示例用法
     public static void main(String[] args) {
         try {
-            // 传入FFmpeg的bin目录（包含所有工具）
-            String ffmpegDir = "D:\\SOFTERWARE\\ffmpeg-7.1.1-full_build\\bin";
-            // 视频路径
-            String videoPath = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P21]21- 定义判断.mp4";
-            // 输出目录
-            String outputDir = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\screenshots";
+//            // 传入FFmpeg的bin目录（包含所有工具）
+//            String ffmpegDir = "D:\\SOFTERWARE\\ffmpeg-7.1.1-full_build\\bin";
+//            // 视频路径
+//            String videoPath = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\[P21]21- 定义判断.mp4";
+//            // 输出目录
+//            String outputDir = "D:\\SOFTERWARE\\BBDown_1.6.3_20240814_win-x64\\ZXM-XTK\\screenshots";
 
             // 传入FFmpeg的bin目录（包含所有工具）
-//            String ffmpegDir = "C:\\Software\\ffmpeg-7.1.1-full_build\\bin";
-//            // 视频路径
-//            String videoPath = "C:\\Software\\BBDown_1.6.3_20240814_win-x64\\判断推理《行测》系统理论课程（全国通用）【讲义私信up或评论区置顶】（全国通用）章晓铭    适用：2025国考、省考 2025公考  公考上岸村\\[P18]18- 图形推理3：样式、属性规律.mp4";
-//            // 输出目录
-//            String outputDir = "C:\\Software\\BBDown_1.6.3_20240814_win-x64\\判断推理《行测》系统理论课程（全国通用）【讲义私信up或评论区置顶】（全国通用）章晓铭    适用：2025国考、省考 2025公考  公考上岸村\\screenshots";
+            String ffmpegDir = "C:\\Software\\ffmpeg-7.1.1-full_build\\bin";
+            // 视频路径
+            String videoPath = "C:\\baidunetdiskdownload\\01-言语\\【1】26郭熙言语理解与方法精讲精练\\01.精讲精练-言语1.mp4";
+            // 输出目录
+            String outputDir = "C:\\baidunetdiskdownload\\01-言语\\【1】26郭熙言语理解与方法精讲精练\\screenshots\\P1";
             // 截图间隔
             int intervalSeconds = 20;
 
