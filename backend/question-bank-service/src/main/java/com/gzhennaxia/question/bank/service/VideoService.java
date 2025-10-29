@@ -214,9 +214,9 @@ public class VideoService {
             // 传入FFmpeg的bin目录（包含所有工具）
             String ffmpegDir = "C:\\Software\\ffmpeg-7.1.1-full_build\\bin";
             // 视频路径
-            String videoPath = "C:\\baidunetdiskdownload\\01-言语\\【1】26郭熙言语理解与方法精讲精练\\02.精讲精练-言语2.mp4";
+            String videoPath = "C:\\baidunetdiskdownload\\01-言语\\【1】26郭熙言语理解与方法精讲精练\\03.精讲精练-言语3.mp4";
             // 输出目录
-            String outputDir = "C:\\baidunetdiskdownload\\01-言语\\【1】26郭熙言语理解与方法精讲精练\\screenshots\\P2";
+            String outputDir = "C:\\baidunetdiskdownload\\01-言语\\【1】26郭熙言语理解与方法精讲精练\\screenshots\\P3";
             // 截图间隔
             int intervalSeconds = 20;
 
