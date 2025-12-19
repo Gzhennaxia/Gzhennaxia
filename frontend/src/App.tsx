@@ -8,6 +8,7 @@ import CalendarView from './components/Calendar/CalendarView';
 import MobileApp from './components/Mobile/MobileApp';
 import AdminRoutes from './components/Admin/AdminRoutes';
 import { QuestionBankLayout } from './components/QuestionBank';
+import FinanceRoutes from './components/Finance/FinanceRoutes';
 import './App.css';
 
 const App: React.FC = () => {
@@ -45,6 +46,9 @@ const App: React.FC = () => {
           
           {/* 题库模块路由 - 独立布局 */}
           <Route path="/question-bank/*" element={<QuestionBankLayout />} />
+          
+          {/* 个人财务系统路由 - 独立布局 */}
+          <Route path="/finance/*" element={<FinanceRoutes />} />
           
           {/* 主应用路由 - 使用全局Layout */}
           <Route path="/*" element={
