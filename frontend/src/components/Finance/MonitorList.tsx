@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Table, Button, Space, Card, Tag, Modal, Form, Input, InputNumber, message } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface StockMonitorData {
-  id: number;
+  id?: number;
   exchange: string;
   stockCode: string;
   stockName: string;
@@ -27,6 +30,9 @@ const MonitorList: React.FC = () => {
   const [data, setData] = useState<StockMonitorData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [cacheInfo, setCacheInfo] = useState<string>('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
+  const [editingRecord, setEditingRecord] = useState<StockMonitorData | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -134,18 +140,19 @@ const MonitorList: React.FC = () => {
       setCacheInfo(`缓存状态：有效 | 过期时间：${new Date(Date.now() + 30 * 60 * 1000).toLocaleString()} | 剩余时间：29分59秒`);
     } catch (error) {
       console.error('获取数据失败:', error);
+      message.error('获取数据失败');
     } finally {
       setLoading(false);
     }
   };
 
   const formatNumber = (num?: number): string => {
-    if (num === undefined) return '-';
+    if (num === undefined || num === null) return '-';
     return num.toFixed(2);
   };
 
   const renderRiseStyle = (rise?: number): React.ReactNode => {
-    if (rise === undefined) return '-';
+    if (rise === undefined || rise === null) return '-';
     
     let color = '';
     if (rise > 0) {
@@ -155,127 +162,270 @@ const MonitorList: React.FC = () => {
     }
     
     const sign = rise > 0 ? '+' : '';
-    return React.createElement('span', { style: { color } }, `${sign}${formatNumber(rise)}%`);
+    return <span style={{ color }}>{sign}{formatNumber(rise)}%</span>;
   };
 
-  // Since we can't use antd components, we'll create a simplified version
-  const renderTable = () => {
-    return React.createElement(
-      'div',
-      { style: { overflowX: 'auto', padding: '20px' } },
-      React.createElement(
-        'table',
-        {
-          style: {
-            width: '100%',
-            borderCollapse: 'collapse',
-            whiteSpace: 'nowrap'
-          }
-        },
-        React.createElement(
-          'thead',
-          null,
-          React.createElement(
-            'tr',
-            null,
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '交易所'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '股票编号'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '中文名'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '一年前收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '一年内涨幅'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '半年前收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '半年内涨幅'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '3个月前收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '3个月内涨幅'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '1月前收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '1月内涨幅'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '1周前收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '1周内涨幅'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '3日前收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '3日内涨幅'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '昨日收盘价'),
-            React.createElement('th', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb', backgroundColor: '#f9fafb' } }, '昨日涨幅')
-          )
-        ),
-        React.createElement(
-          'tbody',
-          null,
-          data.map((item: StockMonitorData) => 
-            React.createElement(
-              'tr',
-              { key: item.id },
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.exchange),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.stockCode),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.stockName),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.price1yAgo)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.rise1y)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.price6mAgo)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.rise6m)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.price3mAgo)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.rise3m)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.price1mAgo)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.rise1m)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.price1wAgo)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.rise1w)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.price3dAgo)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.rise3d)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, item.currencySymbol + formatNumber(item.priceYesterday)),
-              React.createElement('td', { style: { padding: '12px 8px', textAlign: 'center', border: '1px solid #e5e7eb' } }, renderRiseStyle(item.riseYesterday))
-            )
-          )
-        )
-      )
-    );
+  const handleAdd = () => {
+    setEditingRecord(null);
+    form.resetFields();
+    setIsModalVisible(true);
   };
 
-  return React.createElement(
-    'div',
-    null,
-    React.createElement(
-      'div',
-      {
-        style: {
-          maxWidth: '1400px',
-          margin: '0 auto',
-          background: '#fff',
-          borderRadius: '8px',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-          overflow: 'hidden'
-        }
-      },
-      React.createElement(
-        'div',
-        {
-          style: {
-            backgroundColor: '#1f2937',
-            color: '#fff',
-            padding: '16px 20px',
-            fontSize: '18px',
-            fontWeight: 600 as any
-          }
-        },
-        "股票/指数涨幅监控列表"
+  const handleEdit = (record: StockMonitorData) => {
+    setEditingRecord(record);
+    form.setFieldsValue(record);
+    setIsModalVisible(true);
+  };
+
+  const handleDelete = (id?: number) => {
+    if (!id) return;
+    // 模拟删除操作
+    message.success('删除成功');
+    fetchData(); // 重新加载数据
+  };
+
+  const handleModalOk = async () => {
+    try {
+      const values = await form.validateFields();
+      // 模拟保存操作
+      if (editingRecord) {
+        message.success('更新成功');
+      } else {
+        message.success('添加成功');
+      }
+      setIsModalVisible(false);
+      fetchData(); // 重新加载数据
+    } catch (error) {
+      console.error('保存失败:', error);
+      message.error('保存失败');
+    }
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const columns: ColumnsType<StockMonitorData> = [
+    {
+      title: '交易所',
+      dataIndex: 'exchange',
+      key: 'exchange',
+      width: 120,
+    },
+    {
+      title: '股票编号',
+      dataIndex: 'stockCode',
+      key: 'stockCode',
+      width: 100,
+    },
+    {
+      title: '中文名',
+      dataIndex: 'stockName',
+      key: 'stockName',
+      width: 120,
+    },
+    {
+      title: '一年前收盘价',
+      dataIndex: 'price1yAgo',
+      key: 'price1yAgo',
+      width: 120,
+      render: (_, record) => record.currencySymbol + formatNumber(record.price1yAgo),
+    },
+    {
+      title: '一年内涨幅',
+      dataIndex: 'rise1y',
+      key: 'rise1y',
+      width: 120,
+      render: (_, record) => renderRiseStyle(record.rise1y),
+    },
+    {
+      title: '半年前收盘价',
+      dataIndex: 'price6mAgo',
+      key: 'price6mAgo',
+      width: 130,
+      render: (_, record) => record.currencySymbol + formatNumber(record.price6mAgo),
+    },
+    {
+      title: '半年内涨幅',
+      dataIndex: 'rise6m',
+      key: 'rise6m',
+      width: 120,
+      render: (_, record) => renderRiseStyle(record.rise6m),
+    },
+    {
+      title: '3个月前收盘价',
+      dataIndex: 'price3mAgo',
+      key: 'price3mAgo',
+      width: 140,
+      render: (_, record) => record.currencySymbol + formatNumber(record.price3mAgo),
+    },
+    {
+      title: '3个月内涨幅',
+      dataIndex: 'rise3m',
+      key: 'rise3m',
+      width: 130,
+      render: (_, record) => renderRiseStyle(record.rise3m),
+    },
+    {
+      title: '1月前收盘价',
+      dataIndex: 'price1mAgo',
+      key: 'price1mAgo',
+      width: 120,
+      render: (_, record) => record.currencySymbol + formatNumber(record.price1mAgo),
+    },
+    {
+      title: '1月内涨幅',
+      dataIndex: 'rise1m',
+      key: 'rise1m',
+      width: 120,
+      render: (_, record) => renderRiseStyle(record.rise1m),
+    },
+    {
+      title: '1周前收盘价',
+      dataIndex: 'price1wAgo',
+      key: 'price1wAgo',
+      width: 120,
+      render: (_, record) => record.currencySymbol + formatNumber(record.price1wAgo),
+    },
+    {
+      title: '1周内涨幅',
+      dataIndex: 'rise1w',
+      key: 'rise1w',
+      width: 120,
+      render: (_, record) => renderRiseStyle(record.rise1w),
+    },
+    {
+      title: '3日前收盘价',
+      dataIndex: 'price3dAgo',
+      key: 'price3dAgo',
+      width: 120,
+      render: (_, record) => record.currencySymbol + formatNumber(record.price3dAgo),
+    },
+    {
+      title: '3日内涨幅',
+      dataIndex: 'rise3d',
+      key: 'rise3d',
+      width: 120,
+      render: (_, record) => renderRiseStyle(record.rise3d),
+    },
+    {
+      title: '昨日收盘价',
+      dataIndex: 'priceYesterday',
+      key: 'priceYesterday',
+      width: 120,
+      render: (_, record) => record.currencySymbol + formatNumber(record.priceYesterday),
+    },
+    {
+      title: '昨日涨幅',
+      dataIndex: 'riseYesterday',
+      key: 'riseYesterday',
+      width: 120,
+      render: (_, record) => renderRiseStyle(record.riseYesterday),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 120,
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          />
+          <Button
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record.id)}
+          />
+        </Space>
       ),
-      React.createElement(
-        'div',
-        {
-          style: {
-            textAlign: 'right' as any,
-            padding: '10px 20px',
-            fontSize: '12px',
-            color: '#6b7280'
-          }
-        },
-        cacheInfo
-      ),
-      loading ? 
-        React.createElement(
-          'div',
-          { style: { textAlign: 'center', padding: '50px' } },
-          "加载中..."
-        ) : 
-        renderTable()
-    )
+    },
+  ];
+
+  return (
+    <Card
+      title="股票/指数涨幅监控列表"
+      extra={
+        <Space>
+          <Tag color="blue">{cacheInfo}</Tag>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />} 
+            onClick={handleAdd}
+          >
+            新增监控项
+          </Button>
+        </Space>
+      }
+      style={{ margin: 20 }}
+    >
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        scroll={{ x: 'max-content' }}
+        size="small"
+        loading={loading}
+        rowKey="id"
+      />
+
+      <Modal
+        title={editingRecord ? "编辑监控项" : "新增监控项"}
+        open={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        width={800}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item 
+            name="exchange" 
+            label="交易所" 
+            rules={[{ required: true, message: '请输入交易所!' }]}
+          >
+            <Input />
+          </Form.Item>
+          
+          <Form.Item 
+            name="stockCode" 
+            label="股票编号" 
+            rules={[{ required: true, message: '请输入股票编号!' }]}
+          >
+            <Input />
+          </Form.Item>
+          
+          <Form.Item 
+            name="stockName" 
+            label="中文名" 
+            rules={[{ required: true, message: '请输入中文名!' }]}
+          >
+            <Input />
+          </Form.Item>
+          
+          <Form.Item 
+            name="currencySymbol" 
+            label="币种符号"
+          >
+            <Input />
+          </Form.Item>
+          
+          <Form.Item 
+            name="price1yAgo" 
+            label="一年前收盘价"
+          >
+            <InputNumber style={{ width: '100%' }} />
+          </Form.Item>
+          
+          <Form.Item 
+            name="rise1y" 
+            label="一年内涨幅 (%)"
+          >
+            <InputNumber style={{ width: '100%' }} />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Card>
   );
 };
 
