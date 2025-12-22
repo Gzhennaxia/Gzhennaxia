@@ -21,7 +21,10 @@ CREATE TABLE IF NOT EXISTS stock_monitor (
     rise_yesterday DECIMAL(5,2) COMMENT '昨日涨幅（百分比，带符号）',
     cache_create_time DATETIME COMMENT '缓存创建时间',
     cache_expire_time DATETIME COMMENT '缓存过期时间（次日0点）',
-    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '数据创建时间',
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '数据更新时间',
+    status INTEGER NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=禁用',
+    remark TEXT COMMENT '备注信息',
+    deleted INTEGER NOT NULL DEFAULT 0 COMMENT '删除标记：0=未删除，1=已删除',
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='股票/指数监控列表';
