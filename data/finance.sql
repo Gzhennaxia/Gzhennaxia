@@ -1,0 +1,27 @@
+-- 股票/指数监控表
+CREATE TABLE IF NOT EXISTS stock_monitor (
+    id BIGINT AUTO_INCREMENT COMMENT '主键ID',
+    exchange VARCHAR(50) NOT NULL COMMENT '交易所（如：纳斯达克、上交所&深交所）',
+    stock_code VARCHAR(20) NOT NULL COMMENT '股票/指数编号（如：AAPL、指数）',
+    stock_name VARCHAR(50) NOT NULL COMMENT '中文名（如：苹果、沪深300）',
+    currency_symbol VARCHAR(5) DEFAULT '' COMMENT '币种符号（$、￥、HK$，指数为空）',
+    price_1y_ago DECIMAL(10,2) COMMENT '一年前收盘价',
+    rise_1y DECIMAL(5,2) COMMENT '一年内涨幅（百分比，带符号）',
+    price_6m_ago DECIMAL(10,2) COMMENT '半年前收盘价',
+    rise_6m DECIMAL(5,2) COMMENT '半年内涨幅（百分比，带符号）',
+    price_3m_ago DECIMAL(10,2) COMMENT '3个月前收盘价',
+    rise_3m DECIMAL(5,2) COMMENT '3个月内涨幅（百分比，带符号）',
+    price_1m_ago DECIMAL(10,2) COMMENT '1个月前收盘价',
+    rise_1m DECIMAL(5,2) COMMENT '1月内涨幅（百分比，带符号）',
+    price_1w_ago DECIMAL(10,2) COMMENT '1周前收盘价',
+    rise_1w DECIMAL(5,2) COMMENT '1周内涨幅（百分比，带符号）',
+    price_3d_ago DECIMAL(10,2) COMMENT '3日前收盘价',
+    rise_3d DECIMAL(5,2) COMMENT '3日内涨幅（百分比，带符号）',
+    price_yesterday DECIMAL(10,2) COMMENT '昨日收盘价',
+    rise_yesterday DECIMAL(5,2) COMMENT '昨日涨幅（百分比，带符号）',
+    cache_create_time DATETIME COMMENT '缓存创建时间',
+    cache_expire_time DATETIME COMMENT '缓存过期时间（次日0点）',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '数据创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '数据更新时间',
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='股票/指数监控列表';

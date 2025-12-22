@@ -33,7 +33,7 @@ const FinanceLayout: React.FC = () => {
     {
       key: '/finance/portfolio',
       icon: <FundOutlined />,
-      label: '投资组合列表',
+      label: '投资组合',
     },
   ];
 
@@ -41,7 +41,7 @@ const FinanceLayout: React.FC = () => {
     const pathSnippets = location.pathname.split('/').filter(i => i);
     const breadcrumbItems = [
       {
-        title: '个人财务系统',
+        title: '个人财务管理系统',
       },
     ];
 
@@ -51,7 +51,7 @@ const FinanceLayout: React.FC = () => {
       });
     } else if (pathSnippets.includes('portfolio')) {
       breadcrumbItems.push({
-        title: '投资组合列表',
+        title: '投资组合',
       });
     }
 
@@ -72,7 +72,7 @@ const FinanceLayout: React.FC = () => {
           color: 'white',
           fontWeight: 'bold'
         }}>
-          {collapsed ? '财务' : '个人财务系统'}
+          {collapsed ? '财务' : '个人财务管理系统'}
         </div>
         <Menu
           theme="dark"

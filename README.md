@@ -5,12 +5,15 @@
 ## 技术栈
 
 ### 后端
-- **Spring Boot 3.2.0** - 主框架
-- **MyBatis-Plus 3.5.4** - ORM 框架
-- **SQLite** - 轻量级数据库
+
 - **Maven** - 依赖管理
+- **Spring Boot 3.2.9** - 主框架
+- **MyBatis-Plus 3.5.14** - ORM 框架
+- **H2 2.3.232** - 轻量级数据库
+- **Caffeine 3.1.8** - 本地缓存
 
 ### 前端
+
 - **React 18** - 前端框架
 - **Vite 5** - 构建工具，支持热重载
 - **TypeScript** - 类型安全
@@ -19,6 +22,7 @@
 - **Axios** - HTTP 客户端
 
 ### 部署
+
 - **Docker** - 容器化部署
 - **Nginx** - 前端服务器
 - **PWA** - 渐进式 Web 应用

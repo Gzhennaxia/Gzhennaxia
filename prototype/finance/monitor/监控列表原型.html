@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票指数监控面板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+        body {
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #1f2937;
+            color: #fff;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            font-size: 13px;
+            color: #111827;
+        }
+        .red {
+            color: #ef4444;
+        }
+        .green {
+            color: #10b981;
+        }
+        .loading {
+            color: #6b7280;
+            font-style: italic;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+            height: 20px;
+            width: 80%;
+            margin: 0 auto;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .cache-info {
+            text-align: right;
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px 4px;
+                font-size: 12px;
+            }
+            .header {
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">股票/指数涨幅监控列表</div>
+    <div class="cache-info" id="cacheStatus">缓存状态：加载中...</div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>交易所</th>
+                <th>股票编号</th>
+                <th>中文名</th>
+                <th>一年前收盘价</th>
+                <th>一年内涨幅</th>
+                <th>半年前收盘价</th>
+                <th>半年内涨幅</th>
+                <th>3个月前收盘价</th>
+                <th>3个月内涨幅</th>
+                <th>1月前收盘价</th>
+                <th>1月内涨幅</th>
+                <th>1周前收盘价</th>
+                <th>1周内涨幅</th>
+                <th>3日前收盘价</th>
+                <th>3日内涨幅</th>
+                <th>昨日收盘价</th>
+                <th>昨日涨幅</th>
+            </tr>
+            </thead>
+            <tbody id="monitorTable">
+            <!-- 初始骨架屏 -->
+            <tr>
+                <td>纳斯达克</td>
+                <td>AAPL</td>
+                <td>苹果</td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+            </tr>
+            <tr>
+                <td>上交所&深交所</td>
+                <td>指数</td>
+                <td>沪深300</td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+            </tr>
+            <tr>
+                <td>香港</td>
+                <td>指数</td>
+                <td>恒生指数</td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+            </tr>
+            <tr>
+                <td>纳斯达克&纽交所</td>
+                <td>指数</td>
+                <td>标准普尔500</td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+                <td><div class="skeleton"></div></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 模拟缓存数据结构
+    let cacheData = {
+        expireTime: null, // 缓存过期时间（时间戳）
+        stocks: [
+            {
+                exchange: "纳斯达克",
+                code: "AAPL",
+                name: "苹果",
+                price_1y_ago: 180.25,
+                rise_1y: 15.80,
+                price_6m_ago: 195.70,
+                rise_6m: 7.25,
+                price_3m_ago: 210.10,
+                rise_3m: 2.40,
+                price_1m_ago: 218.90,
+                rise_1m: -1.10,
+                price_1w_ago: 215.50,
+                rise_1w: 1.85,
+                price_3d_ago: 218.30,
+                rise_3d: 0.55,
+                price_yest: 220.10,
+                rise_yest: 0.95,
+                currency: "$"
+            },
+            {
+                exchange: "上交所&深交所",
+                code: "指数",
+                name: "沪深300",
+                price_1y_ago: 4120.50,
+                rise_1y: 8.65,
+                price_6m_ago: 4350.20,
+                rise_6m: 3.20,
+                price_3m_ago: 4480.80,
+                rise_3m: -1.50,
+                price_1m_ago: 4420.30,
+                rise_1m: 0.85,
+                price_1w_ago: 4450.70,
+                rise_1w: -0.30,
+                price_3d_ago: 4445.20,
+                rise_3d: 0.45,
+                price_yest: 4460.10,
+                rise_yest: 0.25,
+                currency: ""
+            },
+            {
+                exchange: "香港",
+                code: "指数",
+                name: "恒生指数",
+                price_1y_ago: 19850.30,
+                rise_1y: 12.30,
+                price_6m_ago: 21500.80,
+                rise_6m: 5.85,
+                price_3m_ago: 22800.50,
+                rise_3m: -0.90,
+                price_1m_ago: 22650.20,
+                rise_1m: 1.20,
+                price_1w_ago: 22850.70,
+                rise_1w: 0.55,
+                price_3d_ago: 22900.30,
+                rise_3d: 0.30,
+                price_yest: 22980.50,
+                rise_yest: 0.15,
+                currency: ""
+            },
+            {
+                exchange: "纳斯达克&纽交所",
+                code: "指数",
+                name: "标准普尔500",
+                price_1y_ago: 4250.70,
+                rise_1y: 18.50,
+                price_6m_ago: 4580.30,
+                rise_6m: 9.20,
+                price_3m_ago: 4820.50,
+                rise_3m: 3.80,
+                price_1m_ago: 4980.20,
+                rise_1m: 1.50,
+                price_1w_ago: 5050.80,
+                rise_1w: 0.75,
+                price_3d_ago: 5080.40,
+                rise_3d: 0.40,
+                price_yest: 5100.90,
+                rise_yest: 0.20,
+                currency: ""
+            }
+        ]
+    };
+
+    // 初始化缓存过期时间（次日0点）
+    function setExpireTime() {
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+        cacheData.expireTime = tomorrow.getTime();
+    }
+
+    // 格式化数字（保留2位小数）
+    function formatNum(num) {
+        return num.toFixed(2);
+    }
+
+    // 渲染涨幅样式（红涨绿跌）
+    function renderRiseStyle(rise) {
+        const riseNum = parseFloat(rise);
+        const className = riseNum > 0 ? "red" : riseNum < 0 ? "green" : "";
+        const sign = riseNum > 0 ? "+" : "";
+        return `<span class="${className}">${sign}${formatNum(rise)}%</span>`;
+    }
+
+    // 渲染表格数据
+    function renderTable() {
+        const tableBody = document.getElementById("monitorTable");
+        tableBody.innerHTML = "";
+
+        cacheData.stocks.forEach(stock => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                    <td>${stock.exchange}</td>
+                    <td>${stock.code}</td>
+                    <td>${stock.name}</td>
+                    <td>${stock.currency}${formatNum(stock.price_1y_ago)}</td>
+                    <td>${renderRiseStyle(stock.rise_1y)}</td>
+                    <td>${stock.currency}${formatNum(stock.price_6m_ago)}</td>
+                    <td>${renderRiseStyle(stock.rise_6m)}</td>
+                    <td>${stock.currency}${formatNum(stock.price_3m_ago)}</td>
+                    <td>${renderRiseStyle(stock.rise_3m)}</td>
+                    <td>${stock.currency}${formatNum(stock.price_1m_ago)}</td>
+                    <td>${renderRiseStyle(stock.rise_1m)}</td>
+                    <td>${stock.currency}${formatNum(stock.price_1w_ago)}</td>
+                    <td>${renderRiseStyle(stock.rise_1w)}</td>
+                    <td>${stock.currency}${formatNum(stock.price_3d_ago)}</td>
+                    <td>${renderRiseStyle(stock.rise_3d)}</td>
+                    <td>${stock.currency}${formatNum(stock.price_yest)}</td>
+                    <td>${renderRiseStyle(stock.rise_yest)}</td>
+                `;
+            tableBody.appendChild(tr);
+        });
+
+        // 更新缓存状态
+        updateCacheStatus();
+    }
+
+    // 更新缓存状态提示
+    function updateCacheStatus() {
+        const cacheStatus = document.getElementById("cacheStatus");
+        const now = new Date();
+        const expireTime = new Date(cacheData.expireTime);
+        const hours = Math.floor((expireTime - now) / (1000 * 60 * 60));
+        const minutes = Math.floor(((expireTime - now) % (1000 * 60 * 60)) / (1000 * 60));
+        cacheStatus.textContent = `缓存状态：有效 | 过期时间：${expireTime.toLocaleString()} | 剩余时间：${hours}小时${minutes}分钟`;
+    }
+
+    // 模拟异步加载API数据（项目启动时调用）
+    async function loadDataFromAPI() {
+        return new Promise(resolve => {
+            // 模拟API请求延迟（2秒）
+            setTimeout(() => {
+                setExpireTime();
+                resolve(cacheData);
+            }, 2000);
+        });
+    }
+
+    // 前端定时轮询（缓存缺失/过期时触发，模拟30秒轮询一次）
+    function startPolling() {
+        setInterval(() => {
+            const now = new Date().getTime();
+            if (now > cacheData.expireTime) {
+                console.log("缓存已过期，重新加载数据...");
+                loadDataFromAPI().then(() => {
+                    renderTable();
+                });
+            }
+        }, 30000);
+    }
+
+    // 初始化
+    async function init() {
+        try {
+            // 异步加载API数据
+            await loadDataFromAPI();
+            // 渲染表格
+            renderTable();
+            // 启动轮询
+            startPolling();
+        } catch (error) {
+            console.error("数据加载失败：", error);
+            const tableBody = document.getElementById("monitorTable");
+            tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="17" class="loading">数据加载失败，请稍后重试...</td>
+                    </tr>
+                `;
+        }
+    }
+
+    // 启动初始化
+    init();
+</script>
+</body>
+</html>
