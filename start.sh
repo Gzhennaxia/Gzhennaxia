@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 启动个人时间管理系统..."
+echo "🚀 启动 Gzhennaxia 个人人生管理系统..."
 
 # 检查是否安装了必要的工具
 check_requirements() {

@@ -17,7 +17,7 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Personal Management</name>
-    <description>Gzhennaxia 管理系统</description>
+    <description>Gzhennaxia 个人人生管理系统（任务、理财、学习等多领域）</description>
 
     <modules>
         <module>common</module>

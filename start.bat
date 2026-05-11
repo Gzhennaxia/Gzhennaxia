@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-echo 🚀 启动个人时间管理系统...
+echo 🚀 启动 Gzhennaxia 个人人生管理系统...
 
 REM 检查Java
 java -version >nul 2>&1
