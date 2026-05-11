@@ -1,12 +1,11 @@
-IBKR 账户管理
 
-1. IBKR账户的整体情况
-   - 账户概览部分
-     - totalAssets: "总资产"
-     - dayChange: "日变动"
-     - cashBalance: "现金余额"
-     - positionValue: "持仓市值"
-     - unrealizedPnL: "未实现盈亏"
-2. 账户的持仓列表
+实现监控列表前端页面，后端接口
 
-Java PDF 转markdown 实现方案
+- 原型参考 frontend/src/components/Admin/DictManagement/DictItemList.tsx
+- 需求文档参考 requirement/finance/monitor/监控列表需求.md
+- 表结构：data/finance.sql
+- 前端页面路径：frontend/src/components/Finance/MonitorList.tsx
+- 后端接口路径：com.gzhennaxia.web.controller.finance.StockMonitorController
+  - 实现分页接口
+  - 实现新增接口
+- 规范文档：docs/规范.md

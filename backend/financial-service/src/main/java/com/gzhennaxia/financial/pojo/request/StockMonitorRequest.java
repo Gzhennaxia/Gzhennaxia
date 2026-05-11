@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class StockMonitorRequest {
+    private Long id;
     private String exchange;
     private String stockCode;
     private String stockName;
