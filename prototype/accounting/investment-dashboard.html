@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账 - 投资总览</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+<div class="flex flex-wrap gap-2 mb-6 text-sm">
+<a href="investment-dashboard.html" class="px-3 py-1 bg-emerald-600 text-white rounded-full">总览</a>
+<a href="investment-positions.html" class="px-3 py-1 bg-white border rounded-full">持仓</a>
+<a href="investment-transactions.html" class="px-3 py-1 bg-white border rounded-full">交易记录</a>
+</div>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="bg-white rounded-xl p-6 shadow-sm"><p class="text-gray-500 text-sm">总市值</p><p class="text-2xl font-bold mt-2">¥ 1,100,000</p></div>
+<div class="bg-white rounded-xl p-6 shadow-sm"><p class="text-gray-500 text-sm">累计投入</p><p class="text-2xl font-bold mt-2">¥ 980,000</p></div>
+<div class="bg-white rounded-xl p-6 shadow-sm"><p class="text-gray-500 text-sm">浮动盈亏</p><p class="text-2xl font-bold mt-2 text-red-500">+ ¥ 120,000 (+12.24%)</p></div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="bg-white rounded-xl p-6 shadow-sm"><h2 class="font-semibold mb-4">资产分布（按市场）</h2>
+<ul class="space-y-3 text-sm"><li class="flex justify-between"><span>A股</span><span>58%</span></li>
+<li class="flex justify-between"><span>美股</span><span>22%</span></li>
+<li class="flex justify-between"><span>基金/ETF</span><span>20%</span></li></ul></div>
+<div class="bg-white rounded-xl p-6 shadow-sm"><h2 class="font-semibold mb-4">品种分布</h2>
+<ul class="space-y-3 text-sm"><li class="flex justify-between"><span>股票</span><span>72%</span></li>
+<li class="flex justify-between"><span>ETF</span><span>25%</span></li>
+<li class="flex justify-between"><span>现金类</span><span>3%</span></li></ul></div>
+</section>
+</main>
+<script>fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('navbar').innerHTML=h);</script>
+</body>
+</html>

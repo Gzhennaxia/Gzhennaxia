@@ -1,0 +1,26 @@
+<nav class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-100">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<a href="home.html" class="flex items-center shrink-0">
+<i class="fa fa-pie-chart text-emerald-600 text-2xl mr-2"></i>
+<span class="text-xl font-bold text-gray-800 hidden sm:inline">个人记账</span>
+</a>
+<div class="flex items-center overflow-x-auto space-x-1 sm:space-x-4 text-sm">
+<a href="home.html" class="nav-link px-2 py-2" id="nav-home"><i class="fa fa-home mr-1"></i>总览</a>
+<a href="expense-list.html" class="nav-link px-2 py-2" id="nav-expense"><i class="fa fa-list mr-1"></i>流水</a>
+<a href="expense-add.html" class="nav-link px-2 py-2" id="nav-add"><i class="fa fa-plus-circle mr-1"></i>记一笔</a>
+<a href="investment-dashboard.html" class="nav-link px-2 py-2" id="nav-invest"><i class="fa fa-line-chart mr-1"></i>投资</a>
+<a href="accounts.html" class="nav-link px-2 py-2" id="nav-accounts"><i class="fa fa-credit-card mr-1"></i>账户</a>
+<a href="reports.html" class="nav-link px-2 py-2" id="nav-reports"><i class="fa fa-bar-chart mr-1"></i>报表</a>
+</div>
+</div>
+</div>
+</nav>
+<style>.nav-link{color:#4b5563}.nav-link:hover{color:#059669}.nav-active{color:#059669!important;font-weight:600;border-bottom:2px solid #059669}</style>
+<script>
+(function(){var p=location.pathname.split('/').pop()||'home.html';
+var m={'home.html':'nav-home','expense-list.html':'nav-expense','expense-add.html':'nav-add',
+'investment-dashboard.html':'nav-invest','investment-positions.html':'nav-invest',
+'investment-transactions.html':'nav-invest','accounts.html':'nav-accounts','reports.html':'nav-reports'};
+var a=m[p];document.querySelectorAll('.nav-link').forEach(function(el){if(el.id===a)el.classList.add('nav-active');});})();
+</script>

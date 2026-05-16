@@ -25,6 +25,7 @@
         <module>question-bank-service</module>
         <module>civil-servant-service</module>
         <module>financial-service</module>
+        <module>accounting-service</module>
     </modules>
 
     <dependencyManagement>

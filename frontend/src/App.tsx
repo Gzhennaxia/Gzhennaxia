@@ -9,6 +9,7 @@ import MobileApp from './components/Mobile/MobileApp';
 import AdminRoutes from './components/Admin/AdminRoutes';
 import { QuestionBankLayout } from './components/QuestionBank';
 import FinanceRoutes from './components/Finance/FinanceRoutes';
+import AccountingRoutes from './components/Accounting/AccountingRoutes';
 import './App.css';
 
 const App: React.FC = () => {
@@ -49,6 +50,9 @@ const App: React.FC = () => {
           
           {/* 个人财务系统路由 - 独立布局 */}
           <Route path="/finance/*" element={<FinanceRoutes />} />
+
+          {/* 个人记账路由 - 独立布局 */}
+          <Route path="/accounting/*" element={<AccountingRoutes />} />
           
           {/* 主应用路由 - 使用全局Layout */}
           <Route path="/*" element={

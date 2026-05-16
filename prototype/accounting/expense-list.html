@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账 - 流水</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+<div class="flex flex-wrap gap-3 mb-6 items-center justify-between">
+<h1 class="text-xl font-bold text-gray-800">收支流水</h1>
+<a href="expense-add.html" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700"><i class="fa fa-plus mr-1"></i>记一笔</a>
+</div>
+<div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 text-sm">
+<select class="border rounded-lg px-3 py-2"><option>2026年5月</option></select>
+<select class="border rounded-lg px-3 py-2"><option>全部类型</option><option>支出</option><option>收入</option><option>转账</option></select>
+<select class="border rounded-lg px-3 py-2"><option>全部分类</option></select>
+<select class="border rounded-lg px-3 py-2"><option>全部账户</option></select>
+<input type="search" placeholder="搜索备注/商户" class="border rounded-lg px-3 py-2 flex-1 min-w-[160px]"/>
+<button class="px-4 py-2 border rounded-lg hover:bg-gray-50">导出 CSV</button>
+</div>
+<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-gray-50 text-gray-600"><tr>
+<th class="px-4 py-3 text-left">日期</th><th class="px-4 py-3 text-left">分类</th><th class="px-4 py-3 text-left">账户</th>
+<th class="px-4 py-3 text-left">备注</th><th class="px-4 py-3 text-right">金额</th><th class="px-4 py-3">操作</th>
+</tr></thead>
+<tbody class="divide-y">
+<tr><td class="px-4 py-3">05-16 12:30</td><td>餐饮</td><td>招行借记卡</td><td>公司食堂午餐</td><td class="px-4 py-3 text-right text-red-500">-42.00</td><td class="px-4 py-3 text-center"><a href="#" class="text-emerald-600">编辑</a></td></tr>
+<tr><td class="px-4 py-3">05-16 08:15</td><td>交通</td><td>支付宝</td><td>地铁</td><td class="px-4 py-3 text-right text-red-500">-6.00</td><td class="px-4 py-3 text-center"><a href="#" class="text-emerald-600">编辑</a></td></tr>
+<tr><td class="px-4 py-3">05-15</td><td>工资</td><td>招行借记卡</td><td>5月工资</td><td class="px-4 py-3 text-right text-emerald-600">+28,500.00</td><td class="px-4 py-3 text-center"><a href="#" class="text-emerald-600">编辑</a></td></tr>
+<tr><td class="px-4 py-3">05-14</td><td>购物</td><td>微信</td><td>超市日用品</td><td class="px-4 py-3 text-right text-red-500">-268.50</td><td class="px-4 py-3 text-center"><a href="#" class="text-emerald-600">编辑</a></td></tr>
+<tr><td class="px-4 py-3">05-14</td><td>转账</td><td>招行→华泰证券</td><td>转入券商</td><td class="px-4 py-3 text-right text-gray-500">10,000.00</td><td class="px-4 py-3 text-center"><a href="#" class="text-emerald-600">编辑</a></td></tr>
+</tbody>
+</table>
+</div>
+<p class="text-center text-gray-400 text-sm mt-4">共 128 笔 · 支出 ¥12,368.20 · 收入 ¥28,500.00</p>
+</main>
+<script>fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('navbar').innerHTML=h);</script>
+</body>
+</html>

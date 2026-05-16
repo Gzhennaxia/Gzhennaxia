@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账 - 持仓</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+<div class="flex flex-wrap gap-2 mb-6 text-sm">
+<a href="investment-dashboard.html" class="px-3 py-1 bg-white border rounded-full">总览</a>
+<a href="investment-positions.html" class="px-3 py-1 bg-emerald-600 text-white rounded-full">持仓</a>
+<a href="investment-transactions.html" class="px-3 py-1 bg-white border rounded-full">交易记录</a>
+</div>
+<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-gray-50"><tr>
+<th class="px-4 py-3 text-left">标的</th><th class="px-4 py-3 text-right">数量</th>
+<th class="px-4 py-3 text-right">成本价</th><th class="px-4 py-3 text-right">现价</th>
+<th class="px-4 py-3 text-right">市值</th><th class="px-4 py-3 text-right">盈亏</th><th class="px-4 py-3 text-right">占比</th>
+</tr></thead>
+<tbody class="divide-y">
+<tr><td class="px-4 py-3">贵州茅台 600519</td><td class="text-right px-4 py-3">100</td><td class="text-right px-4 py-3">1,650.00</td><td class="text-right px-4 py-3">1,785.00</td><td class="text-right px-4 py-3">178,500</td><td class="text-right px-4 py-3 text-red-500">+8.2%</td><td class="text-right px-4 py-3">16%</td></tr>
+<tr><td class="px-4 py-3">沪深300ETF</td><td class="text-right px-4 py-3">50000</td><td class="text-right px-4 py-3">3.85</td><td class="text-right px-4 py-3">4.05</td><td class="text-right px-4 py-3">202,500</td><td class="text-right px-4 py-3 text-red-500">+5.1%</td><td class="text-right px-4 py-3">18%</td></tr>
+<tr><td class="px-4 py-3">苹果 AAPL</td><td class="text-right px-4 py-3">200</td><td class="text-right px-4 py-3">$178.00</td><td class="text-right px-4 py-3">$174.00</td><td class="text-right px-4 py-3">¥ 198,000</td><td class="text-right px-4 py-3 text-emerald-600">-2.3%</td><td class="text-right px-4 py-3">18%</td></tr>
+</tbody>
+</table>
+</div>
+</main>
+<script>fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('navbar').innerHTML=h);</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账 - 账户</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+<div class="flex justify-between items-center mb-6">
+<h1 class="text-xl font-bold">资金账户</h1>
+<button class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm">+ 新增账户</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-blue-500">
+<p class="text-gray-500 text-sm">银行卡</p>
+<h3 class="font-bold text-lg mt-1">招行工资卡</h3>
+<p class="text-2xl font-bold mt-3">¥ 86,420.50</p>
+<p class="text-xs text-gray-400 mt-2">计入净资产</p>
+</div>
+<div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-sky-400">
+<p class="text-gray-500 text-sm">第三方支付</p>
+<h3 class="font-bold text-lg mt-1">支付宝</h3>
+<p class="text-2xl font-bold mt-3">¥ 12,350.00</p>
+</div>
+<div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-green-500">
+<p class="text-gray-500 text-sm">第三方支付</p>
+<h3 class="font-bold text-lg mt-1">微信零钱</h3>
+<p class="text-2xl font-bold mt-3">¥ 3,280.00</p>
+</div>
+<div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-amber-500">
+<p class="text-gray-500 text-sm">券商</p>
+<h3 class="font-bold text-lg mt-1">华泰证券</h3>
+<p class="text-2xl font-bold mt-3">¥ 84,370.00</p>
+<p class="text-xs text-gray-400 mt-2">与投资模块联动</p>
+</div>
+<div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-gray-400">
+<p class="text-gray-500 text-sm">现金</p>
+<h3 class="font-bold text-lg mt-1">钱包现金</h3>
+<p class="text-2xl font-bold mt-3">¥ 200.00</p>
+</div>
+</div>
+<p class="text-sm text-gray-500 mt-6">流动资金合计 ¥ 186,420.50（不含持仓市值）</p>
+</main>
+<script>fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('navbar').innerHTML=h);</script>
+</body>
+</html>

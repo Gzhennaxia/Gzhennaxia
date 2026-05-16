@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账 - 投资交易</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+<div class="flex justify-between items-center mb-6">
+<h1 class="text-xl font-bold">投资交易记录</h1>
+<button class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm">+ 录入交易</button>
+</div>
+<div class="flex gap-2 mb-4 text-sm">
+<a href="investment-dashboard.html" class="px-3 py-1 border rounded-full">总览</a>
+<a href="investment-positions.html" class="px-3 py-1 border rounded-full">持仓</a>
+<span class="px-3 py-1 bg-emerald-600 text-white rounded-full">交易记录</span>
+</div>
+<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-gray-50"><tr>
+<th class="px-4 py-3 text-left">日期</th><th class="px-4 py-3">类型</th><th class="px-4 py-3 text-left">标的</th>
+<th class="px-4 py-3 text-right">数量</th><th class="px-4 py-3 text-right">价格</th>
+<th class="px-4 py-3 text-right">金额</th><th class="px-4 py-3 text-right">手续费</th>
+</tr></thead>
+<tbody class="divide-y">
+<tr><td class="px-4 py-3">2026-05-10</td><td><span class="text-red-500">买入</span></td><td>沪深300ETF</td><td class="text-right px-4 py-3">5000</td><td class="text-right px-4 py-3">4.02</td><td class="text-right px-4 py-3">20,100</td><td class="text-right px-4 py-3">5.00</td></tr>
+<tr><td class="px-4 py-3">2026-04-28</td><td><span class="text-emerald-600">卖出</span></td><td>腾讯 0700</td><td class="text-right px-4 py-3">100</td><td class="text-right px-4 py-3">380.00</td><td class="text-right px-4 py-3">38,000</td><td class="text-right px-4 py-3">12.00</td></tr>
+<tr><td class="px-4 py-3">2026-04-15</td><td><span class="text-blue-500">分红</span></td><td>贵州茅台</td><td class="text-right px-4 py-3">—</td><td class="text-right px-4 py-3">—</td><td class="text-right px-4 py-3">2,760</td><td class="text-right px-4 py-3">0</td></tr>
+</tbody>
+</table>
+</div>
+</main>
+<script>fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('navbar').innerHTML=h);</script>
+</body>
+</html>

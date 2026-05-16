@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账 - 记一笔</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div id="navbar"></div>
+
+<main class="max-w-lg mx-auto px-4 py-8">
+<h1 class="text-xl font-bold mb-6">记一笔</h1>
+<div class="bg-white rounded-xl shadow-sm p-6">
+<div class="flex rounded-lg bg-gray-100 p-1 mb-6 text-sm">
+<button class="flex-1 py-2 rounded-md bg-white shadow text-red-500 font-medium">支出</button>
+<button class="flex-1 py-2 rounded-md text-gray-600">收入</button>
+<button class="flex-1 py-2 rounded-md text-gray-600">转账</button>
+</div>
+<p class="text-center text-4xl font-bold text-gray-800 mb-6">¥ <input type="number" class="w-40 text-center border-b-2 border-emerald-500 outline-none" placeholder="0.00" value="42.00"/></p>
+<label class="block text-sm text-gray-500 mb-1">分类</label>
+<select class="w-full border rounded-lg px-3 py-2 mb-4"><option>餐饮</option><option>交通</option><option>购物</option><option>居住</option></select>
+<label class="block text-sm text-gray-500 mb-1">账户</label>
+<select class="w-full border rounded-lg px-3 py-2 mb-4"><option>招行借记卡</option><option>支付宝</option><option>微信</option></select>
+<label class="block text-sm text-gray-500 mb-1">时间</label>
+<input type="datetime-local" class="w-full border rounded-lg px-3 py-2 mb-4" value="2026-05-16T12:30"/>
+<label class="block text-sm text-gray-500 mb-1">备注</label>
+<input type="text" class="w-full border rounded-lg px-3 py-2 mb-4" placeholder="可选：商户、标签"/>
+<label class="block text-sm text-gray-500 mb-1">标签</label>
+<input type="text" class="w-full border rounded-lg px-3 py-2 mb-6" placeholder="#工作餐"/>
+<button class="w-full bg-emerald-600 text-white py-3 rounded-lg font-medium hover:bg-emerald-700">保存</button>
+</div>
+</main>
+<script>fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('navbar').innerHTML=h);</script>
+</body>
+</html>

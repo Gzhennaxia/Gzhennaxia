@@ -25,7 +25,7 @@
 | **frontend/** | React 18 + Vite 5 + TypeScript + Ant Design 5 前端 |
 | **data/** | 本地数据库文件与 SQL 脚本（H2 / SQLite、`*.sql` 初始化与业务脚本） |
 | **docs/** | 设计说明、集成文档、公考资料目录、IBKR 等笔记与规范 |
-| **prototype/** | 静态 HTML 原型（题库流程、金融监控列表等） |
+| **prototype/** | 静态 HTML 原型（题库流程、金融监控、个人记账等） |
 | **tools/** | 本地辅助工具（如 BBDown 及说明） |
 | **logs/** | 服务运行日志目录（本地生成，宜加入忽略） |
 | **.idea/** | IntelliJ IDEA 工程配置（视团队规范决定是否纳入版本库） |
@@ -94,6 +94,9 @@
 |------|------|
 | **prototype/question-bank/** | 题库/课程/课时/统计/错题本等页面静态原型（HTML） |
 | **prototype/finance/monitor/** | 金融监控列表原型与需求说明 |
+| **prototype/accounting/** | 个人记账原型（收支流水、投资、账户、月报）及 [需求说明](./prototype/accounting/需求说明.md) |
+| **backend/accounting-service/** | 个人记账后端（账户、流水、分类、投资交易、报表） |
+| **frontend/src/components/Accounting/** | 个人记账前端页面，路由 `/accounting/*` |
 
 ---
 
