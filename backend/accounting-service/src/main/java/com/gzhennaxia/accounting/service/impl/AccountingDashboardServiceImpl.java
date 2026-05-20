@@ -113,7 +113,7 @@ public class AccountingDashboardServiceImpl implements AccountingDashboardServic
         new LambdaQueryWrapper<InvestmentTrade>().orderByAsc(InvestmentTrade::getTradeTime));
     Map<Long, PositionAccumulator> map = new HashMap<>();
     for (InvestmentTrade trade : trades) {
-      map.computeIfAbsent(trade.getSymbolId(), PositionAccumulator::new).apply(trade);
+      map.computeIfAbsent(trade.getSymbolId(), id -> new PositionAccumulator()).apply(trade);
     }
     List<PositionVO> result = new ArrayList<>();
     BigDecimal totalMarket = BigDecimal.ZERO;
