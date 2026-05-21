@@ -6,6 +6,6 @@ COPY target/time-manager-1.0.0.jar app.jar
 
 RUN mkdir -p /app/data
 
-EXPOSE 8080
+EXPOSE 9527
 
 CMD ["java", "-jar", "app.jar"]

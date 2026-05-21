@@ -60,7 +60,7 @@ cd ..
 echo.
 echo 🎉 系统启动完成！
 echo 📱 前端地址: http://localhost:3000
-echo 🔌 后端 API: http://localhost:8080
+echo 🔌 后端 API: http://localhost:9527
 echo.
 echo 使用 Vite 构建工具，支持热重载和快速构建
 echo.

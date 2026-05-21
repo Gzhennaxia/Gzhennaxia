@@ -91,7 +91,7 @@ npm run dev
 
 #### 3. 访问应用
 - 前端: http://localhost:3000
-- 后端 API: http://localhost:8080
+- 后端 API: http://localhost:9527
 
 ### Docker 部署
 
@@ -107,7 +107,7 @@ docker-compose up -d
 
 #### 2. 访问应用
 - 应用: http://localhost:3000
-- API: http://localhost:8080
+- API: http://localhost:9527
 
 ## API 接口
 

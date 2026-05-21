@@ -11,7 +11,7 @@
 | [README.md](./README.md) | 项目说明、技术栈、快速开始 |
 | [index.md](./index.md) | 本目录索引 |
 | [.gitignore](./.gitignore) | Git 忽略规则 |
-| [docker-compose.yml](./docker-compose.yml) | 前后端容器编排（后端 8080、前端 3000→80） |
+| [docker-compose.yml](./docker-compose.yml) | 前后端容器编排（后端 9527、前端 3000→80） |
 | [start.bat](./start.bat) / [start.sh](./start.sh) | 本地一键启动脚本（后端 Maven + 前端） |
 | [vite-start.bat](./vite-start.bat) | 前端 Vite 相关便捷启动（Windows） |
 
