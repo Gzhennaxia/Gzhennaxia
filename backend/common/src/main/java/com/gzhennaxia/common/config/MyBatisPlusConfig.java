@@ -20,12 +20,12 @@ import java.time.LocalDateTime;
 public class MyBatisPlusConfig {
 
     /**
-     * 分页插件（H2/SQLite 等本地库使用 SQLITE 方言）。
+     * 分页插件（与当前数据源一致：PostgreSQL）。
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.SQLITE));
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.POSTGRE_SQL));
         return interceptor;
     }
 

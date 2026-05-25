@@ -11,6 +11,23 @@ export interface FundAccount {
   remark?: string;
 }
 
+/** 流水标签 */
+export interface AccTag {
+  id?: number;
+  name: string;
+  color?: string;
+  sortOrder?: number;
+  /** 关联流水条数，列表按此降序 */
+  transactionCount?: number;
+}
+
+/** 收支渠道 */
+export interface AccChannel {
+  id?: number;
+  name: string;
+  sortOrder?: number;
+}
+
 /** 收支分类 */
 export interface AccCategory {
   id?: number;
@@ -31,7 +48,10 @@ export interface AccTransaction {
   categoryId?: number;
   tradeTime?: string;
   payee?: string;
-  tags?: string;
+  /** 渠道主键，可不传 */
+  channelId?: number;
+  /** 标签主键 ID 列表 */
+  tagIds?: number[];
   note?: string;
 }
 
@@ -39,6 +59,10 @@ export interface AccTransactionVO extends AccTransaction {
   accountName?: string;
   targetAccountName?: string;
   categoryName?: string;
+  /** 渠道名称（展示） */
+  channelName?: string;
+  /** 标签名称（展示） */
+  tagNames?: string[];
 }
 
 export interface PageResult<T> {
@@ -92,6 +116,20 @@ export interface PositionVO {
   unrealizedPnl?: number;
   unrealizedPnlPercent?: number;
   weightPercent?: number;
+}
+
+/** 批量导入单行错误 */
+export interface AccTransactionImportError {
+  rowNumber: number;
+  message: string;
+}
+
+/** 批量导入结果 */
+export interface AccTransactionImportResult {
+  totalRows: number;
+  successCount: number;
+  failCount: number;
+  errors: AccTransactionImportError[];
 }
 
 export interface MonthlyReportVO {

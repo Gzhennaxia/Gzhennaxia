@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Row, Statistic, Table, Button, Spin, message } from 'antd';
+import { Card, Col, Row, Statistic, Table, Button, Spin, message, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useAccountingActions } from './AccountingActionsContext';
+import { formatTxType } from '../../constants/accounting';
 import { accountingService } from '../../services/accountingService';
 import type { DashboardVO } from '../../types/Accounting';
 
 const AccountingDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { openAddTransaction } = useAccountingActions();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashboardVO | null>(null);
 
@@ -25,29 +28,50 @@ const AccountingDashboard: React.FC = () => {
     <>
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={6}>
-          <Card><Statistic title="净资产" value={data?.netWorth ?? 0} precision={2} prefix="¥" /></Card>
+          <Card>
+            <Statistic title="流动资金" value={data?.liquidAssets ?? 0} precision={2} prefix="¥" />
+          </Card>
         </Col>
         <Col span={6}>
-          <Card><Statistic title="流动资金" value={data?.liquidAssets ?? 0} precision={2} prefix="¥" /></Card>
+          <Card>
+            <Statistic
+              title="本月收入"
+              value={data?.monthIncome ?? 0}
+              precision={2}
+              prefix="¥"
+              valueStyle={{ color: '#3f8600' }}
+            />
+          </Card>
         </Col>
         <Col span={6}>
-          <Card><Statistic title="本月收入" value={data?.monthIncome ?? 0} precision={2} prefix="¥" valueStyle={{ color: '#3f8600' }} /></Card>
+          <Card>
+            <Statistic
+              title="本月支出"
+              value={data?.monthExpense ?? 0}
+              precision={2}
+              prefix="¥"
+              valueStyle={{ color: '#cf1322' }}
+            />
+          </Card>
         </Col>
         <Col span={6}>
-          <Card><Statistic title="本月支出" value={data?.monthExpense ?? 0} precision={2} prefix="¥" valueStyle={{ color: '#cf1322' }} /></Card>
+          <Card>
+            <Statistic title="储蓄率" value={data?.savingsRate ?? 0} precision={1} suffix="%" />
+          </Card>
         </Col>
       </Row>
       <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={8}>
-          <Card title="投资市值"><Statistic value={data?.investmentValue ?? 0} precision={2} prefix="¥" /></Card>
-        </Col>
-        <Col span={8}>
-          <Card title="储蓄率"><Statistic value={data?.savingsRate ?? 0} precision={1} suffix="%" /></Card>
-        </Col>
-        <Col span={8}>
+        <Col span={24}>
           <Card>
-            <Button type="primary" onClick={() => navigate('/accounting/add')}>记一笔</Button>
-            <Button style={{ marginLeft: 8 }} onClick={() => navigate('/accounting/reports')}>月报</Button>
+            <Button type="primary" onClick={() => openAddTransaction()}>
+              记一笔
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={() => navigate('/accounting/transactions')}>
+              流水列表
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={() => navigate('/accounting/reports')}>
+              月报
+            </Button>
           </Card>
         </Col>
       </Row>
@@ -58,8 +82,20 @@ const AccountingDashboard: React.FC = () => {
           dataSource={data?.recentTransactions ?? []}
           columns={[
             { title: '时间', dataIndex: 'tradeTime', width: 180 },
-            { title: '类型', dataIndex: 'type', width: 80 },
+            {
+              title: '类型',
+              dataIndex: 'type',
+              width: 80,
+              render: (type: string) => formatTxType(type),
+            },
             { title: '分类', dataIndex: 'categoryName' },
+            { title: '渠道', dataIndex: 'channelName', width: 90, render: (v: string) => v || '-' },
+            {
+              title: '标签',
+              dataIndex: 'tagNames',
+              render: (names: string[] | undefined) =>
+                names?.length ? names.map((n) => <Tag key={n}>{n}</Tag>) : '-',
+            },
             { title: '账户', dataIndex: 'accountName' },
             {
               title: '金额',

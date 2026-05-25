@@ -26,6 +26,7 @@
         <module>civil-servant-service</module>
         <module>financial-service</module>
         <module>accounting-service</module>
+        <module>web</module>
     </modules>
 
     <dependencyManagement>
@@ -70,12 +71,11 @@
             <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
 
-        <!-- H2数据库依赖 -->
+        <!-- PostgreSQL（主库） -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.3.232</version> <!-- 最新的 2.x 版本 -->
-            <scope>runtime</scope> <!-- 运行时依赖，不参与编译 -->
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- JSON处理 -->
@@ -178,20 +178,23 @@
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

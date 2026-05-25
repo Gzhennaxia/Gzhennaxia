@@ -54,7 +54,7 @@ const DictItemList: React.FC = () => {
                         type="text"
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleDelete(record.id)}
+                        onClick={() => record.id != null && handleDelete(record.id)}
                     />
                 </Space>
             ),
@@ -85,13 +85,13 @@ const DictItemList: React.FC = () => {
             const dict = DictCacheManager.getDict(dictCode);
             if (dict) {
                 setDictInfo({
-                    name: dict.name,
+                    name: dict.dictName,
                     version: dict.version
                 });
             } else {
                 const freshDict = await getDictDetail(dictCode);
                 setDictInfo({
-                    name: freshDict.name,
+                    name: freshDict.dictName,
                     version: freshDict.version
                 });
             }

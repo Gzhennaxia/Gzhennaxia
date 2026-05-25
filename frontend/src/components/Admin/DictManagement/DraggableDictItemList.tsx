@@ -7,6 +7,14 @@ import { CSS } from '@dnd-kit/utilities';
 import { PlusOutlined, DeleteOutlined, HolderOutlined } from '@ant-design/icons';
 import { DictItem } from '../../../types/dict';
 
+function getSortableId(item: DictItem, index: number): number {
+  return item.id ?? -(index + 1);
+}
+
+function maxItemId(items: DictItem[]): number {
+  return items.reduce((max, item) => Math.max(max, item.id ?? 0), 0);
+}
+
 interface DraggableDictItemListProps {
   items: DictItem[];
   onChange: (items: DictItem[]) => void;
@@ -15,12 +23,13 @@ interface DraggableDictItemListProps {
 
 interface SortableItemProps {
   item: DictItem;
+  sortableId: number;
   onUpdate: (item: DictItem) => void;
   onDelete: (id: number) => void;
   disabled?: boolean;
 }
 
-const SortableItem: React.FC<SortableItemProps> = ({ item, onUpdate, onDelete, disabled }) => {
+const SortableItem: React.FC<SortableItemProps> = ({ item, sortableId, onUpdate, onDelete, disabled }) => {
   const {
     attributes,
     listeners,
@@ -28,7 +37,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, onUpdate, onDelete, d
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: item.id });
+  } = useSortable({ id: sortableId });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -100,7 +109,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, onUpdate, onDelete, d
                 <div style={{ width: '60px', paddingTop: '20px' }}>
                   <Popconfirm
                     title="确定删除这个字典项吗？"
-                    onConfirm={() => onDelete(item.id)}
+                    onConfirm={() => item.id != null && onDelete(item.id)}
                     okText="确定"
                     cancelText="取消"
                     disabled={disabled}
@@ -129,7 +138,7 @@ const DraggableDictItemList: React.FC<DraggableDictItemListProps> = ({
   disabled = false 
 }) => {
   const [localItems, setLocalItems] = useState<DictItem[]>(items);
-  const [nextId, setNextId] = useState<number>(Math.max(...items.map(item => item.id), 0) + 1);
+  const [nextId, setNextId] = useState<number>(maxItemId(items) + 1);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -141,7 +150,7 @@ const DraggableDictItemList: React.FC<DraggableDictItemListProps> = ({
   useEffect(() => {
     setLocalItems(items);
     if (items.length > 0) {
-      setNextId(Math.max(...items.map(item => item.id), 0) + 1);
+      setNextId(maxItemId(items) + 1);
     }
   }, [items]);
 
@@ -149,8 +158,8 @@ const DraggableDictItemList: React.FC<DraggableDictItemListProps> = ({
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      const oldIndex = localItems.findIndex(item => item.id === active.id);
-      const newIndex = localItems.findIndex(item => item.id === over.id);
+      const oldIndex = localItems.findIndex((item, index) => getSortableId(item, index) === active.id);
+      const newIndex = localItems.findIndex((item, index) => getSortableId(item, index) === over.id);
       
       const newItems = arrayMove(localItems, oldIndex, newIndex).map((item, index) => ({
         ...item,
@@ -246,13 +255,17 @@ const DraggableDictItemList: React.FC<DraggableDictItemListProps> = ({
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={localItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext
+            items={localItems.map((item, index) => getSortableId(item, index))}
+            strategy={verticalListSortingStrategy}
+          >
             <List
               dataSource={localItems}
-              renderItem={(item) => (
+              renderItem={(item, index) => (
                 <SortableItem
-                  key={item.id}
+                  key={getSortableId(item, index)}
                   item={item}
+                  sortableId={getSortableId(item, index)}
                   onUpdate={handleUpdateItem}
                   onDelete={handleDeleteItem}
                   disabled={disabled}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, message } from 'antd';
-import { accountingService } from '../../services/accountingService';
+import { investmentService } from '../../services/investmentService';
 import type { PositionVO } from '../../types/Accounting';
 
 const PositionList: React.FC = () => {
@@ -8,7 +8,7 @@ const PositionList: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    accountingService
+    investmentService
       .listPositions()
       .then(setData)
       .catch((e: { message?: string }) => message.error(e.message || '加载失败'))

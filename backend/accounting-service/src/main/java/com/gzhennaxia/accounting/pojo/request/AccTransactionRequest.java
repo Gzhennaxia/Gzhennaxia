@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 记一笔 / 流水保存请求。
@@ -34,7 +35,11 @@ public class AccTransactionRequest {
 
   private String payee;
 
-  private String tags;
+  /** 渠道主键，可不传 */
+  private Long channelId;
+
+  /** 标签主键 ID 列表 */
+  private List<Long> tagIds;
 
   private String note;
 }

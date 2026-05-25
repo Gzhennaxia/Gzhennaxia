@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:gzhennaxia}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      schema-locations: classpath:db/schema.sql,classpath:db/accounting.sql,classpath:db/question-bank.sql

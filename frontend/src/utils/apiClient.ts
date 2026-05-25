@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiResponse } from '../types/Task';
 
 // 创建axios实例
@@ -12,8 +12,10 @@ const apiClient: AxiosInstance = axios.create({
 
 // 请求拦截器
 apiClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
-    // 可以在这里添加token等
+  (config: InternalAxiosRequestConfig) => {
+    if (config.data instanceof FormData && config.headers) {
+      delete config.headers['Content-Type'];
+    }
     return config;
   },
   (error) => {

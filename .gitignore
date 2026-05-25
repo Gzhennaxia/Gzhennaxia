@@ -21,6 +21,10 @@ target/
 # Node
 node_modules/
 dist/
+
+# 本地发布包（deploy/build.ps1 生成）
+deploy/release/
+deploy/gzhennaxia-release.zip
 dist-ssr/
 *.local
 
@@ -32,3 +36,5 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+**/application-local.yml
+deploy/config/application-prod.yml

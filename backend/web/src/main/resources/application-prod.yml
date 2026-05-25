@@ -3,15 +3,19 @@ server:
 
 spring:
   datasource:
-    driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:data/gzhennaxia-prod.sqlite
-    username:
-    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST:127.0.0.1}:${POSTGRES_PORT:5432}/${POSTGRES_DB:gzhennaxia}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:}
+
+  sql:
+    init:
+      mode: never
 
   cache:
     type: caffeine
     caffeine:
-      spec: maximumSize=1000,expireAfterWrite=30m   # 30min TTL；热点字典常驻可配 long TTL
+      spec: maximumSize=1000,expireAfterWrite=30m
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -19,30 +23,15 @@ spring:
 
 mybatis-plus:
   configuration:
-    # 开启下划线转驼峰（默认值就是true，但若显式设置为false则会关闭）
-    map-underscore-to-camel-case: true  # 关键配置，必须为true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
   global-config:
     db-config:
       id-type: auto
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
-  type-handlers-package: com.personal.management.config
 
-# 日志配置
 logging:
   level:
-    root: INFO  # 全局默认日志级别（TRACE < DEBUG < INFO < WARN < ERROR）
-    com.example.dict: DEBUG  # 自定义包的日志级别（开发时设为DEBUG，生产设为INFO）
-    org.springframework: WARN  # 屏蔽Spring框架冗余日志
-    com.baomidou.mybatisplus: DEBUG  # MyBatis-Plus日志级别
-  file:
-    name: logs/dict-service.log  # 日志文件路径（相对路径：项目根目录下的logs文件夹）
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"  # 控制台输出格式
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"  # 文件输出格式
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB  # 单个日志文件最大大小（超过则切割）
-      max-history: 30  # 日志保留天数（超过则删除）
+    root: INFO
+    org.springframework: WARN

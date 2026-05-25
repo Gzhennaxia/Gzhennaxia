@@ -119,7 +119,7 @@ const TaskList: React.FC = () => {
 
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.description.toLowerCase().includes(searchTerm.toLowerCase());
+                         (task.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
 
     return matchesSearch;
   });

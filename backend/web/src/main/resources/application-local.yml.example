@@ -1,0 +1,13 @@
+# 复制为 application-local.yml（已 gitignore，勿提交）
+# 放置于本目录后无需设置 Active profiles，application.yml 会自动 optional 导入
+
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/gzhennaxia
+    username: postgres
+    password: 你的密码
+
+  # 首次建表改为 always，成功后改回 never
+  sql:
+    init:
+      mode: never

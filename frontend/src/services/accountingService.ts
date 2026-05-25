@@ -1,15 +1,15 @@
 import apiClient from '../utils/apiClient';
 import type {
   AccCategory,
+  AccChannel,
+  AccTag,
   AccTransaction,
+  AccTransactionImportResult,
   AccTransactionVO,
   DashboardVO,
   FundAccount,
-  InvestmentSymbol,
-  InvestmentTrade,
   MonthlyReportVO,
   PageResult,
-  PositionVO,
 } from '../types/Accounting';
 
 export const accountingService = {
@@ -30,6 +30,37 @@ export const accountingService = {
   listCategories: (type?: string) =>
     apiClient.get<unknown, AccCategory[]>('/accounting/categories', { params: { type } }),
 
+  saveCategory: (data: AccCategory) =>
+    apiClient.post<unknown, boolean>('/accounting/categories', data),
+
+  updateCategory: (data: AccCategory) =>
+    apiClient.put<unknown, boolean>('/accounting/categories', data),
+
+  deleteCategory: (id: number) =>
+    apiClient.delete<unknown, boolean>(`/accounting/categories/${id}`),
+
+  listChannels: () => apiClient.get<unknown, AccChannel[]>('/accounting/channels'),
+
+  saveChannel: (data: Pick<AccChannel, 'name'>) =>
+    apiClient.post<unknown, number>('/accounting/channels', data),
+
+  updateChannel: (data: AccChannel) => apiClient.put<unknown, boolean>('/accounting/channels', data),
+
+  deleteChannel: (id: number) => apiClient.delete<unknown, boolean>(`/accounting/channels/${id}`),
+
+  listTags: () => apiClient.get<unknown, AccTag[]>('/accounting/tags'),
+
+  saveTag: (data: Pick<AccTag, 'name' | 'color'>) =>
+    apiClient.post<unknown, number>('/accounting/tags', data),
+
+  /** 记一笔等场景快速创建（名称已存在则返回已有 ID） */
+  quickSaveTag: (data: Pick<AccTag, 'name'>) =>
+    apiClient.post<unknown, number>('/accounting/tags/quick', data),
+
+  updateTag: (data: AccTag) => apiClient.put<unknown, boolean>('/accounting/tags', data),
+
+  deleteTag: (id: number) => apiClient.delete<unknown, boolean>(`/accounting/tags/${id}`),
+
   pageTransactions: (params: Record<string, unknown>) =>
     apiClient.get<unknown, PageResult<AccTransactionVO>>('/accounting/transactions', { params }),
 
@@ -42,19 +73,11 @@ export const accountingService = {
   deleteTransaction: (id: number) =>
     apiClient.delete<unknown, boolean>(`/accounting/transactions/${id}`),
 
-  listSymbols: () => apiClient.get<unknown, InvestmentSymbol[]>('/accounting/symbols'),
-
-  saveSymbol: (data: InvestmentSymbol) =>
-    apiClient.post<unknown, boolean>('/accounting/symbols', data),
-
-  listPositions: () => apiClient.get<unknown, PositionVO[]>('/accounting/positions'),
-
-  listInvestmentTrades: () =>
-    apiClient.get<unknown, InvestmentTrade[]>('/accounting/investment-trades'),
-
-  saveInvestmentTrade: (data: InvestmentTrade) =>
-    apiClient.post<unknown, number>('/accounting/investment-trades', data),
-
-  deleteInvestmentTrade: (id: number) =>
-    apiClient.delete<unknown, boolean>(`/accounting/investment-trades/${id}`),
+  importTransactions: (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post<unknown, AccTransactionImportResult>('/accounting/transactions/import', formData, {
+      timeout: 120000,
+    });
+  },
 };

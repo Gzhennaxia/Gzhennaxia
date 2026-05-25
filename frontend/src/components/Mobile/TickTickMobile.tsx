@@ -147,8 +147,8 @@ const TickTickMobile: React.FC = () => {
       
       await loadTasks(true); // 强制刷新
       message.success('任务添加成功');
-    } catch (error) {
-      if (error.errorFields) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'errorFields' in error) {
         // 表单验证错误
         message.warning('请完善任务信息');
       } else {

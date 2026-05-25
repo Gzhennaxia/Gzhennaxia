@@ -69,7 +69,7 @@ const MobileTaskCard: React.FC<MobileTaskCardProps> = ({
           shape="circle"
           size="small"
           icon={<CheckOutlined />}
-          onClick={() => onToggleComplete(task.id)}
+          onClick={() => task.id != null && onToggleComplete(task.id)}
           className={`complete-btn ${isCompleted ? 'completed' : ''}`}
         />
       </div>
@@ -100,7 +100,7 @@ const MobileTaskCard: React.FC<MobileTaskCardProps> = ({
             type="text"
             size="small"
             icon={<DeleteOutlined />}
-            onClick={() => onDelete(task.id)}
+            onClick={() => task.id != null && onDelete(task.id)}
             className="action-btn delete-btn"
             danger
           />

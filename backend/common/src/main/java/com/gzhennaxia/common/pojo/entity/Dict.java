@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("DICT")
+@TableName("dict")
 public class Dict {
     private Long id;
     private String dictCode;

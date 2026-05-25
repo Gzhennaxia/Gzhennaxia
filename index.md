@@ -23,7 +23,7 @@
 |------|------|
 | **backend/** | Java / Spring Boot 多模块后端（Maven 父工程 `management-parent`） |
 | **frontend/** | React 18 + Vite 5 + TypeScript + Ant Design 5 前端 |
-| **data/** | 本地数据库文件与 SQL 脚本（H2 / SQLite、`*.sql` 初始化与业务脚本） |
+| **data/** | 历史 SQL/本地库（已弃用）；权威脚本在 `backend/web/src/main/resources/db/` |
 | **docs/** | 设计说明、集成文档、公考资料目录、IBKR 等笔记与规范 |
 | **prototype/** | 静态 HTML 原型（题库流程、金融监控、个人记账等） |
 | **tools/** | 本地辅助工具（如 BBDown 及说明） |

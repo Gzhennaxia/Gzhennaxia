@@ -1,0 +1,158 @@
+.home-portal {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, #f0f5ff 0%, #f7f9fc 45%, #eef2f7 100%);
+}
+
+.home-portal__header {
+  padding: 48px 32px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.home-portal__brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.home-portal__logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.35);
+}
+
+.home-portal__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a2b3c;
+  letter-spacing: -0.02em;
+}
+
+.home-portal__subtitle {
+  margin: 4px 0 0;
+  font-size: 15px;
+  color: #64748b;
+}
+
+.home-portal__main {
+  flex: 1;
+  padding: 0 32px 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.home-portal__hint {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.home-portal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.home-portal__card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 20px;
+  background: #fff;
+  border: 1px solid #e8ecf0;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.home-portal__card:hover {
+  transform: translateY(-2px);
+  border-color: var(--card-accent, #4a90e2);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.home-portal__card:focus-visible {
+  outline: 2px solid var(--card-accent, #4a90e2);
+  outline-offset: 2px;
+}
+
+.home-portal__card-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card-accent) 12%, white);
+  color: var(--card-accent);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-portal__card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-portal__card-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.home-portal__card-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.home-portal__card-arrow {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: #cbd5e1;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.home-portal__card:hover .home-portal__card-arrow {
+  color: var(--card-accent);
+  transform: translateX(4px);
+}
+
+.home-portal__footer {
+  padding: 20px 32px;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .home-portal__header {
+    padding: 32px 20px 16px;
+  }
+
+  .home-portal__main {
+    padding: 0 20px 32px;
+  }
+
+  .home-portal__grid {
+    grid-template-columns: 1fr;
+  }
+}

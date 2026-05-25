@@ -3,6 +3,7 @@ import { Card, Tag, Button, Space, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined, ClockCircleOutlined, CalendarOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { Task } from '../../types/Task';
+import { toPriorityLabel, toStatusLabel } from '../../utils/taskLabel';
 
 const { Meta } = Card;
 
@@ -106,7 +107,7 @@ const ModernTaskCard: React.FC<ModernTaskCardProps> = ({ task, onEdit, onDelete 
         left: 0,
         right: 0,
         height: '4px',
-        background: getPriorityGradient(task.priority),
+        background: getPriorityGradient(toPriorityLabel(task.priority)),
         borderRadius: '20px 20px 0 0'
       }} />
       
@@ -135,7 +136,7 @@ const ModernTaskCard: React.FC<ModernTaskCardProps> = ({ task, onEdit, onDelete 
             
             <Space wrap style={{ marginBottom: '12px' }}>
               <Tag 
-                color={getStatusColor(task.status)}
+                color={getStatusColor(toStatusLabel(task.status))}
                 style={{
                   borderRadius: '12px',
                   padding: '2px 8px',
@@ -143,10 +144,10 @@ const ModernTaskCard: React.FC<ModernTaskCardProps> = ({ task, onEdit, onDelete 
                   fontWeight: '500'
                 }}
               >
-                {getStatusText(task.status)}
+                {getStatusText(toStatusLabel(task.status))}
               </Tag>
               <Tag 
-                color={getPriorityColor(task.priority)}
+                color={getPriorityColor(toPriorityLabel(task.priority))}
                 style={{
                   borderRadius: '12px',
                   padding: '2px 8px',
@@ -154,7 +155,7 @@ const ModernTaskCard: React.FC<ModernTaskCardProps> = ({ task, onEdit, onDelete 
                   fontWeight: '500'
                 }}
               >
-                {getPriorityText(task.priority)}
+                {getPriorityText(toPriorityLabel(task.priority))}
               </Tag>
               {task.category && (
                 <Tag style={{

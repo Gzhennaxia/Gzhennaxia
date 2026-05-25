@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
+import HomePortal from './components/Home/HomePortal';
 import Layout from './components/Layout/Layout';
 import TaskList from './components/TaskList/TaskList';
 import CalendarView from './components/Calendar/CalendarView';
@@ -10,6 +11,7 @@ import AdminRoutes from './components/Admin/AdminRoutes';
 import { QuestionBankLayout } from './components/QuestionBank';
 import FinanceRoutes from './components/Finance/FinanceRoutes';
 import AccountingRoutes from './components/Accounting/AccountingRoutes';
+import InvestmentRoutes from './components/Investment/InvestmentRoutes';
 import './App.css';
 
 const App: React.FC = () => {
@@ -51,18 +53,18 @@ const App: React.FC = () => {
           {/* 个人财务系统路由 - 独立布局 */}
           <Route path="/finance/*" element={<FinanceRoutes />} />
 
-          {/* 个人记账路由 - 独立布局 */}
+          {/* 个人记账 - 消费收支 */}
           <Route path="/accounting/*" element={<AccountingRoutes />} />
-          
-          {/* 主应用路由 - 使用全局Layout */}
-          <Route path="/*" element={
-            <Layout>
-              <Routes>
-                <Route path="/" element={<TaskList />} />
-                <Route path="/calendar" element={<CalendarView />} />
-              </Routes>
-            </Layout>
-          } />
+
+          {/* 投资管理 - 持仓与交易 */}
+          <Route path="/investment/*" element={<InvestmentRoutes />} />
+
+          {/* 综合入口首页 */}
+          <Route path="/" element={<HomePortal />} />
+
+          {/* 任务模块 - 使用全局 Layout */}
+          <Route path="/tasks" element={<Layout><TaskList /></Layout>} />
+          <Route path="/calendar" element={<Layout><CalendarView /></Layout>} />
         </Routes>
       </Router>
     </ConfigProvider>

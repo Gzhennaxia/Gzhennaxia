@@ -40,6 +40,10 @@ public class AccTransaction {
 
   private String payee;
 
+  /** 渠道 ID */
+  private Long channelId;
+
+  /** 标签主键 ID，逗号分隔，如 1,2,3 */
   private String tags;
 
   private String note;

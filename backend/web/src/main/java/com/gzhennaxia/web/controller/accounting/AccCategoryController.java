@@ -2,7 +2,9 @@ package com.gzhennaxia.web.controller.accounting;
 
 import com.gzhennaxia.accounting.pojo.entity.AccCategory;
 import com.gzhennaxia.accounting.service.AccCategoryService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,5 +43,10 @@ public class AccCategoryController {
   @PutMapping
   public boolean update(@RequestBody AccCategory category) {
     return accCategoryService.updateById(category);
+  }
+
+  @DeleteMapping("/{id}")
+  public boolean delete(@PathVariable Long id) {
+    return accCategoryService.removeById(id);
   }
 }

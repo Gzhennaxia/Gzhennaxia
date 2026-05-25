@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Breadcrumb, theme } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import BackToHome from '../Home/BackToHome';
 import {
   DashboardOutlined,
   BarChartOutlined,
@@ -99,6 +100,7 @@ const FinanceLayout: React.FC = () => {
           >
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </div>
+          <BackToHome />
         </Header>
         <Content
           style={{

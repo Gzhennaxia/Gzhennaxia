@@ -1,7 +1,7 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Select, InputNumber, DatePicker, Input, message, Popconfirm } from 'antd';
 import dayjs from 'dayjs';
-import { accountingService } from '../../services/accountingService';
+import { investmentService } from '../../services/investmentService';
 import type { InvestmentSymbol, InvestmentTrade } from '../../types/Accounting';
 
 const TRADE_TYPES = [
@@ -22,8 +22,8 @@ const InvestmentTradeList: React.FC = () => {
 
   const load = async () => {
     const [t, s] = await Promise.all([
-      accountingService.listInvestmentTrades(),
-      accountingService.listSymbols(),
+      investmentService.listInvestmentTrades(),
+      investmentService.listSymbols(),
     ]);
     setTrades(t);
     setSymbols(s);
@@ -36,7 +36,7 @@ const InvestmentTradeList: React.FC = () => {
   const saveTrade = async () => {
     const v = await form.validateFields();
     const tradeTime = v.tradeTime as { format: (f: string) => string };
-    await accountingService.saveInvestmentTrade({
+    await investmentService.saveInvestmentTrade({
       symbolId: v.symbolId,
       tradeType: v.tradeType,
       quantity: v.quantity,
@@ -53,7 +53,7 @@ const InvestmentTradeList: React.FC = () => {
 
   const saveSymbol = async () => {
     const v = await symbolForm.validateFields();
-    await accountingService.saveSymbol(v);
+    await investmentService.saveSymbol(v);
     message.success('标的已添加');
     setSymbolOpen(false);
     load();
@@ -98,7 +98,7 @@ const InvestmentTradeList: React.FC = () => {
               <Popconfirm
                 title="确认删除？"
                 onConfirm={async () => {
-                  await accountingService.deleteInvestmentTrade(r.id!);
+                  await investmentService.deleteInvestmentTrade(r.id!);
                   load();
                 }}
               >

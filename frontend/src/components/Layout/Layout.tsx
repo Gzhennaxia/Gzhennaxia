@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PlusOutlined, HomeOutlined, CheckSquareOutlined, CalendarOutlined, SettingOutlined, MenuOutlined, BookOutlined } from '@ant-design/icons';
+import { PlusOutlined, HomeOutlined, CheckSquareOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import TaskFormModal from '../TaskForm/TaskFormModal';
 import './Layout.css';
@@ -24,37 +24,54 @@ const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
     window.location.reload();
   };
 
+  const isTasks = location.pathname === '/tasks';
+  const isCalendar = location.pathname === '/calendar';
+  const pageTitle = isCalendar ? '日历' : '任务管理';
+  const pageSubtitle = isCalendar
+    ? '按时间维度查看与安排任务'
+    : '管理您的日常任务和待办事项';
+
   return (
     <div className="app">
       {/* 顶部导航栏 */}
       <header className="top-nav">
-        <div className="nav-brand">
+        <div
+          className="nav-brand"
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate('/')}
+          onKeyDown={(e) => e.key === 'Enter' && navigate('/')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="logo">G</div>
           <span>个人管理</span>
         </div>
-        
+
         {/* 导航菜单 */}
         <nav className="nav-menu">
-          <button 
-            className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}
+          <button
+            type="button"
+            className="nav-item"
             onClick={() => navigate('/')}
           >
             <HomeOutlined />
+            <span>首页</span>
+          </button>
+          <button
+            type="button"
+            className={`nav-item ${isTasks ? 'active' : ''}`}
+            onClick={() => navigate('/tasks')}
+          >
+            <CheckSquareOutlined />
             <span>任务管理</span>
           </button>
-          <button 
-            className={`nav-item ${location.pathname === '/calendar' ? 'active' : ''}`}
+          <button
+            type="button"
+            className={`nav-item ${isCalendar ? 'active' : ''}`}
             onClick={() => navigate('/calendar')}
           >
             <CalendarOutlined />
             <span>日历</span>
-          </button>
-          <button 
-            className={`nav-item ${location.pathname.startsWith('/question-bank') ? 'active' : ''}`}
-            onClick={() => navigate('/question-bank')}
-          >
-            <BookOutlined />
-            <span>题库</span>
           </button>
         </nav>
         
@@ -71,8 +88,8 @@ const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
         {/* 内容区域 */}
         <main className="content-area">
           <div className="page-header">
-            <h1 className="page-title">任务管理</h1>
-            <p className="page-subtitle">管理您的日常任务和待办事项</p>
+            <h1 className="page-title">{pageTitle}</h1>
+            <p className="page-subtitle">{pageSubtitle}</p>
           </div>
           {children}
         </main>

@@ -2,27 +2,30 @@ server:
   port: 9527
 
 spring:
-  datasource:
-#    driver-class-name: org.sqlite.JDBC
-#    url: jdbc:sqlite:data/gzhennaxia.sqlite
-#    username:
-#    password:
+  # 存在 application-local.yml 时自动加载（已 gitignore，含本地密码）
+  config:
+    import: optional:classpath:application-local.yml
 
-    # H2嵌入式模式配置（文件存储，数据持久化到本地）
-    driver-class-name: org.h2.Driver
-    # 数据库文件路径：./data/h2db 表示项目根目录下的data文件夹，自动创建
-    # AUTO_SERVER=TRUE 允许同一台机器上的多个进程访问数据库
-    # DB_CLOSE_DELAY=-1 避免连接关闭时自动关闭数据库
-    url: jdbc:h2:./data/gzhennaxia;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;MODE=MySQL;DEFAULT_NULL_ORDERING=LOW
-    username: sa  # 默认用户名，可自定义
-    password: 123456  # 密码，建议设置（默认空）
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/gzhennaxia
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:}
     hikari:
-      maximum-pool-size: 5  # 连接池大小（H2支持多连接，按需调整）
+      maximum-pool-size: 10
+      connection-timeout: 30000
+
+  # 首次建表可改为 always，建完改回 never（见 docs/postgresql-migration.md）
+  sql:
+    init:
+      mode: never
+      continue-on-error: true
+      schema-locations: classpath:db/schema.sql,classpath:db/accounting.sql,classpath:db/question-bank.sql
 
   cache:
     type: caffeine
     caffeine:
-      spec: maximumSize=1000,expireAfterWrite=30m   # 30min TTL；热点字典常驻可配 long TTL
+      spec: maximumSize=1000,expireAfterWrite=30m
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -30,30 +33,25 @@ spring:
 
 mybatis-plus:
   configuration:
-    # 开启下划线转驼峰（默认值就是true，但若显式设置为false则会关闭）
-    map-underscore-to-camel-case: true  # 关键配置，必须为true
+    map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       id-type: auto
-#      logic-delete-field: deleted
-#      logic-delete-value: 1
-#      logic-not-delete-value: 0
   type-handlers-package: com.personal.management.config
 
-# 日志配置
 logging:
   level:
-    root: INFO  # 全局默认日志级别（TRACE < DEBUG < INFO < WARN < ERROR）
-    com.example.dict: DEBUG  # 自定义包的日志级别（开发时设为DEBUG，生产设为INFO）
-    org.springframework: WARN  # 屏蔽Spring框架冗余日志
-    com.baomidou.mybatisplus: DEBUG  # MyBatis-Plus日志级别
+    root: INFO
+    com.example.dict: DEBUG
+    org.springframework: WARN
+    com.baomidou.mybatisplus: DEBUG
   file:
-    name: logs/dict-service.log  # 日志文件路径（相对路径：项目根目录下的logs文件夹）
+    name: logs/dict-service.log
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"  # 控制台输出格式
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"  # 文件输出格式
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
   logback:
     rollingpolicy:
-      max-file-size: 10MB  # 单个日志文件最大大小（超过则切割）
-      max-history: 30  # 日志保留天数（超过则删除）
+      max-file-size: 10MB
+      max-history: 30

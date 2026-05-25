@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Button, Typography } from 'antd';
 import { FileTextOutlined, UploadOutlined, BookOutlined, SettingOutlined } from '@ant-design/icons';
+import BackToHome from '../Home/BackToHome';
 import PDFUpload from './PDFUpload';
 import SimplePDFViewer from './SimplePDFViewer';
 import QuestionBankList from './QuestionBankList';
@@ -92,6 +93,9 @@ const QuestionBankLayout: React.FC = () => {
       </Sider>
       <Layout>
         <Content style={{ margin: 0, background: '#f0f2f5' }}>
+          <div style={{ padding: '8px 16px', background: '#fff', borderBottom: '1px solid #f0f0f0' }}>
+            <BackToHome />
+          </div>
           {renderContent()}
         </Content>
       </Layout>

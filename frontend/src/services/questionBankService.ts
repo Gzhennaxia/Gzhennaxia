@@ -1,4 +1,4 @@
-import { PDFDocument, PDFPage, QuestionBankItem, ExtractedContent } from '../types/QuestionBank';
+import { PDFDocument, QuestionBankItem } from '../types/QuestionBank';
 
 class QuestionBankService {
   private documents: PDFDocument[] = [];

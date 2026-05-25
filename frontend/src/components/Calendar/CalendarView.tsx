@@ -3,6 +3,7 @@ import { Calendar, Badge, Select, Card, Button, Space } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 import { Task, ViewType } from '../../types/Task';
+import { toStatusLabel } from '../../utils/taskLabel';
 import { taskService } from '../../services/taskService';
 import TaskFormModal from '../TaskForm/TaskFormModal';
 
@@ -72,7 +73,7 @@ const CalendarView: React.FC = () => {
         {dayTasks.slice(0, 3).map(task => (
           <li key={task.id} style={{ marginBottom: 2 }}>
             <Badge
-              status={getTaskBadgeStatus(task.status)}
+              status={getTaskBadgeStatus(toStatusLabel(task.status))}
               text={
                 <span style={{ fontSize: 12 }}>
                   {task.title.length > 10 ? `${task.title.slice(0, 10)}...` : task.title}

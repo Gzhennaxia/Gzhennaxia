@@ -8,6 +8,7 @@ import InboxTaskCard from '../TaskList/InboxTaskCard';
 import InboxTaskFormModal from '../TaskForm/InboxTaskFormModal';
 import TaskFormModal from '../TaskForm/TaskFormModal';
 import LoadingSpinner from '../Common/LoadingSpinner';
+import dayjs from 'dayjs';
 
 const InboxView: React.FC = () => {
   const [inboxTasks, setInboxTasks] = useState<InboxTask[]>([]);
@@ -170,7 +171,9 @@ const InboxView: React.FC = () => {
           title: schedulingTask.title,
           description: schedulingTask.description || '',
           priority: schedulingTask.priority,
-          status: 'PENDING'
+          status: 'PENDING',
+          startTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+          endTime: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
         } : undefined}
         onCancel={() => {
           setScheduleModalVisible(false);

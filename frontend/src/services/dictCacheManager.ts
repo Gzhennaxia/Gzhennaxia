@@ -1,4 +1,4 @@
-import { Dict, DictItem } from '../types/dict';
+import { Dict } from '../types/dict';
 
 class DictCacheManager {
     private memoryCache: Map<string, Dict> = new Map();
@@ -29,21 +29,28 @@ class DictCacheManager {
     }
 
     public getDict(code: string): Dict | undefined {
-        // TODO: 实现从内存缓存获取字典
-        return undefined;
+        return this.memoryCache.get(code);
     }
 
     public getBatch(codes: string[]): Map<string, Dict> {
-        // TODO: 实现批量获取字典
-        return new Map();
+        const result = new Map<string, Dict>();
+        codes.forEach((code) => {
+            const dict = this.memoryCache.get(code);
+            if (dict) {
+                result.set(code, dict);
+            }
+        });
+        return result;
     }
 
     public updateDict(dict: Dict) {
-        // TODO: 实现更新字典
+        this.memoryCache.set(dict.dictCode, dict);
+        this.saveToLocalStorage();
     }
 
     public removeDict(code: string) {
-        // TODO: 实现移除字典
+        this.memoryCache.delete(code);
+        this.saveToLocalStorage();
     }
 }
 

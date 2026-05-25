@@ -5,6 +5,7 @@ import com.gzhennaxia.accounting.pojo.request.AccTransactionRequest;
 import com.gzhennaxia.accounting.pojo.vo.AccTransactionVO;
 import com.gzhennaxia.accounting.service.AccTransactionService;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.gzhennaxia.accounting.pojo.vo.AccTransactionImportResultVO;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -50,6 +52,17 @@ public class AccTransactionController {
   @PostMapping
   public Long save(@RequestBody AccTransactionRequest request) {
     return accTransactionService.saveTransaction(request);
+  }
+
+  /**
+   * 批量导入流水（CSV / Excel）。
+   *
+   * @param file 上传文件，表头须含：类型、金额、账户
+   * @return 导入结果
+   */
+  @PostMapping("/import")
+  public AccTransactionImportResultVO importFile(@RequestParam("file") MultipartFile file) {
+    return accTransactionService.importFromFile(file);
   }
 
   @PutMapping

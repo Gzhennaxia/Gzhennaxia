@@ -2,16 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, InputNumber, Select, Switch, message, Popconfirm } from 'antd';
 import { accountingService } from '../../services/accountingService';
 import type { FundAccount } from '../../types/Accounting';
-
-const ACCOUNT_TYPES = [
-  { label: '银行卡', value: 'bank' },
-  { label: '支付宝', value: 'alipay' },
-  { label: '微信', value: 'wechat' },
-  { label: '现金', value: 'cash' },
-  { label: '信用卡', value: 'credit' },
-  { label: '虚拟账户', value: 'virtual' },
-  { label: '其他', value: 'other' },
-];
+import { ACCOUNT_TYPE_OPTIONS, formatAccountType } from '../../constants/accounting';
+import MaskedAccountNo from './MaskedAccountNo';
 
 const AccountList: React.FC = () => {
   const [list, setList] = useState<FundAccount[]>([]);
@@ -50,8 +42,18 @@ const AccountList: React.FC = () => {
         dataSource={list}
         columns={[
           { title: '名称', dataIndex: 'name' },
-          { title: '编号', dataIndex: 'accountNo', render: (v: string) => v ? `****${v.slice(-4)}` : '-' },
-          { title: '类型', dataIndex: 'type' },
+          {
+            title: '编号',
+            dataIndex: 'accountNo',
+            width: 200,
+            render: (v: string) => <MaskedAccountNo accountNo={v} />,
+          },
+          {
+            title: '类型',
+            dataIndex: 'type',
+            width: 100,
+            render: (type: string) => formatAccountType(type),
+          },
           { title: '余额', dataIndex: 'balance', render: (v: number) => `¥ ${(v ?? 0).toFixed(2)}` },
           {
             title: '计入净资产',
@@ -78,7 +80,9 @@ const AccountList: React.FC = () => {
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="名称" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="accountNo" label="账户编号"><Input placeholder="卡号、支付宝 ID 等" /></Form.Item>
-          <Form.Item name="type" label="类型" rules={[{ required: true }]}><Select options={ACCOUNT_TYPES} /></Form.Item>
+          <Form.Item name="type" label="类型" rules={[{ required: true }]}>
+            <Select options={[...ACCOUNT_TYPE_OPTIONS]} />
+          </Form.Item>
           <Form.Item name="balance" label="余额"><InputNumber style={{ width: '100%' }} precision={2} /></Form.Item>
           <Form.Item name="includeInNetWorth" label="计入净资产" valuePropName="checked">
             <Switch defaultChecked />
