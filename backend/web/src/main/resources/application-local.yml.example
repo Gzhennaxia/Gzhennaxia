@@ -11,3 +11,13 @@ spring:
   sql:
     init:
       mode: never
+
+# 理财模块：行情同步（标普 500 等，见 docs/finance/sp500-index-historical-data.md）
+finance:
+  market:
+    fred:
+      api-key: 你的FRED_API_KEY
+      base-url: https://api.stlouisfed.org/fred
+    sync:
+      default-symbol: SP500
+      backfill-start: 2010-01-01

@@ -20,7 +20,7 @@ spring:
     init:
       mode: never
       continue-on-error: true
-      schema-locations: classpath:db/schema.sql,classpath:db/accounting.sql,classpath:db/question-bank.sql
+      schema-locations: classpath:db/schema.sql,classpath:db/accounting.sql,classpath:db/question-bank.sql,classpath:db/finance-market.sql
 
   cache:
     type: caffeine
@@ -46,6 +46,17 @@ logging:
     com.example.dict: DEBUG
     org.springframework: WARN
     com.baomidou.mybatisplus: DEBUG
+
+finance:
+  market:
+    fred:
+      api-key: ${FRED_API_KEY:}
+      base-url: https://api.stlouisfed.org/fred
+    stooq:
+      enabled: false
+    sync:
+      default-symbol: SP500
+      backfill-start: 2010-01-01
   file:
     name: logs/dict-service.log
   pattern:

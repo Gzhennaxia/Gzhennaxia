@@ -4,6 +4,7 @@ import FinanceLayout from './FinanceLayout';
 import FinanceDashboard from './FinanceDashboard';
 import MonitorList from './MonitorList';
 import PortfolioList from './PortfolioList';
+import Sp500IndexPage from './Sp500IndexPage';
 
 const FinanceRoutes: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const FinanceRoutes: React.FC = () => {
         <Route path="dashboard" element={<FinanceDashboard />} />
         <Route path="monitor" element={<MonitorList />} />
         <Route path="portfolio" element={<PortfolioList />} />
+        <Route path="index/sp500" element={<Sp500IndexPage />} />
       </Route>
     </Routes>
   );

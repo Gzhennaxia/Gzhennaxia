@@ -6,6 +6,7 @@ import {
   DashboardOutlined,
   BarChartOutlined,
   FundOutlined,
+  LineChartOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
@@ -36,6 +37,11 @@ const FinanceLayout: React.FC = () => {
       icon: <FundOutlined />,
       label: '投资组合',
     },
+    {
+      key: '/finance/index/sp500',
+      icon: <LineChartOutlined />,
+      label: '标普 500',
+    },
   ];
 
   const getBreadcrumbItems = () => {
@@ -53,6 +59,10 @@ const FinanceLayout: React.FC = () => {
     } else if (pathSnippets.includes('portfolio')) {
       breadcrumbItems.push({
         title: '投资组合',
+      });
+    } else if (pathSnippets.includes('sp500')) {
+      breadcrumbItems.push({
+        title: '标普 500',
       });
     }
 
